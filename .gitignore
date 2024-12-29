@@ -267,6 +267,4 @@ cython_debug/
 
 /.ruff_cache/
 public
-
-# Scalene related
-profile.*
+*.sqlite

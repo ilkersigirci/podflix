@@ -1,0 +1,97 @@
+name: podflix
+
+networks:
+  podflix-network:
+    name: podflix-network
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.10.0/24
+
+services:
+  podflix-dev:
+    image: podflix-dev:latest
+    container_name: podflix-dev
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      target: development
+    networks:
+      - podflix-network
+    # ports:
+    #   - 8080:8080
+    command: ["tail", "-f", "/dev/null"] # NOTE: For testing the container
+    restart: "no"
+    develop:
+      watch:
+        # Sync the working directory with the `/app` directory in the container
+        - action: sync
+          path: .
+          target: /app
+          # Exclude the project virtual environment
+          ignore:
+            - .venv/
+
+        # Rebuild the image on changes to the `pyproject.toml`
+        - action: rebuild
+          path: ./pyproject.toml
+
+  podflix-prod:
+    image: podflix-prod:latest
+    container_name: podflix-prod
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      target: production
+    networks:
+      - podflix-network
+    # ports:
+    #   - 8080:8080
+    command: ["tail", "-f", "/dev/null"] # NOTE: For testing the container
+    restart: "no"
+
+  ############ LANGFUSE #############
+  langfuse-db:
+    image: postgres:16.4
+    container_name: langfuse-db
+    restart: ${RESTART_POLICY:-unless-stopped}
+    networks:
+      - podflix-network
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+      - PGDATA=/pgdata
+    volumes:
+      - ./deployment/volumes/langfuse-db:/pgdata
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  langfuse-server:
+    image: ghcr.io/langfuse/langfuse:${LANGFUSE_VERSION:-2.93.5}
+    container_name: langfuse-server
+    restart: ${RESTART_POLICY:-unless-stopped}
+    depends_on:
+      langfuse-db:
+        condition: service_healthy
+    networks:
+      - podflix-network
+    ports:
+      - ${LANGFUSE_PORT:-3000}:3000
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@langfuse-db:5432/postgres
+      - NEXTAUTH_SECRET=mysecret
+      - SALT=mysalt
+      - HOSTNAME=0.0.0.0
+      - PORT=3000
+      - NEXTAUTH_URL=http://localhost:3000
+      - TELEMETRY_ENABLED=false
+      - NEXT_PUBLIC_SIGN_UP_DISABLED=false
+      - LANGFUSE_ENABLE_EXPERIMENTAL_FEATURES=false
+      # - LANGFUSE_DEFAULT_PROJECT_ID=1
+      # - LANGFUSE_DEFAULT_PROJECT_ROLE=ADMIN
+      # - AUTH_DISABLE_SIGNUP=true
+      # - AUTH_DISABLE_USERNAME_PASSWORD=true
