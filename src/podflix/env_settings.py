@@ -90,6 +90,8 @@ class EnvSettings(BaseSettings):
     postgres_user: str | None = None
     sqlaclhemy_db_type: Literal["sqlite", "postgres"] = "sqlite"
     timeout_limit: int = 30
+    whisper_api_url: CustomHttpUrlStr
+    whisper_model_name: str
 
 env_settings = EnvSettings()
 # fmt: on
