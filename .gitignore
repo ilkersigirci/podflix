@@ -268,3 +268,4 @@ cython_debug/
 /.ruff_cache/
 public
 *.sqlite
+deployment

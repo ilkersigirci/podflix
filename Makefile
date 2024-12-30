@@ -168,6 +168,11 @@ format: ## Run ruff for all package files. CHANGES CODE
 	uv run --module ruff format ${PACKAGE}
 	uv run --module ruff check ${PACKAGE} --fix --show-fixes
 
+format-unsafe: ## Run ruff for all package files. with unsafe mode. CHANGES CODE
+	uv lock --locked
+	uv run --module ruff format ${PACKAGE}
+	uv run --module ruff check ${PACKAGE} --fix --unsafe-fixes --show-fixes
+
 typecheck:  ## Checks code with mypy
 	uv lock --locked
 	uv run --module mypy --package ${PACKAGE}
@@ -198,6 +203,9 @@ docker-build: ## Build docker image
 
 init-db: ## Initialize the database
 	uv run src/podflix/db/init_db.py
+
+download-hf-model: ## Download the huggingface model
+	uv run src/podflix/utils/hf_related.py
 
 run-chaintlit-ui:
 	uv run chainlit run src/podflix/ui.py --host 0.0.0.0 --port 5000

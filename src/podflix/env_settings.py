@@ -3,6 +3,7 @@
 from functools import partial  # noqa: F401
 from typing import Annotated, Literal
 
+from loguru import logger
 from pydantic import AfterValidator, AnyHttpUrl, Field, PlainValidator, TypeAdapter
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -20,15 +21,35 @@ CustomHttpUrlStr = Annotated[
 
 
 def allowed_values(v, values):
+    """Validate if a value is in a set of allowed values.
+
+    Examples:
+        >>> allowed_values("a", ["a", "b"])
+        'a'
+        >>> allowed_values(1, [1, 2, 3])
+        1
+
+    Args:
+        v: The value to validate
+        values: A collection of allowed values
+
+    Returns:
+        The validated value if it exists in the allowed values
+
+    Raises:
+        AssertionError: If the value is not in the allowed values
+    """
     assert v in values
     return v
 
 
 # fmt: off
 class EnvSettings(BaseSettings):
-    """This class is used to load environment variables either from environment or
-    from a .env file and store them as class attributes.
-    NOTE:
+    """This class is used to load environment variables.
+
+    They are either from environment or from a .env file and store them as class attributes.
+
+    Note:
         - environment variables will always take priority over values loaded from a dotenv file
         - environment variable names are case-insensitive
         - environment variable type is inferred from the type hint of the class attribute
@@ -54,7 +75,6 @@ class EnvSettings(BaseSettings):
     embedding_model_name: str
     enable_starter_questions: bool = True
     hf_token: str | None = None
-    jina_embedding_host: CustomHttpUrlStr
     langfuse_host: CustomHttpUrlStr
     langfuse_public_key: str
     langfuse_secret_key: str
@@ -63,16 +83,13 @@ class EnvSettings(BaseSettings):
     model_host: CustomHttpUrlStr
     model_name: str
     openai_api_key: str | None = None
-    postgres_db: str
-    postgres_host: str
-    postgres_password: str
-    postgres_port: int
-    postgres_user: str
-    retrieval_type: Literal["jina_v3", "e5-colbert"] = "jina_v3"
+    postgres_db: str | None = None
+    postgres_host: str | None = None
+    postgres_password: str | None = None
+    postgres_port: int | None = None
+    postgres_user: str | None = None
     sqlaclhemy_db_type: Literal["sqlite", "postgres"] = "sqlite"
-    starter_questions_file: str | None = None
     timeout_limit: int = 30
-    user_login_provider: Literal["allowall", "allowsingle", "keycloak"] = "allowall" # Use if login type is password
 
 env_settings = EnvSettings()
 # fmt: on
@@ -80,5 +97,5 @@ env_settings = EnvSettings()
 if __name__ == "__main__":
     env_settings = EnvSettings()
 
-    print(env_settings.library_base_path, type(env_settings.library_base_path))
-    print(env_settings.login_type, type(env_settings.login_type))
+    logger.info(env_settings.library_base_path, type(env_settings.library_base_path))
+    logger.info(env_settings.login_type, type(env_settings.login_type))

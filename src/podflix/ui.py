@@ -61,8 +61,7 @@ def auth_callback(username: str, password: str):
         return cl.User(
             identifier="admin", metadata={"role": "admin", "provider": "credentials"}
         )
-    else:
-        return None
+    return None
 
 
 @cl.on_chat_start
@@ -135,7 +134,7 @@ async def on_message(msg: cl.Message):
 
     # elements = [
     #     cl.Text(
-    #         name="Detaylı Bilgi",
+    #         name="DUMMY ELEMENT NAME",
     #         content="DUMMY ELEMENT CONTENT",
     #         display="inline",
     #     )

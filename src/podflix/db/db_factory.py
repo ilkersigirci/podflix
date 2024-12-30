@@ -1,3 +1,5 @@
+"""SqlAlchemy database interface factory and implementations."""
+
 from abc import ABC, abstractmethod
 from pathlib import Path
 
@@ -9,21 +11,34 @@ class SqlAlchemyDBInterface(ABC):
 
     @abstractmethod
     def get_connection_path(self) -> str:
-        """Returns the database connection path."""
-        pass
+        """Returns the database connection path.
+
+        Returns:
+            A string representing the database connection path.
+        """
 
     @abstractmethod
     def async_connection(self) -> str:
-        """Returns the async database connection string."""
-        pass
+        """Returns the async database connection string.
+
+        Returns:
+            A string representing the async database connection URL.
+        """
 
     @abstractmethod
     def sync_connection(self) -> str:
-        """Returns the sync database connection string."""
-        pass
+        """Returns the sync database connection string.
+
+        Returns:
+            A string representing the sync database connection URL.
+        """
 
     def check_db_connection(self) -> None:
-        """Checks if database connection is valid."""
+        """Checks if database connection is valid.
+
+        Raises:
+            Exception: If database connection fails, with details about the error.
+        """
         from sqlalchemy import create_engine
 
         try:
@@ -43,12 +58,27 @@ class SQLiteDBInterface(SqlAlchemyDBInterface):
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
 
     def get_connection_path(self) -> str:
+        """Returns the SQLite database file path.
+
+        Returns:
+            A string representing the path to the SQLite database file.
+        """
         return str(self.db_path)
 
     def async_connection(self) -> str:
+        """Returns the async SQLite connection string.
+
+        Returns:
+            A string representing the async SQLite connection URL.
+        """
         return f"sqlite+aiosqlite:///{self.get_connection_path()}"
 
     def sync_connection(self) -> str:
+        """Returns the sync SQLite connection string.
+
+        Returns:
+            A string representing the sync SQLite connection URL.
+        """
         return f"sqlite:///{self.get_connection_path()}"
 
 
@@ -56,6 +86,11 @@ class PostgresDBInterface(SqlAlchemyDBInterface):
     """PostgreSQL database interface implementation."""
 
     def get_connection_path(self) -> str:
+        """Returns the PostgreSQL connection path.
+
+        Returns:
+            A string containing the PostgreSQL connection details including user, password, host, port and database.
+        """
         return (
             f"{env_settings.postgres_user}:"
             f"{env_settings.postgres_password}@"
@@ -65,9 +100,19 @@ class PostgresDBInterface(SqlAlchemyDBInterface):
         )
 
     def async_connection(self) -> str:
+        """Returns the async PostgreSQL connection string.
+
+        Returns:
+            A string representing the async PostgreSQL connection URL.
+        """
         return f"postgresql+asyncpg://{self.get_connection_path()}"
 
     def sync_connection(self) -> str:
+        """Returns the sync PostgreSQL connection string.
+
+        Returns:
+            A string representing the sync PostgreSQL connection URL.
+        """
         return f"postgresql://{self.get_connection_path()}"
 
 
@@ -77,7 +122,7 @@ class DBInterfaceFactory:
     _instance = None
     _db_interface = None
 
-    def __new__(cls):
+    def __new__(cls):  # noqa: D102
         if cls._instance is None:
             cls._instance = super().__new__(cls)
         return cls._instance
@@ -85,6 +130,7 @@ class DBInterfaceFactory:
     @classmethod
     def create(cls, db_path: str | Path = "db.sqlite") -> SqlAlchemyDBInterface:
         """Creates and returns appropriate database interface based on environment settings.
+
         Returns the same instance on subsequent calls.
 
         Args:
