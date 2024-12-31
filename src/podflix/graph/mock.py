@@ -8,7 +8,7 @@ from langgraph.graph import END, StateGraph
 from langgraph.graph.message import add_messages
 from loguru import logger
 
-from podflix.utils.general import mock_llm
+from podflix.utils.model import mock_llm
 
 
 class AgentState(TypedDict):

@@ -3,9 +3,6 @@
 import importlib
 import os
 
-from langchain_core.language_models.fake_chat_models import FakeListChatModel
-from langchain_core.output_parsers import StrOutputParser
-
 
 def check_env_vars(env_vars: list[str] | None = None) -> None:
     """Checks if the required environment variables are set.
@@ -66,22 +63,3 @@ def is_module_installed(module_name: str, throw_error: bool = False) -> bool:
             message = f"Module {module_name} is not installed."
             raise ImportError(message) from e
         return False
-
-
-def mock_llm(message: str = "MOCK MESSAGE") -> FakeListChatModel | StrOutputParser:
-    """Create a mock language model for testing purposes.
-
-    Examples:
-        >>> model = mock_llm("Test response")
-        >>> isinstance(model, (FakeListChatModel, StrOutputParser))
-        True
-
-    Args:
-        message: The message to be returned by the mock model. Defaults to "MOCK MESSAGE".
-
-    Returns:
-        A chain of FakeListChatModel and StrOutputParser that returns the specified message.
-    """
-    model = FakeListChatModel(responses=[message])
-
-    return model | StrOutputParser()

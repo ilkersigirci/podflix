@@ -4,7 +4,14 @@ from functools import partial  # noqa: F401
 from typing import Annotated, Literal
 
 from loguru import logger
-from pydantic import AfterValidator, AnyHttpUrl, Field, PlainValidator, TypeAdapter
+from pydantic import (
+    AfterValidator,
+    AnyHttpUrl,
+    Field,
+    PlainValidator,
+    TypeAdapter,
+    field_validator,
+)
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 AnyHttpUrlAdapter = TypeAdapter(AnyHttpUrl)
@@ -17,7 +24,7 @@ CustomHttpUrlStr = Annotated[
 
 # NOTE: Alternative for Literal values
 # from pydantic.functional_validators import AfterValidator
-# login_type: Annotated[str, AfterValidator(partial(allowed_values, values=["a", "b"]))]
+# dummy_key: Annotated[str, AfterValidator(partial(allowed_values, values=["a", "b"]))]
 
 
 def allowed_values(v, values):
@@ -73,14 +80,14 @@ class EnvSettings(BaseSettings):
     cross_encoder_host: CustomHttpUrlStr
     embedding_host: CustomHttpUrlStr
     embedding_model_name: str
+    enable_openai_api: bool = False
     enable_starter_questions: bool = True
     hf_token: str | None = None
     langfuse_host: CustomHttpUrlStr
     langfuse_public_key: str
     langfuse_secret_key: str
     library_base_path: str = Field(default=..., description="Path to the library base directory")
-    login_type: Literal["password", "header"] = "password"
-    model_host: CustomHttpUrlStr
+    model_api_base: CustomHttpUrlStr
     model_name: str
     openai_api_key: str | None = None
     postgres_db: str | None = None
@@ -93,6 +100,27 @@ class EnvSettings(BaseSettings):
     whisper_api_url: CustomHttpUrlStr
     whisper_model_name: str
 
+    @field_validator("openai_api_key")
+    def validate_openai_key(cls, value, values):
+        """Validate the OpenAI API key."""
+        if values.data.get("enable_openai_api") is True and value is None:
+            message = "OpenAI API key should be set, when enable_openai_api is True."
+            logger.error(message)
+            raise ValueError(message)
+
+        return value
+
+    @field_validator("model_api_base")
+    def validate_model_api_base(cls, value, values):
+        """Validate the model API base URL."""
+        if values.data.get("enable_openai_api") is True:
+            logger.debug("When OpenAI API is enabled, `model_api_base` environment is ignored and set to OpenAI API.")
+
+            return "https://api.openai.com"
+
+        return value
+
+
 env_settings = EnvSettings()
 # fmt: on
 
@@ -100,4 +128,4 @@ if __name__ == "__main__":
     env_settings = EnvSettings()
 
     logger.info(env_settings.library_base_path, type(env_settings.library_base_path))
-    logger.info(env_settings.login_type, type(env_settings.login_type))
+    logger.info(env_settings.model_api_base, type(env_settings.model_api_base))

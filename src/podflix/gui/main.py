@@ -11,7 +11,7 @@ from langfuse.callback import CallbackHandler as LangfuseCallbackHandler
 from literalai.helper import utc_now
 
 from podflix.db.db_factory import DBInterfaceFactory
-from podflix.graph import compiled_graph
+from podflix.graph.podcast_rag import compiled_graph
 
 cl_data._data_layer = SQLAlchemyDataLayer(
     DBInterfaceFactory.create().async_connection(),

@@ -208,4 +208,4 @@ download-hf-model: ## Download the huggingface model
 	uv run src/podflix/utils/hf_related.py
 
 run-chaintlit-ui:
-	uv run chainlit run src/podflix/ui.py --host 0.0.0.0 --port 5000
+	uv run chainlit run src/podflix/gui/main.py --host 0.0.0.0 --port 5000
