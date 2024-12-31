@@ -1,7 +1,7 @@
 # Podflix
 
 <p align="center">
-  <img width="600" src="https://raw.githubusercontent.com/ilkersigirci/podflix/main/puclic/banner.png">
+  <img width="600" src="https://raw.githubusercontent.com/ilkersigirci/podflix/main/public/banner.png">
 </p style = "margin-bottom: 2rem;">
 ---
 
