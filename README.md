@@ -2,7 +2,7 @@
   <img width="600" src="https://raw.githubusercontent.com/ilkersigirci/podflix/main/public/banner.png">
 </p style = "margin-bottom: 2rem;">
 
-[![Build status](https://img.shields.io/github/actions/workflow/status/ilkersigirci/podflix/main.yml?branch=main)](https://github.com/ilkersigirci/podflix/actions/workflows/main.yml?query=branch%3Amain)
+[![Lint status](https://img.shields.io/github/actions/workflow/status/ilkersigirci/podflix/lint.yml?branch=main)](https://github.com/ilkersigirci/podflix/actions/workflows/lint.yml?query=branch%3Amain)
 [![Supported Python versions](https://img.shields.io/badge/python-3.11_%7C_3.12_%7C_3.13-blue?labelColor=grey&color=blue)](https://github.com/ilkersigirci/podflix/blob/main/pyproject.toml)
 [![Docs](https://img.shields.io/badge/docs-gh--pages-blue)](https://ilkersigirci.github.io/podflix/)
 [![License](https://img.shields.io/github/license/ilkersigirci/podflix)](https://img.shields.io/github/license/ilkersigirci/podflix)
