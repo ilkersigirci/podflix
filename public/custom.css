@@ -1,0 +1,39 @@
+a[href*='https://github.com/Chainlit/chainlit'] {
+    visibility: hidden;
+}
+
+a img[alt="watermark"] {
+    display: none;
+    }
+
+a[href*='https://github.com/Chainlit/chainlit'] {
+visibility: hidden;
+}
+
+.watermark {
+    display: none !important;
+  }
+
+/* Remove Chainlit Logo */
+html body div div div header div div:nth-child(1) img {
+    display: none;
+}
+
+.MuiToolbar-root.MuiToolbar-gutters.MuiToolbar-regular > .MuiStack-root:nth-child(1) {
+    display: flex;
+    flex: 1;
+}
+
+.MuiToolbar-root.MuiToolbar-gutters.MuiToolbar-regular > .MuiStack-root:nth-child(1)::after {
+    content: "⠀";
+    background-image: url("logo.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 250px, auto, contain;
+    width: 100%;
+    line-height: 60px;
+  }
+
+.MuiAvatar-img {
+    display: none;
+}
