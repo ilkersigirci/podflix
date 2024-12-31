@@ -9,8 +9,6 @@
 
 ## Description
 
-Chat with your podcast
-
 - Langfuse credentials:
     - email: podflix@mail.com
     - password: podflix123
@@ -32,7 +30,7 @@ POSTGRES_USER=your_username
 
 ## Healthchecks
 
-### vllm
+### Openai like model api
 
 - Request with system message assuming `MODEL_NAME=qwen2-0_5b-instruct-fp16.gguf`
 
