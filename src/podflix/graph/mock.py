@@ -8,7 +8,7 @@ from langgraph.graph import END, StateGraph
 from langgraph.graph.message import add_messages
 from loguru import logger
 
-from podflix.utils.model import mock_llm
+from podflix.utils.model import get_mock_model
 
 
 class AgentState(TypedDict):
@@ -46,7 +46,7 @@ async def mock_answer(state: AgentState):
     """
     random_response = random.choice(MOCK_RESPONSES)
 
-    model = mock_llm(message=random_response)
+    model = get_mock_model(message=random_response)
     _ = await model.ainvoke("mock")
 
     return {"messages": [AIMessage(random_response)]}

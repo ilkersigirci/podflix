@@ -211,7 +211,7 @@ download-hf-model: ## Download the huggingface model
 	uv run src/podflix/utils/hf_related.py
 
 run-mock-graph:
-	uv run chainlit run src/podflix/gui/mock.py --host 0.0.0.0 --port 5000
+	uv run chainlit run src/podflix/gui/mock.py --host 0.0.0.0 --port 5000 --headless
 
-run-graph:
-	uv run chainlit run src/podflix/gui/main.py --host 0.0.0.0 --port 5000
+run-audio-graph:
+	uv run chainlit run src/podflix/gui/audio.py --host 0.0.0.0 --port 5000 --headless

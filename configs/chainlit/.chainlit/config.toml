@@ -38,11 +38,12 @@ edit_message = true
 cookie_auth = true
 
 # Authorize users to spontaneously upload files with messages
+# FIXME: When disabled, cl.AskFileMessage doesn't work
 [features.spontaneous_file_upload]
-    enabled = false
-    # accept = ["*/*"]
-    # max_files = 20
-    # max_size_mb = 500
+    enabled = true
+    accept = ["audio/*"]
+    max_files = 20
+    max_size_mb = 500
 
 [features.audio]
     # Sample rate of the audio
@@ -60,6 +61,7 @@ default_collapse_content = true
 
 # Chain of Thought (CoT) display mode. Can be "hidden", "tool_call" or "full".
 cot = "full"
+# cot = "hidden"
 
 # Link to your github repo. This will add a github button in the UI's header.
 # github = ""

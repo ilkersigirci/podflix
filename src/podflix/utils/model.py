@@ -11,14 +11,16 @@ from openai import OpenAI
 from podflix.env_settings import env_settings
 
 
-def mock_llm(message: str = "MOCK MESSAGE") -> FakeListChatModel | StrOutputParser:
+def get_mock_model(
+    message: str = "MOCK MESSAGE",
+) -> FakeListChatModel | StrOutputParser:
     """Create a mock language model for testing purposes.
 
     Examples:
-        >>> model = mock_llm("Test response")
+        >>> model = get_mock_model("Test response")
         >>> isinstance(model, (FakeListChatModel, StrOutputParser))
         True
-        >>> model = mock_llm()
+        >>> model = get_mock_model()
         >>> isinstance(model, (FakeListChatModel, StrOutputParser))
         True
 

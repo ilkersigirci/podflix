@@ -269,3 +269,4 @@ cython_debug/
 # public
 *.sqlite
 deployment
+.files
