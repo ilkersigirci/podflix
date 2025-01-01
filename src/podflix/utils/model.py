@@ -60,6 +60,14 @@ def get_chat_model(
     if model_name is None:
         model_name = env_settings.model_name
 
+    if env_settings.enable_openai_api is True:
+        openai_api_key = env_settings.openai_api_key
+    else:
+        openai_api_key = "DUMMY_KEY"
+
     return ChatOpenAI(
-        model_name=model_name, openai_api_base=openai_api_base, **chat_model_kwargs
+        model_name=model_name,
+        openai_api_base=openai_api_base,
+        openai_api_key=openai_api_key,
+        **chat_model_kwargs,
     )

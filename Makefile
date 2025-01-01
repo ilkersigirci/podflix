@@ -204,6 +204,9 @@ docker-build: ## Build docker image
 init-db: ## Initialize the database
 	uv run src/podflix/db/init_db.py
 
+create-ssl-cert: ## Create a self-signed SSL certificate for localhost development
+	bash scripts/create_ssl_cert.sh
+
 download-hf-model: ## Download the huggingface model
 	uv run src/podflix/utils/hf_related.py
 

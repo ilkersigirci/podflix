@@ -30,13 +30,15 @@ POSTGRES_USER=your_username
 
 ## Healthchecks
 
+- Assuming `DOMAIN_NAME=localhost`
+
 ### Openai like model api
 
 - Request with system message assuming `MODEL_NAME=qwen2-0_5b-instruct-fp16.gguf`
 
 ```bash
 curl --request POST \
-    --url http://0.0.0.0:8000/v1/chat/completions \
+    --url https://llamacpp.localhost/v1/chat/completions \
     --header "Content-Type: application/json" \
     --data '{
   "model": "qwen2-0_5b-instruct-fp16.gguf",
@@ -58,7 +60,7 @@ curl --request POST \
 
 ```bash
 curl --request POST \
- --url http://0.0.0.0:8000/v1/chat/completions \
+ --url https://llamacpp.localhost/v1/chat/completions \
     --header "Content-Type: application/json" \
     --data '{
   "model": "qwen2-0_5b-instruct-fp16.gguf",

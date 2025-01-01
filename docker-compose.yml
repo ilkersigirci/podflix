@@ -1,6 +1,8 @@
 name: podflix
 
 networks:
+  t2_proxy:
+    external: true
   podflix-network:
     name: podflix-network
     driver: bridge
@@ -18,6 +20,60 @@ x-deploy: &gpu-deploy
             capabilities: [gpu]
 
 services:
+  ########## TRAEFIK ##########
+  traefik:
+    image: traefik:v3.2.3
+    container_name: traefik
+    restart: ${RESTART_POLICY:-always}
+    security_opt:
+      - no-new-privileges:true
+    command:
+      - --api.dashboard=true
+      - --api.insecure=true
+      - --providers.docker=true
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+      - --entryPoints.traefik.address=:8080
+      # Certificates related
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.websecure.http.tls=true
+      - --entrypoints.websecure.http.tls.certificates.certFile=/etc/certs/local-dev.crt
+      - --entrypoints.websecure.http.tls.certificates.keyFile=/etc/certs/local-dev.key
+    networks:
+      - podflix-network
+    ports:
+      - "8008:80"
+      - "4443:443"
+      - "5080:8080" # Traefik dashboard
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./deployment/certs:/etc/certs:ro"
+    healthcheck:
+      test: "traefik healthcheck --ping"
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    labels:
+      - "traefik.enable=true"
+      # HTTP-to-HTTPS Redirect
+      - "traefik.http.routers.http-catchall.entrypoints=http"
+      - "traefik.http.routers.http-catchall.rule=HostRegexp(`{host:.+}`)"
+      - "traefik.http.routers.http-catchall.middlewares=redirect-to-https"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      # HTTP Routers
+      - "traefik.http.routers.traefik-rtr.entrypoints=https"
+      - "traefik.http.routers.traefik-rtr.rule=Host(`traefik.$DOMAIN_NAME`)"
+      - "traefik.http.routers.traefik-rtr.tls=true" # Some people had 404s without this
+      - "traefik.http.routers.traefik-rtr.tls.domains[0].main=$DOMAIN_NAME"
+      - "traefik.http.routers.traefik-rtr.tls.domains[0].sans=*.$DOMAIN_NAME"
+      ## Services - API
+      - "traefik.http.routers.traefik-rtr.service=api@internal"
+      ## Healthcheck/ping
+      # - "traefik.http.routers.ping.rule=Host(`traefik.$DOMAIN_NAME`) && Path(`/ping`)"
+      #- "traefik.http.routers.ping.tls=true"
+      #- "traefik.http.routers.ping.service=ping@internal"
+
+  ########## PODFLIX ##########
   podflix-dev:
     image: podflix-dev:latest
     container_name: podflix-dev
@@ -26,9 +82,8 @@ services:
       dockerfile: docker/Dockerfile
       target: development
     networks:
+      - t2_proxy
       - podflix-network
-    # ports:
-    #   - 8080:8080
     command: ["tail", "-f", "/dev/null"] # NOTE: For testing the container
     restart: "no"
     develop:
@@ -53,9 +108,8 @@ services:
       dockerfile: docker/Dockerfile
       target: production
     networks:
+      - t2_proxy
       - podflix-network
-    # ports:
-    #   - 8080:8080
     command: ["tail", "-f", "/dev/null"] # NOTE: For testing the container
     restart: "no"
 
@@ -65,6 +119,7 @@ services:
     container_name: langfuse-db
     restart: ${RESTART_POLICY:-unless-stopped}
     networks:
+      - t2_proxy
       - podflix-network
     environment:
       - POSTGRES_USER=postgres
@@ -84,12 +139,13 @@ services:
     container_name: langfuse-server
     restart: ${RESTART_POLICY:-unless-stopped}
     depends_on:
+      # podflix-traefik:
+      #   condition: service_healthy
       langfuse-db:
         condition: service_healthy
     networks:
+      - t2_proxy
       - podflix-network
-    ports:
-      - ${LANGFUSE_PORT:-3000}:3000
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@langfuse-db:5432/postgres
       - NEXTAUTH_SECRET=mysecret
@@ -104,23 +160,14 @@ services:
       # - LANGFUSE_DEFAULT_PROJECT_ROLE=ADMIN
       # - AUTH_DISABLE_SIGNUP=true
       # - AUTH_DISABLE_USERNAME_PASSWORD=true
-
-  ########## TRAEFIK ##########
-  podflix-traefik:
-    image: traefik:v3.1.4
-    container_name: podflix-traefik
-    restart: ${RESTART_POLICY:-always}
-    command:
-      - "--api.insecure=true"
-      - "--providers.docker=true"
-      - "--entrypoints.web.address=:80"
-    ports:
-      - "8008:80"
-      - "5001:8080" # Traefik dashboard
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-    networks:
-      - podflix-network
+    labels:
+      - "traefik.enable=true"
+      ## HTTP Routers
+      - "traefik.http.routers.langfuse-rtr.entrypoints=https"
+      - "traefik.http.routers.langfuse-rtr.rule=Host(`langfuse.$DOMAIN_NAME`)"
+      ## HTTP Services
+      - "traefik.http.routers.langfuse-rtr.service=langfuse-svc"
+      - "traefik.http.services.langfuse-svc.loadbalancer.server.port=3000"
 
   ############ WHISPER API #############
   faster-whisper-server:
@@ -129,9 +176,8 @@ services:
     restart: "no"
     <<: *gpu-deploy
     networks:
+      - t2_proxy
       - podflix-network
-    ports:
-      - $WHISPER_API_PORT:8000
     environment:
       - HOST=0.0.0.0
       - PORT=8000
@@ -145,6 +191,14 @@ services:
       # - WHISPER__COMPUTE_TYPE=bfloat16
     volumes:
       - ./deployment/volumes/huggingface:/root/.cache/huggingface
+    labels:
+      - "traefik.enable=true"
+      ## HTTP Routers
+      - "traefik.http.routers.whisper-rtr.entrypoints=https"
+      - "traefik.http.routers.whisper-rtr.rule=Host(`whisper.$DOMAIN_NAME`)"
+      ## HTTP Services
+      - "traefik.http.routers.whisper-rtr.service=whisper-svc"
+      - "traefik.http.services.whisper-svc.loadbalancer.server.port=8000"
 
   # whisper-cpp:
   #   container_name: whisper-cpp
@@ -156,8 +210,6 @@ services:
   #   # command: ["./server", "--host", "0.0.0.0", "--port", "80"]
   #   networks:
   #     - podflix-network
-  #   ports:
-  #     - $WHISPER_API_PORT:80
   #   volumes:
   #     - ./deployment/models/whisperfile:/models
   #     - ./notebooks/resources:/resources
@@ -171,9 +223,8 @@ services:
     restart: ${RESTART_POLICY:-no}
     <<: *gpu-deploy
     networks:
+      - t2_proxy
       - podflix-network
-    ports:
-      - ${MODEL_API_PORT:-8000}:8000
     environment:
       LLAMA_ARG_HOST: 0.0.0.0
       LLAMA_ARG_PORT: 8000
@@ -193,6 +244,14 @@ services:
       interval: 10s
       timeout: 5s
       retries: 3
+    labels:
+      - "traefik.enable=true"
+      ## HTTP Routers
+      - "traefik.http.routers.llama-cpp-rtr.entrypoints=https"
+      - "traefik.http.routers.llama-cpp-rtr.rule=Host(`llamacpp.$DOMAIN_NAME`)"
+      ## HTTP Services
+      - "traefik.http.routers.llama-cpp-rtr.service=llama-cpp-svc"
+      - "traefik.http.services.llama-cpp-svc.loadbalancer.server.port=8000"
 
   # vllm:
   #   image: vllm/vllm-openai:${VLLM_VERSION:-v0.6.6}
@@ -201,8 +260,6 @@ services:
   #   <<: *gpu-deploy
   #   networks:
   #     - podflix-network
-  #   ports:
-  #     - ${MODEL_API_PORT:-8000}:8000
   #   ipc: host
   #   command:
   #     - "--model"
@@ -240,12 +297,11 @@ services:
     restart: ${RESTART_POLICY:-unless-stopped}
     command: ["--model-id", $EMBEDDING_MODEL_NAME, "--revision", $EMBEDDING_MODEL_REVISION, --hostname, "0.0.0.0", "--port", "80"]
     <<: *gpu-deploy
-    depends_on:
-      - podflix-traefik
+    # depends_on:
+    #   - podflix-traefik
     networks:
+      - t2_proxy
       - podflix-network
-    ports:
-      - $EMBEDDING_MODEL_PORT:80
     environment:
       - HF_HOME=/root/.cache/huggingface
       - HF_HUB_OFFLINE=1
@@ -260,10 +316,12 @@ services:
       retries: 3
     labels:
       - "traefik.enable=true"
-      - "traefik.http.services.hf_embedding.loadbalancer.server.port=80"
-      - "traefik.http.routers.hf_embedding.rule=PathPrefix(`/hf_embedding`)"
-      - "traefik.http.routers.hf_embedding.middlewares=hf_embedding-strip-prefix"
-      - "traefik.http.middlewares.hf_embedding-strip-prefix.stripprefix.prefixes=/hf_embedding"
+      ## HTTP Routers
+      - "traefik.http.routers.hf_embedding-rtr.entrypoints=https"
+      - "traefik.http.routers.hf_embedding-rtr.rule=Host(`hf_embedding.$DOMAIN_NAME`)"
+      ## HTTP Services
+      - "traefik.http.routers.hf_embedding-rtr.service=hf_embedding-svc"
+      - "traefik.http.services.hf_embedding-svc.loadbalancer.server.port=80"
 
   hf_rerank:
     image: ghcr.io/huggingface/text-embeddings-inference:1.6
@@ -271,12 +329,11 @@ services:
     restart: ${RESTART_POLICY:-unless-stopped}
     command: ["--model-id", $RERANK_MODEL_NAME, "--revision", $RERANK_MODEL_REVISION, --hostname, "0.0.0.0", "--port", "80"]
     <<: *gpu-deploy
-    depends_on:
-      - podflix-traefik
+    # depends_on:
+    #   - podflix-traefik
     networks:
+      - t2_proxy
       - podflix-network
-    ports:
-      - $RERANK_MODEL_PORT:80
     environment:
       - HF_HOME=/root/.cache/huggingface
       - HF_HUB_OFFLINE=1
@@ -291,7 +348,9 @@ services:
       retries: 3
     labels:
       - "traefik.enable=true"
-      - "traefik.http.services.hf_rerank.loadbalancer.server.port=80"
-      - "traefik.http.routers.hf_rerank.rule=PathPrefix(`/hf_rerank`)"
-      - "traefik.http.routers.hf_rerank.middlewares=hf_rerank-strip-prefix"
-      - "traefik.http.middlewares.hf_rerank-strip-prefix.stripprefix.prefixes=/hf_rerank"
+      ## HTTP Routers
+      - "traefik.http.routers.hf_rerank-rtr.entrypoints=https"
+      - "traefik.http.routers.hf_rerank-rtr.rule=Host(`hf_rerank.$DOMAIN_NAME`)"
+      ## HTTP Services
+      - "traefik.http.routers.hf_rerank-rtr.service=hf_rerank-svc"
+      - "traefik.http.services.hf_rerank-svc.loadbalancer.server.port=80"

@@ -77,7 +77,6 @@ class EnvSettings(BaseSettings):
     )
 
     chainlit_auth_secret: str = "cKSq*mqAQmd+m5,^Z1tjvEUp5q=kepTNNkHT93:zAe44gL-9pua35pPR?I0Ag:rT"
-    cross_encoder_host: CustomHttpUrlStr
     embedding_host: CustomHttpUrlStr
     embedding_model_name: str
     enable_openai_api: bool = False
@@ -97,7 +96,7 @@ class EnvSettings(BaseSettings):
     postgres_user: str | None = None
     sqlaclhemy_db_type: Literal["sqlite", "postgres"] = "sqlite"
     timeout_limit: int = 30
-    whisper_api_url: CustomHttpUrlStr
+    whisper_api_base: CustomHttpUrlStr
     whisper_model_name: str
 
     @field_validator("openai_api_key")
