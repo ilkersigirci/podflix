@@ -210,5 +210,8 @@ create-ssl-cert: ## Create a self-signed SSL certificate for localhost developme
 download-hf-model: ## Download the huggingface model
 	uv run src/podflix/utils/hf_related.py
 
-run-chaintlit-ui:
+run-mock-graph:
+	uv run chainlit run src/podflix/gui/mock.py --host 0.0.0.0 --port 5000
+
+run-graph:
 	uv run chainlit run src/podflix/gui/main.py --host 0.0.0.0 --port 5000
