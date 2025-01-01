@@ -1,6 +1,5 @@
 """Initialize the database schema using SQL statements from init_db.sql file."""
 
-import sqlite3
 from pathlib import Path
 
 import sqlalchemy as sa
