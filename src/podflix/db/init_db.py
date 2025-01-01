@@ -1,5 +1,6 @@
 """Initialize the database schema using SQL statements from init_db.sql file."""
 
+import sqlite3
 from pathlib import Path
 
 import sqlalchemy as sa
@@ -26,24 +27,45 @@ def read_sql_file(file_path: str | Path) -> list[str]:
         return [x.strip() for x in f.read().split(";") if x.strip()]
 
 
+def table_exists(conn) -> bool:
+    """Check if any tables exist in the database.
+
+    Args:
+        conn: SQLAlchemy connection object
+
+    Returns:
+        bool: True if any tables exist, False otherwise
+    """
+    try:
+        # Query to check for existing tables in the public schema
+        query = """
+            SELECT COUNT(*)
+            FROM users
+        """
+        result = conn.execute(sa.text(query)).scalar()
+        return result > 0
+    except Exception as e:
+        logger.error(f"Error checking for tables: {e}")
+        return False
+
+
 def initialize_db():
     """Initialize the database using SQL statements from init_db.sql file.
 
-    Examples:
-        >>> initialize_db()  # Creates/updates database schema
-
-    The function reads SQL statements from the init_db.sql file in the same
-    directory and executes them sequentially using a database connection.
+    The function only initializes the database if no tables exist.
     """
-    logger.info("Initializing the database...")
+    engine = sa.create_engine(DBInterfaceFactory.create().sync_connection())
 
-    raw_sql_statements = read_sql_file(Path(__file__).parent / "init_db.sql")
+    with engine.connect() as conn:
+        if table_exists(conn) is True:
+            logger.info("Database already initialized, skipping...")
+            return
 
-    with sa.create_engine(
-        DBInterfaceFactory.create().sync_connection()
-    ).connect() as conn:
+        logger.info("Initializing the database...")
+        raw_sql_statements = read_sql_file(Path(__file__).parent / "init_db.sql")
         for stmt in raw_sql_statements:
             conn.execute(sa.text(stmt))
+        conn.commit()
 
 
 if __name__ == "__main__":

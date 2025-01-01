@@ -18,6 +18,8 @@ htmlcov/
 .venv
 venv
 
-docs
-tests
 deployment
+docs
+notebooks
+tests
+*.sqlite

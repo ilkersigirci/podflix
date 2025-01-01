@@ -84,7 +84,7 @@ services:
     networks:
       - t2_proxy
       - podflix-network
-    command: ["tail", "-f", "/dev/null"] # NOTE: For testing the container
+    # command: ["tail", "-f", "/dev/null"] # NOTE: For testing the container
     restart: "no"
     develop:
       watch:
@@ -99,6 +99,19 @@ services:
         # Rebuild the image on changes to the `pyproject.toml`
         - action: rebuild
           path: ./pyproject.toml
+    env_file:
+      - .env
+    environment:
+      - LIBRARY_BASE_PATH=/app
+      - CHAINLIT_APP_ROOT=/app/configs/chainlit
+    labels:
+      - "traefik.enable=true"
+      ## HTTP Routers
+      - "traefik.http.routers.podflix-rtr.entrypoints=https"
+      - "traefik.http.routers.podflix-rtr.rule=Host(`podflix.$DOMAIN_NAME`)"
+      ## HTTP Services
+      - "traefik.http.routers.podflix-rtr.service=podflix-svc"
+      - "traefik.http.services.podflix-svc.loadbalancer.server.port=5000"
 
   podflix-prod:
     image: podflix-prod:latest
@@ -112,6 +125,19 @@ services:
       - podflix-network
     command: ["tail", "-f", "/dev/null"] # NOTE: For testing the container
     restart: "no"
+    env_file:
+      - .env
+    environment:
+      - LIBRARY_BASE_PATH=/app
+      - CHAINLIT_APP_ROOT=/app/configs/chainlit
+    labels:
+      - "traefik.enable=true"
+      ## HTTP Routers
+      - "traefik.http.routers.podflix-rtr.entrypoints=https"
+      - "traefik.http.routers.podflix-rtr.rule=Host(`podflix.$DOMAIN_NAME`)"
+      ## HTTP Services
+      - "traefik.http.routers.podflix-rtr.service=podflix-svc"
+      - "traefik.http.services.podflix-svc.loadbalancer.server.port=5000"
 
   ############ LANGFUSE #############
   langfuse-db:
