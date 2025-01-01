@@ -191,6 +191,11 @@ services:
       # - WHISPER__COMPUTE_TYPE=bfloat16
     volumes:
       - ./deployment/volumes/huggingface:/root/.cache/huggingface
+    healthcheck: # NOTE: Workaround for healthcheck since both curl and wget are not available
+      test: ["CMD-SHELL", "python3 -c \"import http.client; conn = http.client.HTTPConnection('localhost:8000'); conn.request('GET', '/health'); response = conn.getresponse(); exit(0 if response.status == 200 else 1)\""]
+      interval: 10s
+      timeout: 5s
+      retries: 3
     labels:
       - "traefik.enable=true"
       ## HTTP Routers
