@@ -47,7 +47,7 @@ async def generate(state: AgentState) -> AgentState:
     response = await chain.ainvoke({"context": context, "question": question})
 
     return {
-        "messages": [*state["messages"], AIMessage(content=response)],
+        "messages": [AIMessage(content=response)],
     }
 
 
