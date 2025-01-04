@@ -1,10 +1,8 @@
 import webbrowser  # noqa: F401
-from dataclasses import dataclass  # noqa: F401
 from pathlib import Path
 
 import chainlit as cl
-import chainlit.data as cl_data
-from chainlit.data.sql_alchemy import SQLAlchemyDataLayer
+import chainlit.socket
 from chainlit.types import ThreadDict
 from langchain.schema.runnable.config import RunnableConfig
 from langchain_community.chat_message_histories import ChatMessageHistory
@@ -13,21 +11,19 @@ from langfuse.callback import CallbackHandler as LangfuseCallbackHandler
 from literalai.helper import utc_now
 from loguru import logger
 
-from podflix.db.db_factory import DBInterfaceFactory
 from podflix.graph.podcast_rag import compiled_graph
 from podflix.utils.chainlit_ui import (
     create_message_history_from_db_thread,
+    get_sqlalchemy_data_layer,
     set_extra_user_session_params,
     simple_auth_callback,
 )
 from podflix.utils.general import get_lf_traces_url
 from podflix.utils.model import transcribe_audio_file
+from podflix.utils.patch_chainlit import custom_resume_thread
 
-cl_data._data_layer = SQLAlchemyDataLayer(
-    DBInterfaceFactory.create().async_connection(),
-    ssl_require=False,
-    show_logger=True,
-)
+# NOTE: This is a workaround to fix the issue of the chatbot not resuming the thread.
+chainlit.socket.resume_thread = custom_resume_thread
 
 
 # TODO: Set starters  based on audio file
@@ -39,6 +35,11 @@ cl_data._data_layer = SQLAlchemyDataLayer(
 @cl.password_auth_callback
 def auth_callback(username: str, password: str):
     return simple_auth_callback(username, password)
+
+
+@cl.data_layer
+def data_layer():
+    return get_sqlalchemy_data_layer(show_logger=False)
 
 
 # @cl.action_callback("Detailed Traces")
@@ -102,7 +103,7 @@ async def on_chat_start():
 
 @cl.on_chat_resume
 def setup_chat_resume(thread: ThreadDict):
-    thread["metadata"] = {}
+    # thread["metadata"] = {}
     message_history = create_message_history_from_db_thread(thread=thread)
 
     set_extra_user_session_params(

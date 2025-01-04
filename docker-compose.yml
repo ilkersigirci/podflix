@@ -385,3 +385,24 @@ services:
       ## HTTP Services
       - "traefik.http.routers.hf_rerank-rtr.service=hf_rerank-svc"
       - "traefik.http.services.hf_rerank-svc.loadbalancer.server.port=80"
+
+  ############## BLOB STORAGE CLIENT #####################
+  localstack-s3:
+    image: localstack/localstack:s3-latest
+    container_name: localstack-s3
+    restart: ${RESTART_POLICY:-unless-stopped}
+    networks:
+      - t2_proxy
+      - podflix-network
+    environment:
+      - DEBUG=0
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./deployment/volumes/localstack:/var/lib/localstack
+      - "traefik.enable=true"
+      ## HTTP Routers
+      - "traefik.http.routers.localstack-s3-rtr.entrypoints=https"
+      - "traefik.http.routers.localstack-s3-rtr.rule=Host(`s3.$DOMAIN_NAME`)"
+      ## HTTP Services
+      - "traefik.http.routers.localstack-s3-rtr.service=localstack-s3-svc"
+      - "traefik.http.services.localstack-s3-svc.loadbalancer.server.port=4566"

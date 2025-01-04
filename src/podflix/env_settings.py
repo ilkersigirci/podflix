@@ -76,6 +76,8 @@ class EnvSettings(BaseSettings):
         protected_namespaces=("settings_",),
     )
 
+    aws_s3_bucket_name: str
+    aws_s3_endpoint_url: CustomHttpUrlStr
     chainlit_auth_secret: str = "cKSq*mqAQmd+m5,^Z1tjvEUp5q=kepTNNkHT93:zAe44gL-9pua35pPR?I0Ag:rT"
     embedding_host: CustomHttpUrlStr
     embedding_model_name: str

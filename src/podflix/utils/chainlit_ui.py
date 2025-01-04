@@ -4,15 +4,24 @@ from dataclasses import dataclass
 from uuid import uuid4
 
 import chainlit as cl
+from chainlit.data.sql_alchemy import SQLAlchemyDataLayer
 from chainlit.types import ThreadDict
 from chainlit.user import PersistedUser, User
 from langchain_community.chat_message_histories import ChatMessageHistory
 from langfuse.callback import CallbackHandler as LangfuseCallbackHandler
 from loguru import logger
 
+from podflix.db.db_factory import DBInterfaceFactory
+from podflix.db.s3_storage_client import S3CompatibleStorageClient
 from podflix.utils.general import check_lf_credentials, get_lf_session_url
 
+# from chainlit.socket import resume_thread
+# from podflix.utils.custom_chainlit import custom_resume_thread
+
 Chainlit_User_Type = User | PersistedUser
+
+# NOTE: Patched code to fix the issue with metadata type on chat resume
+# resume_thread = custom_resume_thread
 
 
 @dataclass
@@ -55,6 +64,28 @@ def simple_auth_callback(username: str = "admin", password: str = "admin") -> Us
         )
 
     raise ValueError("Invalid credentials")
+
+
+def get_sqlalchemy_data_layer(show_logger: bool = False) -> SQLAlchemyDataLayer:
+    """Create and return a SQLAlchemy data layer instance.
+
+    Examples:
+        >>> data_layer = get_sqlalchemy_data_layer()
+        >>> isinstance(data_layer, SQLAlchemyDataLayer)
+        True
+
+    Args:
+        show_logger: A boolean indicating whether to show SQL logging information.
+
+    Returns:
+        A SQLAlchemyDataLayer instance configured with database connection and storage provider.
+    """
+    return SQLAlchemyDataLayer(
+        DBInterfaceFactory.create().async_connection(),
+        ssl_require=False,
+        show_logger=show_logger,
+        storage_provider=S3CompatibleStorageClient(),
+    )
 
 
 def create_message_history_from_db_thread(
@@ -125,7 +156,7 @@ def create_starter_questions_from_list(
 def set_extra_user_session_params(
     session_id: str | None = None,
     user_id: str | None = None,
-    mesage_history: ChatMessageHistory | None = None,
+    message_history: ChatMessageHistory | None = None,
 ):
     """Set extra user session parameters for the chainlit session.
 
@@ -137,7 +168,7 @@ def set_extra_user_session_params(
     Args:
         session_id: Optional string representing the session ID. If None, a new UUID is generated.
         user_id: Optional string representing the user ID. If None, gets from current user session.
-        mesage_history: Optional ChatMessageHistory object. If None, creates new empty history.
+        message_history: Optional ChatMessageHistory object. If None, creates new empty history.
 
     Returns:
         None
@@ -149,7 +180,7 @@ def set_extra_user_session_params(
         chainlit_user: Chainlit_User_Type = cl.user_session.get("user")
         user_id = chainlit_user.identifier
 
-    if mesage_history is None:
+    if message_history is None:
         message_history = ChatMessageHistory()
 
     check_lf_credentials()
