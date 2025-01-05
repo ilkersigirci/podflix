@@ -53,6 +53,16 @@ default-groups = ["dev", "doc", "test"]
 
 [tool.pytest.ini_options]
 minversion = "7.0.0"
+asyncio_mode = "auto"
+
+# TODO: Make them inherit from yaml file
+log_cli = true
+log_cli_level = "INFO"
+log_cli_format = "%(asctime)-20s :: %(name)-8s :: %(levelname)-8s :: %(filename)s:%(lineno)d - (%(funcName)s) :: %(message)s"
+log_cli_date_format = "%Y-%m-%d %H:%M:%S"
+
+testpaths = ["tests"]
+
 addopts = [
     "--import-mode=importlib",
     "--color=yes",
@@ -66,14 +76,6 @@ addopts = [
 #    "--cov-report html",
 ]
 
-testpaths = ["tests"]
-
-# TODO: Make them inherit from yaml file
-log_cli = true
-log_cli_level = "INFO"
-log_cli_format = "%(asctime)-20s :: %(name)-8s :: %(levelname)-8s :: %(filename)s:%(lineno)d - (%(funcName)s) :: %(message)s"
-log_cli_date_format = "%Y-%m-%d %H:%M:%S"
-
 [tool.ruff]
 # target-version = "py311"
 line-length = 88
@@ -83,7 +85,7 @@ respect-gitignore = true
 
 extend-exclude = [
     "docs",
-    "tests",
+    # "tests",
 ]
 
 # [tool.ruff.flake8-quotes]
@@ -202,4 +204,5 @@ test = [
     "pytest>=8.3.3",
     # "pytest-timeout",
     "pytest-asyncio>=0.25.1",
+    "moto[s3]>=5.0.25",
 ]

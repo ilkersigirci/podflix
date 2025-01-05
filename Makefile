@@ -14,7 +14,7 @@ DOCKER_IMAGE=podflix
 DOCKER_TARGET=development
 
 
-.PHONY: help install test clean build publish doc pre-commit format lint profile
+.PHONY: help install test doc pre-commit format lint profile
 .DEFAULT_GOAL=help
 
 help:
@@ -98,17 +98,6 @@ test-docs: ## Test documentation examples with doctest
 test: clean-test test-all ## Cleans and runs all tests
 test-parallel: clean-test test-all-parallel ## Cleans and runs all tests with parallelization
 
-clean-build: ## Clean build dist and egg directories left after install
-	rm -rf ./build ./dist */*.egg-info *.egg-info
-	rm -rf ./pytest_cache
-	rm -rf ./junit
-	find . -type f -iname "*.so" -delete
-	find . -type f -iname '*.pyc' -delete
-	find . -type d -name '*.egg-info' -prune -exec rm -rf {} \;
-	find . -type d -name '__pycache__' -prune -exec rm -rf {} \;
-	find . -type d -name '.ruff_cache' -prune -exec rm -rf {} \;
-	find . -type d -name '.mypy_cache' -prune -exec rm -rf {} \;
-
 clean-test: ## Clean test related files left after test
 	# rm -rf ./htmlcov
 	# rm -rf ./coverage.xml
@@ -117,21 +106,6 @@ clean-test: ## Clean test related files left after test
 	find ${TEST_DIR} -type f -regex '\.\/\.*coverage[^rc].*' -delete
 	find ${TEST_DIR} -type d -name 'htmlcov' -exec rm -r {} +
 	find . -type d -name '.pytest_cache' -prune -exec rm -rf {} \;
-
-clean: clean-build clean-test ## Cleans build and test related files
-
-build: ## Make Python source distribution
-	$(MAKE) clean-build
-	uv build --sdist --out-dir dist
-
-build-wheel: ## Make Python wheel distribution
-	$(MAKE) clean-build
-	uv build --wheel --out-dir dist
-
-publish: ## Builds the project and publish the package to Pypi
-	# $(MAKE) build
-	uv publish dist/*
-	# uv publish --publish-url https://test.pypi.org/legacy/ --username DUMMY --password DUMMY dist/*
 
 doc: ## Build documentation with mkdocs
 	uv run mkdocs build
