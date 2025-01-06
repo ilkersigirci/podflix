@@ -10,6 +10,31 @@ from chainlit.logger import logger
 from podflix.env_settings import env_settings
 
 
+def get_boto_client():
+    """Create and return a boto3 S3 client with configured credentials.
+
+    Examples:
+        >>> client = get_boto_client()
+        >>> client.list_buckets()
+        {'Buckets': [...], 'Owner': {...}}
+
+    Returns:
+        A configured boto3 S3 client instance with the specified endpoint and credentials.
+
+    Raises:
+        botocore.exceptions.ClientError: If there are issues with credentials or configuration.
+    """
+    return boto3.client(
+        "s3",
+        endpoint_url=env_settings.aws_s3_endpoint_url,
+        aws_access_key_id=env_settings.aws_access_key_id,
+        aws_secret_access_key=env_settings.aws_secret_access_key,
+        region_name=env_settings.aws_region_name,
+        config=Config(signature_version="s3v4"),
+        verify=True,  # Set False to skip SSL verification for local development
+    )
+
+
 class S3CompatibleStorageClient(BaseStorageClient):
     """Class to enable Amazon S3 compatible storage provider.
 
@@ -40,16 +65,7 @@ class S3CompatibleStorageClient(BaseStorageClient):
                 bucket = env_settings.aws_s3_bucket_name
 
             self.bucket = bucket
-            self.client = boto3.client(
-                "s3",
-                endpoint_url=env_settings.aws_s3_endpoint_url,
-                aws_access_key_id="test",
-                aws_secret_access_key="test",
-                region_name="us-east-1",
-                config=Config(signature_version="s3v4"),
-                verify=True,  # Set False to skip SSL verification for local development
-            )
-
+            self.client = get_boto_client()
             # Check if bucket exists, if not create it
             try:
                 self.client.head_bucket(Bucket=self.bucket)
@@ -60,6 +76,22 @@ class S3CompatibleStorageClient(BaseStorageClient):
             logger.debug("S3CompatibleStorageClient initialized")
         except Exception as e:
             logger.error(f"S3CompatibleStorageClient initialization error: {e}")
+
+    async def get_read_url(self, object_key: str) -> str:
+        """Compute and return the full URL for an object in S3 storage.
+
+        Examples:
+            >>> url = await storage_client.get_read_url("test.txt")
+            >>> print(url)
+            'https://s3.example.com/my-bucket/test.txt'
+
+        Args:
+            object_key: A string representing the key (path) of the object in the bucket.
+
+        Returns:
+            A string representing the full URL to access the object.
+        """
+        return f"{env_settings.aws_s3_endpoint_url}/{self.bucket}/{object_key}"
 
     async def upload_file(
         self,
@@ -80,23 +112,23 @@ class S3CompatibleStorageClient(BaseStorageClient):
             {'object_key': 'test.txt', 'url': 'https://s3.example.com/bucket/test.txt'}
 
         Args:
-            object_key: The key (path) where the object will be stored in the bucket
-            data: The file content to upload (can be bytes or string)
-            mime: The MIME type of the file (default: application/octet-stream)
-            overwrite: Whether to overwrite existing files (default: True)
+            object_key: A string representing the key (path) where the object will be stored.
+            data: The file content to upload (can be bytes or string).
+            mime: A string representing the MIME type of the file.
+            overwrite: A boolean indicating whether to overwrite existing files.
 
         Returns:
             A dictionary containing the object_key and url of the uploaded file.
             Returns empty dict if upload fails.
 
         Raises:
-            Exception: If the upload operation fails
+            Exception: If the upload operation fails.
         """
         try:
             self.client.put_object(
                 Bucket=self.bucket, Key=object_key, Body=data, ContentType=mime
             )
-            url = f"{env_settings.aws_s3_endpoint_url}/{self.bucket}/{object_key}"
+            url = await self.get_read_url(object_key)
             return {"object_key": object_key, "url": url}
         except Exception as e:
             logger.error(f"S3CompatibleStorageClient, upload_file error: {e}")
@@ -105,11 +137,19 @@ class S3CompatibleStorageClient(BaseStorageClient):
     async def read_file(self, object_key: str) -> Union[str, None]:
         """Read a file from the S3 compatible storage.
 
+        Examples:
+            >>> content = await storage_client.read_file("test.txt")
+            >>> print(content)
+            'Hello World'
+
         Args:
-            object_key: The key (path) of the object in the bucket
+            object_key: A string representing the key (path) of the object in the bucket.
 
         Returns:
-            The content of the file as a string, or None if the operation fails
+            The content of the file as a string, or None if the operation fails.
+
+        Raises:
+            Exception: If the read operation fails.
         """
         try:
             response = self.client.get_object(Bucket=self.bucket, Key=object_key)

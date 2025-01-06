@@ -1,4 +1,4 @@
-a[href*='https://github.com/Chainlit/chainlit'] {
+/* a[href*='https://github.com/Chainlit/chainlit'] {
     visibility: hidden;
 }
 
@@ -12,10 +12,10 @@ visibility: hidden;
 
 .watermark {
     display: none !important;
-  }
+  } */
 
 /* Remove Chainlit Logo */
-html body div div div header div div:nth-child(1) img {
+/* html body div div div header div div:nth-child(1) img {
     display: none;
 }
 
@@ -26,7 +26,7 @@ html body div div div header div div:nth-child(1) img {
 
 .MuiToolbar-root.MuiToolbar-gutters.MuiToolbar-regular > .MuiStack-root:nth-child(1)::after {
     content: "⠀";
-    background-image: url("logo.png");
+    background-image: url("logo_dark.png");
     background-repeat: no-repeat;
     background-position: center;
     background-size: 250px, auto, contain;
@@ -36,4 +36,4 @@ html body div div div header div div:nth-child(1) img {
 
 .MuiAvatar-img {
     display: none;
-}
+} */
