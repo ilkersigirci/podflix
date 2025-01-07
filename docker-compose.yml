@@ -399,6 +399,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./deployment/volumes/localstack:/var/lib/localstack
+    labels:
       - "traefik.enable=true"
       ## HTTP Routers
       - "traefik.http.routers.localstack-s3-rtr.entrypoints=https"
