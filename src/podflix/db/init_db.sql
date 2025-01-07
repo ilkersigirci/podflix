@@ -53,6 +53,7 @@ CREATE TABLE IF NOT EXISTS elements (
     "language" TEXT,
     "forId" UUID,
     "mime" TEXT,
+    "props" JSONB,
     FOREIGN KEY ("threadId") REFERENCES threads("id") ON DELETE CASCADE
 );
 

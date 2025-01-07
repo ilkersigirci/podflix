@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import BinaryIO
 
 import chainlit as cl
 import chainlit.socket
@@ -6,6 +7,7 @@ from chainlit.types import ThreadDict
 from langchain_community.chat_message_histories import ChatMessageHistory
 from langfuse.callback import CallbackHandler as LangfuseCallbackHandler
 from literalai.helper import utc_now
+from loguru import logger
 
 from podflix.graph.podcast_rag import compiled_graph
 from podflix.utils.chainlit_ui import (
@@ -39,6 +41,12 @@ def data_layer():
     return get_sqlalchemy_data_layer(show_logger=False)
 
 
+@cl.step(type="tool")
+async def transcribing_tool(file: BinaryIO | Path):
+    # Transcribing the audio file...
+    return transcribe_audio_file(file=file).text
+
+
 @cl.on_chat_start
 async def on_chat_start():
     set_extra_user_session_params()
@@ -64,23 +72,24 @@ async def on_chat_start():
 
     file = files[0]
 
-    async with cl.Step(name="Transcribing the audio file...", type="tool") as step:
-        step.input = file
+    # NOTE: Workaround to show the tool progres on the ui
+    await system_message.stream_token("Transcribing the audio file...")
 
-        # NOTE: Workaround to show loading spinner in the ui
-        await system_message.stream_token(" ")
-
-        audio_text = transcribe_audio_file(file=Path(file.path))
-        step.output = audio_text
+    audio_text = await transcribing_tool(file=Path(file.path))
 
     cl.user_session.set("audio_text", audio_text)
 
-    # NOTE: Only inline display is working :(
-    # display = "inline" # "side" "page"
-    # elements = [cl.Text(name="simple_text", content=audio_text, display=display)]
-    # system_message.elements.extend(elements)
+    logger.debug(f"Audio file path: {file.path}")
+
+    # Create audio element with transcript
+    audio_element = cl.CustomElement(
+        name="AudioWithTranscript",
+        props={"audioUrl": file.path, "transcript": audio_text},
+        display="inline",
+    )
 
     system_message.content = "Audio transcribed successfully 🎉"
+    system_message.elements.append(audio_element)
 
     await system_message.update()
 

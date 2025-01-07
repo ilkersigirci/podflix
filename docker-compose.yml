@@ -74,6 +74,29 @@ services:
       #- "traefik.http.routers.ping.service=ping@internal"
 
   ########## PODFLIX ##########
+  # NOTE: Reverse proxy doesn't work for databases. Only TCP connection works.
+  podflix-db:
+    image: postgres:16.4
+    container_name: podflix-db
+    restart: ${RESTART_POLICY:-unless-stopped}
+    networks:
+      - t2_proxy
+      - podflix-network
+    ports:
+      - $POSTGRES_PORT:5432
+    environment:
+      - POSTGRES_USER=$POSTGRES_USER
+      - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+      - POSTGRES_DB=$POSTGRES_DB
+      - PGDATA=/pgdata
+    volumes:
+      - ./deployment/volumes/podflix-db:/pgdata
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
   podflix-dev:
     image: podflix-dev:latest
     container_name: podflix-dev
@@ -86,6 +109,9 @@ services:
       - podflix-network
     # command: ["tail", "-f", "/dev/null"] # NOTE: For testing the container
     restart: "no"
+    depends_on:
+      podflix-db:
+        condition: service_healthy
     develop:
       watch:
         # Sync the working directory with the `/app` directory in the container
@@ -125,6 +151,9 @@ services:
       - podflix-network
     command: ["tail", "-f", "/dev/null"] # NOTE: For testing the container
     restart: "no"
+    depends_on:
+      podflix-db:
+        condition: service_healthy
     env_file:
       - .env
     environment:

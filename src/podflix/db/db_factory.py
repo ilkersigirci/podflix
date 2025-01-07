@@ -140,13 +140,13 @@ class DBInterfaceFactory:
             SqlAlchemyDBInterface: Singleton instance of appropriate database interface.
         """
         if cls._db_interface is None:
-            if env_settings.sqlaclhemy_db_type == "sqlite":
+            if env_settings.sqlalchemy_db_type == "sqlite":
                 cls._db_interface = SQLiteDBInterface(db_path)
-            elif env_settings.sqlaclhemy_db_type == "postgres":
+            elif env_settings.sqlalchemy_db_type == "postgres":
                 cls._db_interface = PostgresDBInterface()
             else:
                 raise ValueError(
-                    f"Invalid database type: {env_settings.sqlaclhemy_db_type}. "
+                    f"Invalid database type: {env_settings.sqlalchemy_db_type}. "
                     "Must be either 'sqlite' or 'postgres'"
                 )
         return cls._db_interface

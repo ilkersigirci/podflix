@@ -1,13 +1,9 @@
-/* a[href*='https://github.com/Chainlit/chainlit'] {
+a[href*='https://github.com/Chainlit/chainlit'] {
     visibility: hidden;
 }
 
-a img[alt="watermark"] {
+/* a img[alt="watermark"] {
     display: none;
-    }
-
-a[href*='https://github.com/Chainlit/chainlit'] {
-visibility: hidden;
 }
 
 .watermark {

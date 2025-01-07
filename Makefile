@@ -178,6 +178,9 @@ docker-build: ## Build docker image
 init-db: ## Initialize the database
 	uv run src/podflix/db/init_db.py
 
+drop-db: ## Drop the tables in the database
+	uv run src/podflix/db/drop_db.py
+
 create-ssl-cert: ## Create a self-signed SSL certificate for localhost development
 	bash scripts/create_ssl_cert.sh
 
