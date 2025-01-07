@@ -76,8 +76,11 @@ class EnvSettings(BaseSettings):
         protected_namespaces=("settings_",),
     )
 
-    aws_s3_bucket_name: str
+    aws_access_key_id: str = Field(default="dummy", description="It is only required for real AWS S3 or Minio")
+    aws_region_name: str = Field(default="eu-central-1", description="It is only required for real AWS S3 or Minio")
+    aws_s3_bucket_name: str = "podflix-bucket"
     aws_s3_endpoint_url: CustomHttpUrlStr
+    aws_secret_access_key: str = Field(default="dummy", description="It is only required for real AWS S3 or Minio")
     chainlit_auth_secret: str = "cKSq*mqAQmd+m5,^Z1tjvEUp5q=kepTNNkHT93:zAe44gL-9pua35pPR?I0Ag:rT"
     embedding_host: CustomHttpUrlStr
     embedding_model_name: str

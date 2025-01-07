@@ -5,7 +5,7 @@ from typing import Any, Dict, Union
 import boto3
 from botocore.client import Config
 from chainlit.data.storage_clients.base import BaseStorageClient
-from chainlit.logger import logger
+from loguru import logger
 
 from podflix.env_settings import env_settings
 
@@ -71,7 +71,10 @@ class S3CompatibleStorageClient(BaseStorageClient):
                 self.client.head_bucket(Bucket=self.bucket)
             except self.client.exceptions.ClientError:
                 logger.info(f"Creating bucket: {self.bucket}")
-                self.client.create_bucket(Bucket=self.bucket)
+                self.client.create_bucket(
+                    Bucket=self.bucket,
+                    CreateBucketConfiguration={"LocationConstraint": "eu-central-1"},
+                )
 
             logger.debug("S3CompatibleStorageClient initialized")
         except Exception as e:
