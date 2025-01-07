@@ -3,8 +3,8 @@ import webbrowser
 import chainlit as cl
 import chainlit.socket
 from chainlit.types import ThreadDict
-from langchain.schema.runnable.config import RunnableConfig
-from langchain_core.messages import AIMessageChunk, HumanMessage
+from langchain_community.chat_message_histories import ChatMessageHistory
+from langfuse.callback import CallbackHandler as LangfuseCallbackHandler
 from literalai.helper import utc_now
 from loguru import logger
 
@@ -16,6 +16,7 @@ from podflix.utils.chainlit_ui import (
     simple_auth_callback,
 )
 from podflix.utils.general import get_lf_traces_url
+from podflix.utils.graph_runner import GraphRunner
 from podflix.utils.patch_chainlit import custom_resume_thread
 
 # NOTE: This is a workaround to fix the issue of the chatbot not resuming the thread.
@@ -48,9 +49,10 @@ def data_layer():
     return get_sqlalchemy_data_layer(show_logger=True)
 
 
-@cl.action_callback("Detailed Traces")
+@cl.action_callback("detailed_traces_button")
 async def on_action(action: cl.Action):
-    webbrowser.open(action.value, new=0)
+    # FIXME: Doesn't work inside the docker container
+    webbrowser.open(action.payload["lf_traces_url"], new=0)
 
     # Optionally remove the action button from the chatbot user interface
     # await action.remove()
@@ -74,8 +76,11 @@ def setup_chat_resume(thread: ThreadDict):
 
 @cl.on_message
 async def on_message(msg: cl.Message):
-    lf_cb_handler = cl.user_session.get("lf_cb_handler")
-    session_id = cl.user_session.get("session_id")
+    lf_cb_handler: LangfuseCallbackHandler = cl.user_session.get("lf_cb_handler")
+    session_id: str = cl.user_session.get("session_id")
+    message_history: ChatMessageHistory = cl.user_session.get("message_history")
+
+    message_history.add_user_message(msg.content)
 
     assistant_message = cl.Message(
         content=" ",
@@ -84,45 +89,18 @@ async def on_message(msg: cl.Message):
         created_at=utc_now(),
     )
 
-    graph_inputs = {"messages": [HumanMessage(content=msg.content)]}
+    graph_inputs = {"messages": message_history.messages}
 
-    graph_runnable_config = RunnableConfig(
-        callbacks=[
-            lf_cb_handler,
-            cl.LangchainCallbackHandler(),
-        ],
-        recursion_limit=10,
-        configurable={"session_id": session_id},
+    graph_runner = GraphRunner(
+        graph=compiled_graph,
+        graph_inputs=graph_inputs,
+        graph_streamable_node_names=["mock_answer"],
+        lf_cb_handler=lf_cb_handler,
+        session_id=session_id,
+        assistant_message=assistant_message,
     )
 
-    streamable_node_names = [
-        "mock_answer",
-    ]
-
-    async for event in compiled_graph.astream_events(
-        graph_inputs,
-        config=graph_runnable_config,
-        version="v2",
-    ):
-        event_kind = event["event"]
-        langgraph_node = event["metadata"].get("langgraph_node", None)
-
-        if event_kind == "on_chat_model_stream":
-            if langgraph_node not in streamable_node_names:
-                continue
-
-            ai_message_chunk: AIMessageChunk = event["data"]["chunk"]
-            ai_message_content = ai_message_chunk.content
-
-            if ai_message_content:
-                # NOTE: This automatically updates the assistant_message.content
-                await assistant_message.stream_token(ai_message_content)
-
-        # TODO: Find out more robust way to get run_id for langfuse
-        if event_kind == "on_chain_end":
-            run_id = event.get("run_id", None)
-
-            logger.debug(f"Langfuse Run ID: {run_id}")
+    await graph_runner.run_graph()
 
     elements = [
         cl.Text(
@@ -133,14 +111,19 @@ async def on_message(msg: cl.Message):
     ]
     assistant_message.elements.extend(elements)
 
+    lf_traces_url = get_lf_traces_url(langchain_run_id=graph_runner.run_id)
+
     actions = [
         cl.Action(
-            name="Detailed Traces",
-            value=get_lf_traces_url(langchain_run_id=run_id),
-            description="Detailed Logs in Langfuse",
+            name="detailed_traces_button",
+            payload={"lf_traces_url": lf_traces_url},
+            label="Detailed Traces",
+            tooltip="Detailed Logs in Langfuse",
         )
     ]
 
     assistant_message.actions.extend(actions)
 
     await assistant_message.update()
+
+    message_history.add_ai_message(assistant_message.content)

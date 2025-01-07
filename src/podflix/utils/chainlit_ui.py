@@ -15,13 +15,7 @@ from podflix.db.db_factory import DBInterfaceFactory
 from podflix.db.s3_storage_client import S3CompatibleStorageClient
 from podflix.utils.general import check_lf_credentials, get_lf_session_url
 
-# from chainlit.socket import resume_thread
-# from podflix.utils.custom_chainlit import custom_resume_thread
-
 Chainlit_User_Type = User | PersistedUser
-
-# NOTE: Patched code to fix the issue with metadata type on chat resume
-# resume_thread = custom_resume_thread
 
 
 @dataclass
