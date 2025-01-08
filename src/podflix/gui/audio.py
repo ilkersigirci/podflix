@@ -25,12 +25,6 @@ from podflix.utils.patch_chainlit import custom_resume_thread
 chainlit.socket.resume_thread = custom_resume_thread
 
 
-# TODO: Set starters  based on audio file
-# @cl.set_starters
-# async def set_starters() -> list[cl.Starter]:
-#    pass
-
-
 @cl.password_auth_callback
 def auth_callback(username: str, password: str):
     return simple_auth_callback(username, password)
@@ -43,8 +37,16 @@ def data_layer():
 
 @cl.step(type="tool")
 async def transcribing_tool(file: BinaryIO | Path):
-    # Transcribing the audio file...
-    return transcribe_audio_file(file=file, response_format="verbose_json")
+    transcription = transcribe_audio_file(file=file, response_format="verbose_json")
+    whole_text = transcription.text
+
+    # Format segments for the UI
+    segments = [
+        {"id": seg.id, "start": seg.start, "end": seg.end, "text": seg.text.strip()}
+        for seg in transcription.segments
+    ]
+
+    return whole_text, segments
 
 
 @cl.on_chat_start
@@ -75,15 +77,9 @@ async def on_chat_start():
     # NOTE: Workaround to show the tool progres on the ui
     await system_message.stream_token("Transcribing the audio file...")
 
-    transcription = await transcribing_tool(file=Path(file.path))
+    audio_text, segments = await transcribing_tool(file=Path(file.path))
 
-    # Format segments for the UI
-    segments = [
-        {"id": seg.id, "start": seg.start, "end": seg.end, "text": seg.text.strip()}
-        for seg in transcription.segments
-    ]
-
-    cl.user_session.set("audio_text", transcription.text)
+    cl.user_session.set("audio_text", audio_text)
 
     logger.debug(f"Audio file path: {file.path}")
 
@@ -97,12 +93,13 @@ async def on_chat_start():
             "audioUrl": audio_url,
             "segments": segments,
         },
-        display="inline",
+        display="side",
     )
 
     system_message.content = "Audio transcribed successfully 🎉"
     system_message.elements.append(audio_element)
 
+    system_message.content += "\nAudioWithTranscript"
     await system_message.update()
 
 
@@ -149,19 +146,6 @@ async def on_message(msg: cl.Message):
     await graph_runner.run_graph()
 
     lf_traces_url = get_lf_traces_url(langchain_run_id=graph_runner.run_id)
-
-    # actions = [
-    #     cl.Action(
-    #         name="detailed_traces_button",
-    #         payload={
-    #             "lf_traces_url": lf_traces_url
-    #         },
-    #         label="Detailed Traces",
-    #         tooltip="Detailed Logs in Langfuse",
-    #     )
-    # ]
-
-    # assistant_message.actions.extend(actions)
 
     elements = [
         cl.Text(

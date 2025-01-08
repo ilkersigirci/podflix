@@ -19,8 +19,8 @@ export default function AudioWithTranscript() {
     };
 
     return (
-        <Card className="w-full max-w-3xl">
-            <CardHeader className="pb-2">
+        <Card className="w-full h-full flex flex-col">
+            <CardHeader className="pb-2 flex-shrink-0">
                 <audio
                     ref={audioRef}
                     controls
@@ -30,8 +30,8 @@ export default function AudioWithTranscript() {
                     Your browser does not support the audio element.
                 </audio>
             </CardHeader>
-            <CardContent>
-                <ScrollArea className="h-[300px] w-full rounded-md border p-4">
+            <CardContent className="flex-1 p-0">
+                <ScrollArea className="h-full w-full rounded-md border p-4">
                     <div className="space-y-2">
                         {props.segments.map((segment) => (
                             <div

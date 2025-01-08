@@ -104,9 +104,9 @@ async def on_message(msg: cl.Message):
 
     elements = [
         cl.Text(
-            name="DUMMY ELEMENT NAME",
+            name="DUMMY_ELEMENT_NAME",
             content="DUMMY ELEMENT CONTENT",
-            display="inline",
+            display="side",
         )
     ]
     assistant_message.elements.extend(elements)
@@ -124,6 +124,7 @@ async def on_message(msg: cl.Message):
 
     assistant_message.actions.extend(actions)
 
+    assistant_message.content += " DUMMY_ELEMENT_NAME"
     await assistant_message.update()
 
     message_history.add_ai_message(assistant_message.content)
