@@ -7,6 +7,9 @@ from langchain_core.language_models.fake_chat_models import FakeListChatModel
 from langchain_core.output_parsers import StrOutputParser
 from langchain_openai import ChatOpenAI
 from openai import OpenAI
+from openai.types import AudioResponseFormat
+from openai.types.audio.transcription import Transcription
+from openai.types.audio.transcription_verbose import TranscriptionVerbose
 
 from podflix.env_settings import env_settings
 
@@ -80,24 +83,29 @@ def get_chat_model(
 def transcribe_audio_file(
     file: BinaryIO | Path,
     model_name: str | None = None,
-) -> str:
+    response_format: AudioResponseFormat = "verbose_json",
+) -> Transcription | TranscriptionVerbose:
     """Transcribe an audio file using OpenAI's Whisper model.
+
+    When using the verbose_json response format, the function returns the transcribed text with optional timestamps.
+    Otherwise, it returns only the transcribed text.
 
     Examples:
         >>> with open('audio.mp3', 'rb') as f:
-        ...     text = transcribe_audio_file(f)
-        >>> isinstance(text, str)
+        ...     transcription = transcribe_audio_file(f)
+        >>> isinstance(transcription.text, str)
         True
-        >>> text = transcribe_audio_file(Path('audio.mp3'))
-        >>> isinstance(text, str)
+        >>> transcription = transcribe_audio_file(Path('audio.mp3'))
+        >>> isinstance(transcription.text, str)
         True
 
     Args:
         file: The audio file to transcribe. Can be a file object or Path.
         model_name: The name of the Whisper model to use. If None, uses the default from env_settings.
+        response_format: The format of the response to return. Defaults to "verbose_json".
 
     Returns:
-        The transcribed text from the audio file.
+        The transcribed text with optional timestamps from the audio file.
     """
     if model_name is None:
         model_name = env_settings.whisper_model_name
@@ -115,8 +123,9 @@ def transcribe_audio_file(
         file = file.open("rb")
 
     try:
-        transcription = client.audio.transcriptions.create(model=model_name, file=file)
-        return transcription.text
+        return client.audio.transcriptions.create(
+            model=model_name, file=file, response_format=response_format
+        )
     finally:
         if isinstance(file, Path):
             file.close()

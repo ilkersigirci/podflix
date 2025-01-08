@@ -44,7 +44,7 @@ def data_layer():
 @cl.step(type="tool")
 async def transcribing_tool(file: BinaryIO | Path):
     # Transcribing the audio file...
-    return transcribe_audio_file(file=file).text
+    return transcribe_audio_file(file=file, response_format="verbose_json")
 
 
 @cl.on_chat_start
@@ -75,16 +75,28 @@ async def on_chat_start():
     # NOTE: Workaround to show the tool progres on the ui
     await system_message.stream_token("Transcribing the audio file...")
 
-    audio_text = await transcribing_tool(file=Path(file.path))
+    transcription = await transcribing_tool(file=Path(file.path))
 
-    cl.user_session.set("audio_text", audio_text)
+    # Format segments for the UI
+    segments = [
+        {"id": seg.id, "start": seg.start, "end": seg.end, "text": seg.text.strip()}
+        for seg in transcription.segments
+    ]
+
+    cl.user_session.set("audio_text", transcription.text)
 
     logger.debug(f"Audio file path: {file.path}")
 
-    # Create audio element with transcript
+    # TODO: Fetch the audio url from the db using get_element_url
+    audio_url = file.path
+
+    # Create audio element with transcript and segments
     audio_element = cl.CustomElement(
         name="AudioWithTranscript",
-        props={"audioUrl": file.path, "transcript": audio_text},
+        props={
+            "audioUrl": audio_url,
+            "segments": segments,
+        },
         display="inline",
     )
 
