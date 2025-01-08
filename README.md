@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="600" src="https://raw.githubusercontent.com/ilkersigirci/podflix/main/public/banner.png">
+  <img width="600" src="https://raw.githubusercontent.com/ilkersigirci/podflix/main/configs/chainlit/public/banner.png">
 </p style = "margin-bottom: 2rem;">
 
 [![Lint status](https://img.shields.io/github/actions/workflow/status/ilkersigirci/podflix/lint.yml?branch=main)](https://github.com/ilkersigirci/podflix/actions/workflows/lint.yml?query=branch%3Amain)
