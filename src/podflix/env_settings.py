@@ -82,6 +82,8 @@ class EnvSettings(BaseSettings):
     aws_s3_endpoint_url: CustomHttpUrlStr
     aws_secret_access_key: str = Field(default="dummy", description="It is only required for real AWS S3 or Minio")
     chainlit_auth_secret: str = "cKSq*mqAQmd+m5,^Z1tjvEUp5q=kepTNNkHT93:zAe44gL-9pua35pPR?I0Ag:rT"
+    chainlit_user_name: str = "admin"
+    chainlit_user_password: str = "admin"
     embedding_host: CustomHttpUrlStr
     embedding_model_name: str
     enable_openai_api: bool = False

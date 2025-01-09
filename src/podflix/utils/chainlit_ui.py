@@ -14,6 +14,7 @@ from loguru import logger
 
 from podflix.db.db_factory import DBInterfaceFactory
 from podflix.db.s3_storage_client import S3CompatibleStorageClient
+from podflix.env_settings import env_settings
 from podflix.utils.general import check_lf_credentials, get_lf_session_url
 
 Chainlit_User_Type = User | PersistedUser
@@ -36,7 +37,7 @@ class StarterQuestion:
             self.icon = "🚀"
 
 
-def simple_auth_callback(username: str = "admin", password: str = "admin") -> User:
+def simple_auth_callback(username: str, password: str) -> User:
     """Authenticate user with simple username and password check.
 
     Examples:
@@ -53,9 +54,12 @@ def simple_auth_callback(username: str = "admin", password: str = "admin") -> Us
     Raises:
         ValueError: If credentials are invalid.
     """
-    if (username, password) == ("admin", "admin"):
+    if (username, password) == (
+        env_settings.chainlit_user_name,
+        env_settings.chainlit_user_password,
+    ):
         return cl.User(
-            identifier="admin", metadata={"role": "admin", "provider": "credentials"}
+            identifier=username, metadata={"role": "admin", "provider": "credentials"}
         )
 
     raise ValueError("Invalid credentials")
