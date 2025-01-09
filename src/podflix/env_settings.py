@@ -99,6 +99,7 @@ class EnvSettings(BaseSettings):
     postgres_password: str | None = None
     postgres_port: int | None = None
     postgres_user: str | None = None
+    rerank_model_name: str
     sqlalchemy_db_type: Literal["sqlite", "postgres"] = "sqlite"
     timeout_limit: int = 30
     whisper_api_base: CustomHttpUrlStr

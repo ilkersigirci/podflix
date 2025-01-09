@@ -290,7 +290,7 @@ wheels = [
 
 [[package]]
 name = "chainlit"
-version = "2.0.0"
+version = "2.0.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiofiles" },
@@ -303,7 +303,6 @@ dependencies = [
     { name = "lazify" },
     { name = "literalai" },
     { name = "nest-asyncio" },
-    { name = "numpy" },
     { name = "packaging" },
     { name = "pydantic" },
     { name = "pyjwt" },
@@ -317,9 +316,9 @@ dependencies = [
     { name = "uvicorn" },
     { name = "watchfiles" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/45/24/424679b769664876093b3e42167911535d1739bc1bc88f3963c69affed9e/chainlit-2.0.0.tar.gz", hash = "sha256:47b3a274a20cefb443f356d69f1c6a48818d67eb4a11552c749bfa6f414423ed", size = 4637040 }
+sdist = { url = "https://files.pythonhosted.org/packages/e0/15/26dc5f957c6344813b2ae8c6f52cc820a7074088509ea947da0cf76ffc5f/chainlit-2.0.1.tar.gz", hash = "sha256:9fb7728aa5704e823c5b5d51f570dcfabafdcc97c23a73e6047f65eb72c938e7", size = 4637433 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/87/2a/e2bbb86fc3a34c7bf798644edb95bf14fd79a8b3f6c99e4b27e5df1e24f0/chainlit-2.0.0-py3-none-any.whl", hash = "sha256:2b58ac6b513d94aef0380d1d68b73f74718c0c844586b050ce8d5e0a82eb8133", size = 4703622 },
+    { url = "https://files.pythonhosted.org/packages/ca/99/c63fa2e1d7b949c034b7fc838a0c00de22cd2cec30245e379c9dd15dedfd/chainlit-2.0.1-py3-none-any.whl", hash = "sha256:84982902c6f42a91ac341ea9b6d52e6b1348e53a60ee49b4ffe0e5e5be02f4ba", size = 4703745 },
 ]
 
 [[package]]
@@ -1834,7 +1833,7 @@ requires-dist = [
     { name = "aiosqlite", specifier = ">=0.20.0" },
     { name = "asyncpg", specifier = ">=0.30.0" },
     { name = "boto3", specifier = ">=1.35.92" },
-    { name = "chainlit", specifier = ">=2.0.0" },
+    { name = "chainlit", specifier = ">=2.0.1" },
     { name = "huggingface-hub", specifier = ">=0.27.0" },
     { name = "langchain", specifier = ">=0.3.13" },
     { name = "langchain-community", specifier = ">=0.3.13" },
