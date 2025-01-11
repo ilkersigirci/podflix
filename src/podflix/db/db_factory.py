@@ -149,6 +149,6 @@ class DBInterfaceFactory:
 
             # NOTE: Implement postgres
             else:
-                pass
+                cls._db_interface = PostgresDBInterface()
 
         return cls._db_interface

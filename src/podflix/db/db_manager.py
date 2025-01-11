@@ -100,7 +100,7 @@ class DatabaseManager:
                     SELECT EXISTS (
                         SELECT FROM information_schema.tables
                         WHERE table_schema = 'public'
-                        AND table_name = 'users'
+                        AND table_name = 'User'
                     );
                 """
             result = conn.execute(sa.text(query)).scalar()

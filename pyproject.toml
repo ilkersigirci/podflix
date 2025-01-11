@@ -43,6 +43,7 @@ dependencies = [
     "langfuse>=2.57.2",
     "langgraph>=0.2.60",
     "loguru>=0.7.3",
+    "prisma>=0.15.0",
     "psycopg2-binary>=2.9.10",
     "pydantic-settings>=2.7.0",
 ]

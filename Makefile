@@ -175,11 +175,13 @@ profile-builtin: ## Profile the file with cProfile and shows the report in the t
 docker-build: ## Build docker image
 	docker build --tag ${DOCKER_IMAGE} --file docker/Dockerfile --target ${DOCKER_TARGET} .
 
-init-db: ## Initialize the database
-	uv run src/podflix/db/init_db.py
+reset-postgres-db: ## Reset the postgres database using prisma
+	cd chainlit-datalayer
+	uv run prisma migrate reset --force
 
-drop-db: ## Drop the tables in the database
-	uv run src/podflix/db/drop_db.py
+reset-sqlite-db: ## Reset the sqlite database
+	rm -f ./db.sqlite
+	uv run src/podflix/db/init_db.py
 
 create-ssl-cert: ## Create a self-signed SSL certificate for localhost development
 	bash scripts/create_ssl_cert.sh
@@ -192,3 +194,6 @@ run-mock-graph:
 
 run-audio-graph:
 	uv run chainlit run src/podflix/gui/audio.py --host 0.0.0.0 --port 5000 --headless
+
+run-chat-graph:
+	uv run chainlit run src/podflix/gui/base_chat.py --host 0.0.0.0 --port 5000 --headless
