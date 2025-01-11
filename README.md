@@ -17,16 +17,7 @@
     - username: admin
     - password: admin
 
-- To change db backend from sqlite to postgresql: Change the DATABASES configuration `.env` file
-
-```bash
-SQLALCHEMY_DB_TYPE=postgres
-POSTGRES_DB=your_db_name
-POSTGRES_HOST=localhost
-POSTGRES_PASSWORD=your_password
-POSTGRES_PORT=5432
-POSTGRES_USER=your_username
-```
+- To change db backend from postgresql to sqlite: Change in `.env` file `ENABLE_SQLITE_DATA_LAYER=true`
 
 ## Healthchecks
 

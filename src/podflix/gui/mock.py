@@ -1,27 +1,25 @@
 import webbrowser
 
 import chainlit as cl
-import chainlit.socket
 from chainlit.types import ThreadDict
 from langchain_community.chat_message_histories import ChatMessageHistory
 from langfuse.callback import CallbackHandler as LangfuseCallbackHandler
 from literalai.helper import utc_now
 from loguru import logger
 
+from podflix.env_settings import env_settings
 from podflix.graph.mock import compiled_graph
-from podflix.utils.chainlit_ui import (
+from podflix.utils.chainlit_utils.data_layer import apply_sqlite_data_layer_fixes
+from podflix.utils.chainlit_utils.general import (
     create_message_history_from_db_thread,
-    get_sqlalchemy_data_layer,
     set_extra_user_session_params,
     simple_auth_callback,
 )
 from podflix.utils.general import get_lf_traces_url
 from podflix.utils.graph_runner import GraphRunner
-from podflix.utils.patch_chainlit import custom_resume_thread
 
-# NOTE: This is a workaround to fix the issue of the chatbot not resuming the thread.
-chainlit.socket.resume_thread = custom_resume_thread
-
+if env_settings.enable_sqlite_data_layer is True:
+    apply_sqlite_data_layer_fixes()
 
 # @cl.set_starters
 # async def set_starters() -> list[cl.Starter]:
@@ -42,11 +40,6 @@ chainlit.socket.resume_thread = custom_resume_thread
 @cl.password_auth_callback
 def auth_callback(username: str, password: str):
     return simple_auth_callback(username, password)
-
-
-@cl.data_layer
-def data_layer():
-    return get_sqlalchemy_data_layer(show_logger=True)
 
 
 @cl.action_callback("detailed_traces_button")

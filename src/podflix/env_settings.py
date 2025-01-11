@@ -1,7 +1,7 @@
 """Application configuration for environment variables."""
 
 from functools import partial  # noqa: F401
-from typing import Annotated, Literal
+from typing import Annotated, Literal  # noqa: F401
 
 from loguru import logger
 from pydantic import (
@@ -76,18 +76,13 @@ class EnvSettings(BaseSettings):
         protected_namespaces=("settings_",),
     )
 
-    aws_access_key_id: str = Field(default="dummy", description="It is only required for real AWS S3 or Minio")
-    aws_region_name: str = Field(default="eu-central-1", description="It is only required for real AWS S3 or Minio")
-    aws_s3_bucket_name: str = "podflix-bucket"
-    aws_s3_endpoint_url: CustomHttpUrlStr
-    aws_secret_access_key: str = Field(default="dummy", description="It is only required for real AWS S3 or Minio")
-    chainlit_auth_secret: str = "cKSq*mqAQmd+m5,^Z1tjvEUp5q=kepTNNkHT93:zAe44gL-9pua35pPR?I0Ag:rT"
     chainlit_user_name: str = "admin"
     chainlit_user_password: str = "admin"
     embedding_host: CustomHttpUrlStr
     embedding_model_name: str
     enable_openai_api: bool = False
     enable_starter_questions: bool = True
+    enable_sqlite_data_layer: bool = False
     hf_token: str | None = None
     langfuse_host: CustomHttpUrlStr
     langfuse_public_key: str
@@ -96,13 +91,7 @@ class EnvSettings(BaseSettings):
     model_api_base: CustomHttpUrlStr
     model_name: str
     openai_api_key: str | None = None
-    postgres_db: str | None = None
-    postgres_host: str | None = None
-    postgres_password: str | None = None
-    postgres_port: int | None = None
-    postgres_user: str | None = None
     rerank_model_name: str
-    sqlalchemy_db_type: Literal["sqlite", "postgres"] = "sqlite"
     timeout_limit: int = 30
     whisper_api_base: CustomHttpUrlStr
     whisper_model_name: str

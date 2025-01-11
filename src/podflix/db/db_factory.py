@@ -1,5 +1,6 @@
 """SqlAlchemy database interface factory and implementations."""
 
+import os
 from abc import ABC, abstractmethod
 from pathlib import Path
 
@@ -91,13 +92,16 @@ class PostgresDBInterface(SqlAlchemyDBInterface):
         Returns:
             A string containing the PostgreSQL connection details including user, password, host, port and database.
         """
-        return (
-            f"{env_settings.postgres_user}:"
-            f"{env_settings.postgres_password}@"
-            f"{env_settings.postgres_host}:"
-            f"{env_settings.postgres_port}/"
-            f"{env_settings.postgres_db}"
-        )
+        connection_str = os.getenv("DATABASE_URL", None)
+
+        if connection_str is None:
+            raise ValueError("DATABASE_URL environment variable not set")
+
+        # Remove protocol prefix if present
+        if connection_str.startswith(("postgresql://", "postgres://")):
+            connection_str = connection_str.split("://", 1)[1]
+
+        return connection_str
 
     def async_connection(self) -> str:
         """Returns the async PostgreSQL connection string.
@@ -140,13 +144,11 @@ class DBInterfaceFactory:
             SqlAlchemyDBInterface: Singleton instance of appropriate database interface.
         """
         if cls._db_interface is None:
-            if env_settings.sqlalchemy_db_type == "sqlite":
+            if env_settings.enable_sqlite_data_layer is True:
                 cls._db_interface = SQLiteDBInterface(db_path)
-            elif env_settings.sqlalchemy_db_type == "postgres":
-                cls._db_interface = PostgresDBInterface()
+
+            # NOTE: Implement postgres
             else:
-                raise ValueError(
-                    f"Invalid database type: {env_settings.sqlalchemy_db_type}. "
-                    "Must be either 'sqlite' or 'postgres'"
-                )
+                pass
+
         return cls._db_interface

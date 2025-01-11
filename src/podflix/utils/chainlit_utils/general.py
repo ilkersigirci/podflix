@@ -4,16 +4,12 @@ from dataclasses import dataclass
 from uuid import uuid4
 
 import chainlit as cl
-from chainlit.data.sql_alchemy import SQLAlchemyDataLayer
-from chainlit.element import ElementDict
 from chainlit.types import ThreadDict
 from chainlit.user import PersistedUser, User
 from langchain_community.chat_message_histories import ChatMessageHistory
 from langfuse.callback import CallbackHandler as LangfuseCallbackHandler
 from loguru import logger
 
-from podflix.db.db_factory import DBInterfaceFactory
-from podflix.db.s3_storage_client import S3CompatibleStorageClient
 from podflix.env_settings import env_settings
 from podflix.utils.general import check_lf_credentials, get_lf_session_url
 
@@ -63,28 +59,6 @@ def simple_auth_callback(username: str, password: str) -> User:
         )
 
     raise ValueError("Invalid credentials")
-
-
-def get_sqlalchemy_data_layer(show_logger: bool = False) -> SQLAlchemyDataLayer:
-    """Create and return a SQLAlchemy data layer instance.
-
-    Examples:
-        >>> data_layer = get_sqlalchemy_data_layer()
-        >>> isinstance(data_layer, SQLAlchemyDataLayer)
-        True
-
-    Args:
-        show_logger: A boolean indicating whether to show SQL logging information.
-
-    Returns:
-        A SQLAlchemyDataLayer instance configured with database connection and storage provider.
-    """
-    return SQLAlchemyDataLayer(
-        DBInterfaceFactory.create().async_connection(),
-        ssl_require=False,
-        show_logger=show_logger,
-        storage_provider=S3CompatibleStorageClient(),
-    )
 
 
 def create_message_history_from_db_thread(
@@ -195,30 +169,3 @@ def set_extra_user_session_params(
     langfuse_session_url = get_lf_session_url(session_id=session_id)
 
     logger.debug(f"Langfuse Session URL: {langfuse_session_url}")
-
-
-async def get_element_url(
-    data_layer: SQLAlchemyDataLayer, thread_id: str, element_id: str
-) -> str | None:
-    """Get the URL for accessing an element's file content.
-
-    Args:
-        data_layer: SQLAlchemyDataLayer instance
-        thread_id: ID of the thread containing the element
-        element_id: ID of the element
-
-    Returns:
-        URL string if found, None if element doesn't exist
-    """
-    logger.debug(
-        f"SQLAlchemy: get_element_url, thread_id={thread_id}, element_id={element_id}"
-    )
-
-    element_dict: ElementDict = data_layer.get_element(
-        thread_id=thread_id, element_id=element_id
-    )
-
-    if element_dict is None:
-        return None
-
-    return element_dict.url

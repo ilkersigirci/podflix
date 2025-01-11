@@ -7,8 +7,12 @@ from chainlit.telemetry import trace_event
 from chainlit.user_session import user_sessions
 
 
-# NOTE: It fixes the issue where the metada is str on chat resume
 async def custom_resume_thread(session: WebsocketSession):
+    """Resume a thread and set the user session parameters.
+
+    NOTE: This is a workaround to fix the issue of the chatbot not resuming the thread
+    on sqlite data layer.
+    """
     data_layer = get_data_layer()
     if not data_layer or not session.user or not session.thread_id_to_resume:
         return

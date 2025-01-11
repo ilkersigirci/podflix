@@ -290,7 +290,7 @@ wheels = [
 
 [[package]]
 name = "chainlit"
-version = "2.0.1"
+version = "2.0.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiofiles" },
@@ -316,9 +316,9 @@ dependencies = [
     { name = "uvicorn" },
     { name = "watchfiles" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/e0/15/26dc5f957c6344813b2ae8c6f52cc820a7074088509ea947da0cf76ffc5f/chainlit-2.0.1.tar.gz", hash = "sha256:9fb7728aa5704e823c5b5d51f570dcfabafdcc97c23a73e6047f65eb72c938e7", size = 4637433 }
+sdist = { url = "https://files.pythonhosted.org/packages/42/33/c9a2060f499ef2c196405f80be9e03fa212e56307e0345fffacc5641fb03/chainlit-2.0.2.tar.gz", hash = "sha256:ec60a83884029dfa9e2f8215a81d99627c465407ac33ef37b19c7d515d9c0e7a", size = 4637820 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ca/99/c63fa2e1d7b949c034b7fc838a0c00de22cd2cec30245e379c9dd15dedfd/chainlit-2.0.1-py3-none-any.whl", hash = "sha256:84982902c6f42a91ac341ea9b6d52e6b1348e53a60ee49b4ffe0e5e5be02f4ba", size = 4703745 },
+    { url = "https://files.pythonhosted.org/packages/72/e4/563dbf1bc21dcda915d15ea27d739a8afff5ee861f40bc4adb67c33c56cd/chainlit-2.0.2-py3-none-any.whl", hash = "sha256:58fe3da65e892058a8e8ad97bb9dc4177173857d8c288a3de4a73271fc1b18be", size = 4704765 },
 ]
 
 [[package]]
@@ -1155,7 +1155,7 @@ wheels = [
 
 [[package]]
 name = "literalai"
-version = "0.0.623"
+version = "0.1.103"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "chevron" },
@@ -1163,7 +1163,7 @@ dependencies = [
     { name = "packaging" },
     { name = "pydantic" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/41/af/07d943e62a1297a7b44777297c0dca8f4bfcd6ae18b9df7d3cd9c1970e29/literalai-0.0.623.tar.gz", hash = "sha256:d65c04dde6b1e99d585e4112a607e5fd574d282b70f600c55a671018340dfb0f", size = 57081 }
+sdist = { url = "https://files.pythonhosted.org/packages/fc/fc/628b39e31b368aacbca51721ba7a66a4d140e9be916a0c7396664fdaed7a/literalai-0.1.103.tar.gz", hash = "sha256:060e86e63c0f53041a737b2183354ac092ee8cd9faec817dc95df639bb263a7d", size = 62540 }
 
 [[package]]
 name = "loguru"
@@ -1833,7 +1833,7 @@ requires-dist = [
     { name = "aiosqlite", specifier = ">=0.20.0" },
     { name = "asyncpg", specifier = ">=0.30.0" },
     { name = "boto3", specifier = ">=1.35.92" },
-    { name = "chainlit", specifier = ">=2.0.1" },
+    { name = "chainlit", specifier = ">=2.0.2" },
     { name = "huggingface-hub", specifier = ">=0.27.0" },
     { name = "langchain", specifier = ">=0.3.13" },
     { name = "langchain-community", specifier = ">=0.3.13" },

@@ -89,7 +89,7 @@ class DatabaseManager:
             True
         """
         try:
-            if env_settings.sqlalchemy_db_type == "sqlite":
+            if env_settings.enable_sqlite_data_layer is True:
                 query = """
                     SELECT COUNT(*)
                     FROM sqlite_master
