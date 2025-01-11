@@ -27,17 +27,10 @@ To clone this repository including all submodules, use:
 git clone --recurse-submodules https://github.com/yourusername/podflix.git
 ```
 
-## Updating Submodules
-
-To update the chainlit-datalayer submodule to its latest version, use:
+## Update Submodules
 
 ```bash
-# Update the submodule to the latest commit
-git submodule update --remote chainlit-datalayer
-
-# Then commit the changes to your main repository
-git add chainlit-datalayer
-git commit -m "Update chainlit-datalayer submodule"
+make update-submodules
 ```
 
 ## Healthchecks

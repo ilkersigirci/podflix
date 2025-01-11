@@ -147,6 +147,11 @@ format-unsafe: ## Run ruff for all package files. with unsafe mode. CHANGES CODE
 	uv run --module ruff format ${PACKAGE}
 	uv run --module ruff check ${PACKAGE} --fix --unsafe-fixes --show-fixes
 
+update-submodules: ## Update submodules to their latest versions and commit changes
+	git submodule update --remote chainlit-datalayer
+	git add chainlit-datalayer
+	git commit -m "chore: update chainlit-datalayer submodule" || echo "No changes to commit"
+
 typecheck:  ## Checks code with mypy
 	uv lock --locked
 	uv run --module mypy --package ${PACKAGE}
