@@ -33,13 +33,13 @@ async def set_starters() -> list[cl.Starter]:
             icon="🚀",
         ),
         cl.Starter(
-            label="Help",
-            message="Can you help me?",
+            label="Json Format",
+            message="Write some random things in json format.",
             icon="🚀",
         ),
         cl.Starter(
-            label="Purpose",
-            message="What is your purpose?",
+            label="Code Snippet",
+            message="Implement a code snippet in python.",
             icon="🚀",
         ),
     ]
@@ -58,7 +58,12 @@ async def settings_update(settings: cl.ChatSettings):
 
 @cl.on_chat_start
 async def on_chat_start():
-    message_history = [{"role": "system", "content": "You are a helpful assistant."}]
+    message_history = [
+        {
+            "role": "system",
+            "content": "You are a helpful assistant. Respond to user messages using markdown.",
+        }
+    ]
 
     set_extra_user_session_params(message_history=message_history)
 
