@@ -418,7 +418,7 @@ services:
       - "traefik.http.services.hf_rerank-svc.loadbalancer.server.port=80"
 
   ############## BLOB STORAGE CLIENT #####################
-  # FIXME: On container restart, all buckets are lost
+  # NOTE: Persistency is a pro feature, hence official image is not used
   # localstack-s3:
   #   image: localstack/localstack:s3-latest
   #   container_name: localstack-s3
@@ -445,7 +445,7 @@ services:
   #     - "traefik.http.services.localstack-s3-svc.loadbalancer.server.port=4566"
 
   localstack:
-    image: localstack/localstack:latest
+    image: gresau/localstack-persist:3
     container_name: localstack
     restart: ${RESTART_POLICY:-unless-stopped}
     environment:
@@ -459,6 +459,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./scripts/create_s3_bucket.sh:/etc/localstack/init/ready.d/script.sh
+      - ./deployment/volumes/localstack:/persisted-data
     labels:
       - "traefik.enable=true"
       ## HTTP Routers
