@@ -19,6 +19,27 @@
 
 - To change db backend from postgresql to sqlite: Change in `.env` file `ENABLE_SQLITE_DATA_LAYER=true`
 
+## Cloning the Repository
+
+To clone this repository including all submodules, use:
+
+```bash
+git clone --recurse-submodules https://github.com/yourusername/podflix.git
+```
+
+## Updating Submodules
+
+To update the chainlit-datalayer submodule to its latest version, use:
+
+```bash
+# Update the submodule to the latest commit
+git submodule update --remote chainlit-datalayer
+
+# Then commit the changes to your main repository
+git add chainlit-datalayer
+git commit -m "Update chainlit-datalayer submodule"
+```
+
 ## Healthchecks
 
 - Assuming `DOMAIN_NAME=localhost`
