@@ -1,6 +1,5 @@
 """Utilies for chainlit UI."""
 
-from dataclasses import dataclass
 from uuid import uuid4
 
 import chainlit as cl
@@ -14,23 +13,6 @@ from podflix.env_settings import env_settings
 from podflix.utils.general import check_lf_credentials, get_lf_session_url
 
 Chainlit_User_Type = User | PersistedUser
-
-
-@dataclass
-class StarterQuestion:
-    """Dataclass for starter questions."""
-
-    label: str
-    message: str | None = None
-    icon: str | None = None
-
-    def __post_init__(self):
-        """Post initialization method for the StarterQuestion class."""
-        if self.message is None:
-            self.message = self.label
-
-        if self.icon is None:
-            self.icon = "🚀"
 
 
 def simple_auth_callback(username: str, password: str) -> User:
@@ -97,33 +79,6 @@ def create_message_history_from_db_thread(
             message_history.add_ai_message(steps_message["output"])
 
     return message_history
-
-
-def create_starter_questions_from_list(
-    starters: list[StarterQuestion],
-) -> list[cl.Starter]:
-    """Create starter questions from the list of mock starters.
-
-    Examples:
-        >>> starters = [StarterQuestion(label="Test", message="Test message")]
-        >>> questions = create_starter_questions_from_list(starters)
-        >>> len(questions)
-        1
-
-    Args:
-        starters: A list of StarterQuestion objects to convert.
-
-    Returns:
-        A list of chainlit Starter objects.
-    """
-    return [
-        cl.Starter(
-            label=starter.label,
-            message=starter.message,
-            icon=starter.icon,
-        )
-        for starter in starters
-    ]
 
 
 def set_extra_user_session_params(

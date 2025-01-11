@@ -81,7 +81,6 @@ class EnvSettings(BaseSettings):
     embedding_host: CustomHttpUrlStr
     embedding_model_name: str
     enable_openai_api: bool = False
-    enable_starter_questions: bool = True
     enable_sqlite_data_layer: bool = False
     hf_token: str | None = None
     langfuse_host: CustomHttpUrlStr

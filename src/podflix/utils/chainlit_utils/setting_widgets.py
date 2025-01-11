@@ -1,10 +1,13 @@
 """Utility functions for converting Pydantic models to Chainlit settings."""
 
-from typing import Literal, Type
+from typing import Type
 
 import chainlit as cl
 from chainlit.input_widget import Select, Slider, Switch
-from pydantic import BaseModel, Field
+from loguru import logger
+from pydantic import BaseModel
+
+from podflix.utils.pydantic_models import OpenAIChatGenerationSettings
 
 
 def convert_pydantic_model_to_chainlit_settings(
@@ -30,14 +33,16 @@ def convert_pydantic_model_to_chainlit_settings(
         json_schema_extra = field_info.json_schema_extra or {}
         metadata = field_info.metadata or []
 
-        id = field_name.title()
         label = f"{prefix}{field_name.replace('_', ' ').title()}"
 
         # Default widget mapping
         if field_type is bool:
             chat_settings.append(
                 Switch(
-                    id=id, label=label, initial=current_value, description=description
+                    id=field_name,
+                    label=label,
+                    initial=current_value,
+                    description=description,
                 )
             )
         elif field_type in (float, int):
@@ -58,7 +63,7 @@ def convert_pydantic_model_to_chainlit_settings(
 
             chat_settings.append(
                 Slider(
-                    id=id,
+                    id=field_name,
                     label=label,
                     initial=current_value,
                     min=min_val,
@@ -70,11 +75,12 @@ def convert_pydantic_model_to_chainlit_settings(
         elif "choices" in json_schema_extra:
             choices = json_schema_extra["choices"]
             if not isinstance(choices[0], str):
+                logger.debug(f"Skipping {field_name} due to non-string choices")
                 continue
 
             chat_settings.append(
                 Select(
-                    id=id,
+                    id=field_name,
                     label=label,
                     initial_value=current_value,
                     values=choices,
@@ -85,59 +91,11 @@ def convert_pydantic_model_to_chainlit_settings(
     return cl.ChatSettings(chat_settings)
 
 
-class OpenAIChatSettings(BaseModel):
-    """Pydantic model for OpenAI chat settings."""
-
-    model: str = Field(
-        default="gpt-4o-mini",
-        description="OpenAI model to use for chat completion",
-        choices=["gpt-3.5-turbo", "gpt-4", "gpt-4o-mini"],
-    )
-    streaming: bool = Field(default=True, description="Whether to stream tokens")
-    temperature: float = Field(
-        default=0.7, ge=0, le=2, description="Controls randomness in the output"
-    )
-    max_tokens: int = Field(
-        default=2000, ge=1, le=32000, description="Maximum number of tokens to generate"
-    )
-    top_p: float = Field(
-        default=1.0, ge=0, le=1, description="Controls diversity via nucleus sampling"
-    )
-    frequency_penalty: float = Field(
-        default=0.0, ge=-2, le=2, description="Reduces repetition of token sequences"
-    )
-    presence_penalty: float = Field(
-        default=0.0,
-        ge=-2,
-        le=2,
-        description="Reduces likelihood of repeating information",
-    )
-    seed: int = Field(
-        default=-1,
-        ge=-1,
-        le=2**32 - 1,
-        description="Random seed for deterministic completions",
-    )
-    n: int = Field(
-        default=1, ge=1, le=5, description="Number of completions to generate"
-    )
-    logit_bias: int = Field(
-        default=0, ge=-100, le=100, description="Modify likelihood of specific tokens"
-    )
-    response_format: Literal["text", "json_object"] = Field(
-        default="text", description="Format for model responses"
-    )
-    tools_enabled: bool = Field(
-        default=False, description="Enable function calling capability"
-    )
-    log_probs: bool = Field(
-        default=False, description="Return log probabilities of tokens"
-    )
-
-
 def get_openai_chat_settings():
     """Get chat settings for OpenAI chat completion parameters."""
-    return convert_pydantic_model_to_chainlit_settings(model_class=OpenAIChatSettings)
+    return convert_pydantic_model_to_chainlit_settings(
+        model_class=OpenAIChatGenerationSettings
+    )
 
 
 if __name__ == "__main__":

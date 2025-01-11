@@ -24,12 +24,12 @@ if env_settings.enable_sqlite_data_layer is True:
 # @cl.set_starters
 # async def set_starters() -> list[cl.Starter]:
 #     mock_starters = [
-#         StartQuestions(
+#         StarterQuestion(
 #             label="Start",
 #             message="Start the conversation",
 #             icon="🚀",
 #         ),
-#         StartQuestions(
+#         StarterQuestion(
 #             label="Middle",
 #             message="Middle the conversation",
 #             icon="🚀",
