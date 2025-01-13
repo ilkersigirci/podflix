@@ -1,7 +1,7 @@
 name: podflix
 
 networks:
-  t2_proxy:
+  t3_proxy:
     external: true
   podflix-network:
     name: podflix-network
@@ -80,7 +80,7 @@ services:
     container_name: podflix-db
     restart: ${RESTART_POLICY:-unless-stopped}
     networks:
-      - t2_proxy
+      - t3_proxy
       - podflix-network
     ports:
       - $POSTGRES_PORT:5432
@@ -105,7 +105,7 @@ services:
       dockerfile: docker/Dockerfile
       target: development
     networks:
-      - t2_proxy
+      - t3_proxy
       - podflix-network
     # command: ["tail", "-f", "/dev/null"] # NOTE: For testing the container
     restart: "no"
@@ -149,7 +149,7 @@ services:
       dockerfile: docker/Dockerfile
       target: production
     networks:
-      - t2_proxy
+      - t3_proxy
       - podflix-network
     command: ["tail", "-f", "/dev/null"] # NOTE: For testing the container
     restart: "no"
@@ -176,7 +176,7 @@ services:
     container_name: langfuse-db
     restart: ${RESTART_POLICY:-unless-stopped}
     networks:
-      - t2_proxy
+      - t3_proxy
       - podflix-network
     environment:
       - POSTGRES_USER=postgres
@@ -201,7 +201,7 @@ services:
       langfuse-db:
         condition: service_healthy
     networks:
-      - t2_proxy
+      - t3_proxy
       - podflix-network
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@langfuse-db:5432/postgres
@@ -227,13 +227,13 @@ services:
       - "traefik.http.services.langfuse-svc.loadbalancer.server.port=3000"
 
   ############ WHISPER API #############
-  faster-whisper-server:
-    container_name: faster-whisper-server
-    image: fedirz/faster-whisper-server:latest-cuda
+  speaches:
+    container_name: speaches
+    image: ghcr.io/speaches-ai/speaches:latest-cuda
     restart: "no"
     <<: *gpu-deploy
     networks:
-      - t2_proxy
+      - t3_proxy
       - podflix-network
     environment:
       - HOST=0.0.0.0
@@ -256,11 +256,11 @@ services:
     labels:
       - "traefik.enable=true"
       ## HTTP Routers
-      - "traefik.http.routers.whisper-rtr.entrypoints=https"
-      - "traefik.http.routers.whisper-rtr.rule=Host(`whisper.$DOMAIN_NAME`)"
+      - "traefik.http.routers.speaches-rtr.entrypoints=https"
+      - "traefik.http.routers.speaches-rtr.rule=Host(`speaches.$DOMAIN_NAME`)"
       ## HTTP Services
-      - "traefik.http.routers.whisper-rtr.service=whisper-svc"
-      - "traefik.http.services.whisper-svc.loadbalancer.server.port=8000"
+      - "traefik.http.routers.speaches-rtr.service=speaches-svc"
+      - "traefik.http.services.speaches-svc.loadbalancer.server.port=8000"
 
   # whisper-cpp:
   #   container_name: whisper-cpp
@@ -285,7 +285,7 @@ services:
     restart: ${RESTART_POLICY:-no}
     <<: *gpu-deploy
     networks:
-      - t2_proxy
+      - t3_proxy
       - podflix-network
     environment:
       LLAMA_ARG_HOST: 0.0.0.0
@@ -362,7 +362,7 @@ services:
     # depends_on:
     #   - podflix-traefik
     networks:
-      - t2_proxy
+      - t3_proxy
       - podflix-network
     environment:
       - HF_HOME=/root/.cache/huggingface
@@ -394,7 +394,7 @@ services:
     # depends_on:
     #   - podflix-traefik
     networks:
-      - t2_proxy
+      - t3_proxy
       - podflix-network
     environment:
       - HF_HOME=/root/.cache/huggingface
@@ -424,7 +424,7 @@ services:
   #   container_name: localstack-s3
   #   restart: ${RESTART_POLICY:-unless-stopped}
   #   networks:
-  #     - t2_proxy
+  #     - t3_proxy
   #     - podflix-network
   #   environment:
   #     - DEBUG=0
@@ -454,7 +454,7 @@ services:
       CREATED_BUCKET_NAME: $BUCKET_NAME
       APP_AWS_REGION: $APP_AWS_REGION
     networks:
-      - t2_proxy
+      - t3_proxy
       - podflix-network
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
