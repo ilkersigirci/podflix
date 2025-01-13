@@ -61,7 +61,7 @@ services:
       - "traefik.http.routers.http-catchall.middlewares=redirect-to-https"
       - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
       # HTTP Routers
-      - "traefik.http.routers.traefik-rtr.entrypoints=https"
+      - "traefik.http.routers.traefik-rtr.entrypoints=websecure"
       - "traefik.http.routers.traefik-rtr.rule=Host(`traefik.$DOMAIN_NAME`)"
       - "traefik.http.routers.traefik-rtr.tls=true" # Some people had 404s without this
       - "traefik.http.routers.traefik-rtr.tls.domains[0].main=$DOMAIN_NAME"
@@ -135,7 +135,7 @@ services:
     labels:
       - "traefik.enable=true"
       ## HTTP Routers
-      - "traefik.http.routers.podflix-rtr.entrypoints=https"
+      - "traefik.http.routers.podflix-rtr.entrypoints=websecure"
       - "traefik.http.routers.podflix-rtr.rule=Host(`podflix.$DOMAIN_NAME`)"
       ## HTTP Services
       - "traefik.http.routers.podflix-rtr.service=podflix-svc"
@@ -164,7 +164,7 @@ services:
     labels:
       - "traefik.enable=true"
       ## HTTP Routers
-      - "traefik.http.routers.podflix-rtr.entrypoints=https"
+      - "traefik.http.routers.podflix-rtr.entrypoints=websecure"
       - "traefik.http.routers.podflix-rtr.rule=Host(`podflix.$DOMAIN_NAME`)"
       ## HTTP Services
       - "traefik.http.routers.podflix-rtr.service=podflix-svc"
@@ -220,7 +220,7 @@ services:
     labels:
       - "traefik.enable=true"
       ## HTTP Routers
-      - "traefik.http.routers.langfuse-rtr.entrypoints=https"
+      - "traefik.http.routers.langfuse-rtr.entrypoints=websecure"
       - "traefik.http.routers.langfuse-rtr.rule=Host(`langfuse.$DOMAIN_NAME`)"
       ## HTTP Services
       - "traefik.http.routers.langfuse-rtr.service=langfuse-svc"
@@ -256,7 +256,7 @@ services:
     labels:
       - "traefik.enable=true"
       ## HTTP Routers
-      - "traefik.http.routers.speaches-rtr.entrypoints=https"
+      - "traefik.http.routers.speaches-rtr.entrypoints=websecure"
       - "traefik.http.routers.speaches-rtr.rule=Host(`speaches.$DOMAIN_NAME`)"
       ## HTTP Services
       - "traefik.http.routers.speaches-rtr.service=speaches-svc"
@@ -309,7 +309,7 @@ services:
     labels:
       - "traefik.enable=true"
       ## HTTP Routers
-      - "traefik.http.routers.llama-cpp-rtr.entrypoints=https"
+      - "traefik.http.routers.llama-cpp-rtr.entrypoints=websecure"
       - "traefik.http.routers.llama-cpp-rtr.rule=Host(`llamacpp.$DOMAIN_NAME`)"
       ## HTTP Services
       - "traefik.http.routers.llama-cpp-rtr.service=llama-cpp-svc"
@@ -379,7 +379,7 @@ services:
     labels:
       - "traefik.enable=true"
       ## HTTP Routers
-      - "traefik.http.routers.hf_embedding-rtr.entrypoints=https"
+      - "traefik.http.routers.hf_embedding-rtr.entrypoints=websecure"
       - "traefik.http.routers.hf_embedding-rtr.rule=Host(`hf_embedding.$DOMAIN_NAME`)"
       ## HTTP Services
       - "traefik.http.routers.hf_embedding-rtr.service=hf_embedding-svc"
@@ -411,7 +411,7 @@ services:
     labels:
       - "traefik.enable=true"
       ## HTTP Routers
-      - "traefik.http.routers.hf_rerank-rtr.entrypoints=https"
+      - "traefik.http.routers.hf_rerank-rtr.entrypoints=websecure"
       - "traefik.http.routers.hf_rerank-rtr.rule=Host(`hf_rerank.$DOMAIN_NAME`)"
       ## HTTP Services
       - "traefik.http.routers.hf_rerank-rtr.service=hf_rerank-svc"
@@ -438,7 +438,7 @@ services:
   #   labels:
   #     - "traefik.enable=true"
   #     ## HTTP Routers
-  #     - "traefik.http.routers.localstack-s3-rtr.entrypoints=https"
+  #     - "traefik.http.routers.localstack-s3-rtr.entrypoints=websecure"
   #     - "traefik.http.routers.localstack-s3-rtr.rule=Host(`s3.$DOMAIN_NAME`)"
   #     ## HTTP Services
   #     - "traefik.http.routers.localstack-s3-rtr.service=localstack-s3-svc"
@@ -463,7 +463,7 @@ services:
     labels:
       - "traefik.enable=true"
       ## HTTP Routers
-      - "traefik.http.routers.localstack-rtr.entrypoints=https"
+      - "traefik.http.routers.localstack-rtr.entrypoints=websecure"
       - "traefik.http.routers.localstack-rtr.rule=Host(`s3.$DOMAIN_NAME`)"
       ## HTTP Services
       - "traefik.http.routers.localstack-rtr.service=localstack-svc"
