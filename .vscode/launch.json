@@ -19,6 +19,23 @@
       ],
     },
     {
+      "name": "Chainlit Audio",
+      "type": "debugpy",
+      "request": "launch",
+      // "program": "${file}",
+      "console": "integratedTerminal",
+      "module": "chainlit",
+      "justMyCode": false,
+      "args": [
+        "run",
+        "--headless",
+        "--port",
+        "5000",
+        // "${file}",
+        "${workspaceFolder}/src/podflix/gui/audio.py"
+      ],
+    },
+    {
       "name": "Debug Current File",
       "type": "debugpy",
       "request": "launch",

@@ -124,3 +124,8 @@ def set_extra_user_session_params(
     langfuse_session_url = get_lf_session_url(session_id=session_id)
 
     logger.debug(f"Langfuse Session URL: {langfuse_session_url}")
+
+
+def get_current_chainlit_thread_id() -> str:
+    """Get the current Chainlit thread ID."""
+    return cl.context.session.thread_id

@@ -9,6 +9,7 @@ import os
 import boto3
 import chainlit as cl
 import chainlit.socket
+from chainlit.data import get_data_layer
 from chainlit.data.sql_alchemy import SQLAlchemyDataLayer
 from chainlit.data.storage_clients.s3 import S3StorageClient
 from chainlit.element import ElementDict
@@ -152,6 +153,34 @@ async def get_element_url(
         return None
 
     return element_dict.url
+
+
+async def get_read_url_of_file(thread_id: str, file_name: str) -> str:
+    """Retrieve the URL for accessing an file in a thread.
+
+    Examples:
+        >>> data_layer = ChainlitDataLayer()
+        >>> url = await get_read_url_of_file(data_layer, "thread123", "audio.mp3")
+        >>> print(url)  # URL string
+
+    Args:
+        thread_id: The unique identifier of the thread containing the file.
+        file_name: The full name of the the file to retrieve, included the file extension.
+
+    Returns:
+        str: The S3 URL string of the file.
+
+    Raises:
+        ValueError: If S3 storage client is not configured in the data layer.
+    """
+    cl_data_layer = get_data_layer()
+
+    if cl_data_layer.storage_client is None:
+        raise ValueError("S3 storage client not set in data layer.")
+
+    object_key = f"threads/{thread_id}/files/{file_name}"
+
+    return await cl_data_layer.storage_client.get_read_url(object_key=object_key)
 
 
 def apply_sqlite_data_layer_fixes():

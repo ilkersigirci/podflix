@@ -6,13 +6,16 @@ from chainlit.types import ThreadDict
 from langchain_community.chat_message_histories import ChatMessageHistory
 from langfuse.callback import CallbackHandler as LangfuseCallbackHandler
 from literalai.helper import utc_now
-from loguru import logger
 
 from podflix.env_settings import env_settings
 from podflix.graph.podcast_rag import compiled_graph
-from podflix.utils.chainlit_utils.data_layer import apply_sqlite_data_layer_fixes
+from podflix.utils.chainlit_utils.data_layer import (
+    apply_sqlite_data_layer_fixes,
+    get_read_url_of_file,
+)
 from podflix.utils.chainlit_utils.general import (
     create_message_history_from_db_thread,
+    get_current_chainlit_thread_id,
     set_extra_user_session_params,
     simple_auth_callback,
 )
@@ -63,7 +66,7 @@ async def on_chat_start():
             accept=["audio/*"],
             max_files=1,
             max_size_mb=50,
-            timeout=180,
+            timeout=360,
         ).send()
 
     file = files[0]
@@ -75,25 +78,26 @@ async def on_chat_start():
 
     cl.user_session.set("audio_text", audio_text)
 
-    logger.debug(f"Audio file path: {file.path}")
-
-    # TODO: Fetch the audio url from the db using get_element_url
-    audio_url = file.path
+    # NOTE: Workaround to get s3 url of the uploaded file in the current thread
+    thread_id = get_current_chainlit_thread_id()
+    audio_url = await get_read_url_of_file(thread_id=thread_id, file_name=file.name)
 
     # Create audio element with transcript and segments
     audio_element = cl.CustomElement(
         name="AudioWithTranscript",
         props={
-            "audioUrl": audio_url,
+            "name": file.name,
+            "url": audio_url,
             "segments": segments,
         },
         display="side",
     )
 
-    system_message.content = "Audio transcribed successfully 🎉"
     system_message.elements.append(audio_element)
 
-    system_message.content += "\nAudioWithTranscript"
+    system_message.content = "Audio transcribed successfully 🎉"
+    system_message.content += "\nOfficialAudio AudioWithTranscript"
+
     await system_message.update()
 
 
