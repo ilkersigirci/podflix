@@ -130,8 +130,7 @@ services:
     environment:
       - LIBRARY_BASE_PATH=/app
       - CHAINLIT_APP_ROOT=/app/configs/chainlit
-      - POSTGRES_HOST=podflix-db
-      - POSTGRES_PORT=5432
+      - DATABASE_URL=postgresql://postgres:postgres@podflix-db:5432/postgres
     labels:
       - "traefik.enable=true"
       ## HTTP Routers
