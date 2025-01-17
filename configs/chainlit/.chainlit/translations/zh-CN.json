@@ -124,7 +124,8 @@
                     },
                     "speechButton": {
                         "start": "\u5f00\u59cb\u5f55\u97f3",
-                        "stop": "\u505c\u6b62\u5f55\u97f3"
+                        "stop": "\u505c\u6b62\u5f55\u97f3",
+                        "loading": "\u8fde\u63a5\u4e2d"
                     },
                     "SubmitButton": {
                         "sendMessage": "\u53d1\u9001\u6d88\u606f",
@@ -144,6 +145,19 @@
                         "failed": "\u5931\u8d25",
                         "feedbackUpdated": "\u53cd\u9988\u66f4\u65b0",
                         "updating": "\u6b63\u5728\u66f4\u65b0"
+                    },
+                    "copyButton": {
+                        "copyToClipboard": "\u62f7\u8d1d\u5230\u526a\u8d34\u677f",
+                        "copied": "\u5df2\u62f7\u8d1d\uff01"
+                    },
+                    "feedbackButton": {
+                        "helpful": "Helpful",
+                        "notHelpful": "Not helpful",
+                        "editFeedback": "Edit feedback"
+                    },
+                    "feedbackDialog": {
+                        "dialogTitle": "Add a comment",
+                        "submitButton": "Submit feedback"
                     }
                 },
                 "dropScreen": {

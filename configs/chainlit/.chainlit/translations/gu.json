@@ -146,6 +146,19 @@
                         "failed": "\u0aa8\u0abf\u0ab7\u0acd\u0aab\u0ab3",
                         "feedbackUpdated": "\u0aaa\u0acd\u0ab0\u0aa4\u0abf\u0ab8\u0abe\u0aa6 \u0ab8\u0ac1\u0aa7\u0abe\u0ab0\u0ac7\u0ab2 \u0a9b\u0ac7",
                         "updating": "\u0ab8\u0ac1\u0aa7\u0abe\u0ab0\u0ac0 \u0ab0\u0ab9\u0acd\u0aaf\u0abe \u0a9b\u0ac0\u0a8f"
+                    },
+                    "copyButton": {
+                        "copyToClipboard": "Copy to clipboard",
+                        "copied": "Copied!"
+                    },
+                    "feedbackButton": {
+                        "helpful": "Helpful",
+                        "notHelpful": "Not helpful",
+                        "editFeedback": "Edit feedback"
+                    },
+                    "feedbackDialog": {
+                        "dialogTitle": "Add a comment",
+                        "submitButton": "Submit feedback"
                     }
                 },
                 "dropScreen": {

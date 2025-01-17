@@ -146,6 +146,19 @@
                         "failed": "\u09ac\u09cd\u09af\u09b0\u09cd\u09a5",
                         "feedbackUpdated": "\u09ab\u09bf\u09a1\u09ac\u09cd\u09af\u09be\u0995 \u0986\u09aa\u09a1\u09c7\u099f \u09b9\u09af\u09bc\u09c7\u099b\u09c7",
                         "updating": "\u0986\u09a7\u09c1\u09a8\u09bf\u0995\u09c0\u0995\u09b0\u09a3"
+                    },
+                    "copyButton": {
+                        "copyToClipboard": "Copy to clipboard",
+                        "copied": "Copied!"
+                    },
+                    "feedbackButton": {
+                        "helpful": "Helpful",
+                        "notHelpful": "Not helpful",
+                        "editFeedback": "Edit feedback"
+                    },
+                    "feedbackDialog": {
+                        "dialogTitle": "Add a comment",
+                        "submitButton": "Submit feedback"
                     }
                 },
                 "dropScreen": {

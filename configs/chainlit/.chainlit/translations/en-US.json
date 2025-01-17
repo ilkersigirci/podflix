@@ -145,6 +145,19 @@
                         "failed": "failed",
                         "feedbackUpdated": "Feedback updated",
                         "updating": "Updating"
+                    },
+                    "copyButton": {
+                        "copyToClipboard": "Copy to clipboard",
+                        "copied": "Copied!"
+                    },
+                    "feedbackButton": {
+                        "helpful": "Helpful",
+                        "notHelpful": "Not helpful",
+                        "editFeedback": "Edit feedback"
+                    },
+                    "feedbackDialog": {
+                        "dialogTitle": "Add a comment",
+                        "submitButton": "Submit feedback"
                     }
                 },
                 "dropScreen": {
@@ -176,7 +189,7 @@
                         }
                     },
                     "DeleteThreadButton": {
-                        "confirmMessage": "This will delete the thread as well as it's messages and elements.",
+                        "confirmMessage": "This will delete the thread as well as its messages and elements.",
                         "cancel": "Cancel",
                         "confirm": "Confirm",
                         "deletingChat": "Deleting chat",
