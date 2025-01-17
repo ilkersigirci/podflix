@@ -46,7 +46,7 @@
       },
       "auth": {
         "authLogin": {
-          "title": "Uygulamaya erişmek için giriş yapın.",
+          "title": "Podflix'e giriş yapın",
           "form": {
             "email": "E-posta adresi",
             "password": "Şifre",
