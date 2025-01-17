@@ -2,7 +2,7 @@ import chainlit as cl
 from chainlit.types import ThreadDict
 from langchain_community.chat_message_histories import ChatMessageHistory
 from literalai.helper import utc_now
-from loguru import logger
+from loguru import logger  # noqa: F401
 from openai import AsyncOpenAI
 
 from podflix.env_settings import env_settings
@@ -76,8 +76,6 @@ async def on_chat_start():
 # TODO: Get dict message history from db
 @cl.on_chat_resume
 def setup_chat_resume(thread: ThreadDict):
-    # thread["metadata"] = {}
-    logger.debug(f"Type of thread metadata on chat resume: {type(thread['metadata'])}")
     message_history = create_message_history_from_db_thread(thread=thread)
 
     set_extra_user_session_params(
