@@ -101,8 +101,7 @@ async def on_chat_start():
 
     system_message.elements.append(audio_element)
 
-    system_message.content = "Audio transcribed successfully 🎉"
-    system_message.content += "\nAudioWithTranscript"
+    system_message.content = "Audio transcribed successfully 🎉 AudioWithTranscript"
 
     await system_message.update()
 
