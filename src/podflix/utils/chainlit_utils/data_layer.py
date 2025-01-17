@@ -155,7 +155,7 @@ async def get_element_url(
     return element_dict.url
 
 
-async def get_read_url_of_file(thread_id: str, file_name: str) -> str:
+async def get_read_url_of_file(thread_id: str, file_id: str) -> str:
     """Retrieve the URL for accessing an file in a thread.
 
     Examples:
@@ -165,7 +165,7 @@ async def get_read_url_of_file(thread_id: str, file_name: str) -> str:
 
     Args:
         thread_id: The unique identifier of the thread containing the file.
-        file_name: The full name of the the file to retrieve, included the file extension.
+        file_id: The file id of the file to retrieve.
 
     Returns:
         str: The S3 URL string of the file.
@@ -178,7 +178,7 @@ async def get_read_url_of_file(thread_id: str, file_name: str) -> str:
     if cl_data_layer.storage_client is None:
         raise ValueError("S3 storage client not set in data layer.")
 
-    object_key = f"threads/{thread_id}/files/{file_name}"
+    object_key = f"threads/{thread_id}/files/{file_id}"
 
     return await cl_data_layer.storage_client.get_read_url(object_key=object_key)
 

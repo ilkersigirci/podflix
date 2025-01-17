@@ -290,8 +290,8 @@ wheels = [
 
 [[package]]
 name = "chainlit"
-version = "2.0.2"
-source = { registry = "https://pypi.org/simple" }
+version = "2.0.3"
+source = { git = "https://github.com/Chainlit/chainlit.git?subdirectory=backend#fb1e646110978094fc5c92ae6020346b5f8da162" }
 dependencies = [
     { name = "aiofiles" },
     { name = "asyncer" },
@@ -315,10 +315,6 @@ dependencies = [
     { name = "uptrace" },
     { name = "uvicorn" },
     { name = "watchfiles" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/42/33/c9a2060f499ef2c196405f80be9e03fa212e56307e0345fffacc5641fb03/chainlit-2.0.2.tar.gz", hash = "sha256:ec60a83884029dfa9e2f8215a81d99627c465407ac33ef37b19c7d515d9c0e7a", size = 4637820 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/72/e4/563dbf1bc21dcda915d15ea27d739a8afff5ee861f40bc4adb67c33c56cd/chainlit-2.0.2-py3-none-any.whl", hash = "sha256:58fe3da65e892058a8e8ad97bb9dc4177173857d8c288a3de4a73271fc1b18be", size = 4704765 },
 ]
 
 [[package]]
@@ -1806,6 +1802,7 @@ dependencies = [
     { name = "prisma" },
     { name = "psycopg2-binary" },
     { name = "pydantic-settings" },
+    { name = "yt-dlp" },
 ]
 
 [package.dev-dependencies]
@@ -1834,7 +1831,7 @@ requires-dist = [
     { name = "aiosqlite", specifier = ">=0.20.0" },
     { name = "asyncpg", specifier = ">=0.30.0" },
     { name = "boto3", specifier = ">=1.35.92" },
-    { name = "chainlit", specifier = ">=2.0.2" },
+    { name = "chainlit", git = "https://github.com/Chainlit/chainlit.git?subdirectory=backend" },
     { name = "huggingface-hub", specifier = ">=0.27.0" },
     { name = "langchain", specifier = ">=0.3.13" },
     { name = "langchain-community", specifier = ">=0.3.13" },
@@ -1845,6 +1842,7 @@ requires-dist = [
     { name = "prisma", specifier = ">=0.15.0" },
     { name = "psycopg2-binary", specifier = ">=2.9.10" },
     { name = "pydantic-settings", specifier = ">=2.7.0" },
+    { name = "yt-dlp", specifier = ">=2025.1.12" },
 ]
 
 [package.metadata.requires-dev]
@@ -2917,6 +2915,15 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/7d/e3/924c3f64b6b3077889df9a1ece1ed8947e7b61b0a933f2ec93041990a677/yarl-1.18.3-cp312-cp312-win32.whl", hash = "sha256:f91c4803173928a25e1a55b943c81f55b8872f0018be83e3ad4938adffb77dd2", size = 84097 },
     { url = "https://files.pythonhosted.org/packages/34/45/0e055320daaabfc169b21ff6174567b2c910c45617b0d79c68d7ab349b02/yarl-1.18.3-cp312-cp312-win_amd64.whl", hash = "sha256:7e2ee16578af3b52ac2f334c3b1f92262f47e02cc6193c598502bd46f5cd1477", size = 90399 },
     { url = "https://files.pythonhosted.org/packages/f5/4b/a06e0ec3d155924f77835ed2d167ebd3b211a7b0853da1cf8d8414d784ef/yarl-1.18.3-py3-none-any.whl", hash = "sha256:b57f4f58099328dfb26c6a771d09fb20dbbae81d20cfb66141251ea063bd101b", size = 45109 },
+]
+
+[[package]]
+name = "yt-dlp"
+version = "2025.1.12"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/8c/16/69ca019a8346313ea141c24429322d479b28b15e8d7a23af03b0065767f1/yt_dlp-2025.1.12.tar.gz", hash = "sha256:8e7e246e2a5a2cff0a9c13db46844a37a547680702012058c94ec18fce0ca25a", size = 2916928 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/f3/9d/782c67465798478b3f8cf8c72da771e1eb0956e13b820f862b35de66d4a7/yt_dlp-2025.1.12-py3-none-any.whl", hash = "sha256:f7ea19afb64f8e457a1b9598ddb67f8deaa313bf1d57abd5612db9272ab10795", size = 3178322 },
 ]
 
 [[package]]

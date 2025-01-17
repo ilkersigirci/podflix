@@ -6,6 +6,7 @@ from chainlit.types import ThreadDict
 from langchain_community.chat_message_histories import ChatMessageHistory
 from langfuse.callback import CallbackHandler as LangfuseCallbackHandler
 from literalai.helper import utc_now
+from loguru import logger  # noqa: F401
 
 from podflix.env_settings import env_settings
 from podflix.graph.podcast_rag import compiled_graph
@@ -61,13 +62,18 @@ async def on_chat_start():
 
     # Wait for the user to upload a file
     while files is None:
-        files = await cl.AskFileMessage(
+        ask_file_message = cl.AskFileMessage(
             content="Please upload a audio file to start the conversation",
             accept=["audio/*"],
             max_files=1,
             max_size_mb=50,
             timeout=360,
-        ).send()
+        )
+        files = await ask_file_message.send()
+
+    # await ask_file_message.remove()
+    # ask_file_message.content = "DUMMY"
+    # await ask_file_message.update()
 
     file = files[0]
 
@@ -80,7 +86,7 @@ async def on_chat_start():
 
     # NOTE: Workaround to get s3 url of the uploaded file in the current thread
     thread_id = get_current_chainlit_thread_id()
-    audio_url = await get_read_url_of_file(thread_id=thread_id, file_name=file.name)
+    audio_url = await get_read_url_of_file(thread_id=thread_id, file_id=file.id)
 
     # Create audio element with transcript and segments
     audio_element = cl.CustomElement(
