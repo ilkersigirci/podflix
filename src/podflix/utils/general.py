@@ -71,7 +71,7 @@ def is_module_installed(module_name: str, throw_error: bool = False) -> bool:
 
 
 def check_lf_credentials() -> None:
-    """Check if the Langfuse credentials are correct.
+    """Check if the Langfuse credentials are correct by attempting authentication.
 
     Examples:
         >>> check_lf_credentials()
@@ -81,7 +81,8 @@ def check_lf_credentials() -> None:
         None
 
     Raises:
-        ValueError: If we can't connect to lanfuse using gived credentials.
+        ValueError: If authentication fails with provided Langfuse credentials
+        Exception: If Langfuse authentication check fails for any other reason
     """
     try:
         langfuse_obj = Langfuse()
@@ -97,14 +98,17 @@ def check_lf_credentials() -> None:
 
 
 def get_lf_project_id() -> str:
-    """Get the Langfuse project ID.
+    """Retrieve the Langfuse project ID from the first available project.
 
     Examples:
         >>> get_lf_project_id()
         'cm5a4jaff0006r8yk44cvas5a'
 
     Returns:
-        Langfuse project ID.
+        str: The unique identifier of the first Langfuse project.
+
+    Raises:
+        Exception: If no projects are found or if there's an error accessing Langfuse API
     """
     langfuse_obj = Langfuse()
     projects = langfuse_obj.client.projects.get()
@@ -112,17 +116,20 @@ def get_lf_project_id() -> str:
 
 
 def get_lf_session_url(session_id: str) -> str:
-    """Get the Langfuse session URL.
+    """Construct the full URL for a Langfuse session.
 
     Examples:
         >>> get_lf_session_url("123")
         'https://YOUR_LANFUSE_HOST/project/YOUR_PROJECT_ID/sessions/123'
 
     Args:
-        session_id: Session ID.
+        session_id: The unique identifier of the Langfuse session.
 
     Returns:
-        Langfuse session URL.
+        str: The complete URL to access the session in Langfuse UI.
+
+    Raises:
+        Exception: If there's an error retrieving the project ID
     """
     langfuse_project_id = get_lf_project_id()
 
@@ -131,17 +138,21 @@ def get_lf_session_url(session_id: str) -> str:
 
 # TODO: Find out how to get langfuse traces_id for each llm call
 def get_lf_traces_url(langchain_run_id: str) -> str:
-    """Get the Langfuse traces URL.
+    """Construct the full URL for a Langfuse trace.
 
     Examples:
         >>> get_lf_traces_url("123")
         'https://YOUR_LANFUSE_HOST/project/YOUR_PROJECT_ID/traces/123'
 
     Args:
-        langchain_run_id: Langchain run ID.
+        langchain_run_id: The unique identifier of the Langchain run.
 
     Returns:
-        Langfuse traces URL.
+        str: The complete URL to access the trace in Langfuse UI.
+
+    Raises:
+        ValueError: If langchain_run_id is None
+        Exception: If there's an error retrieving the project ID
     """
     if langchain_run_id is None:
         raise ValueError("langchain_run_id cannot be None")
