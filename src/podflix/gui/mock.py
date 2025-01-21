@@ -5,7 +5,7 @@ from chainlit.types import ThreadDict
 from langchain_community.chat_message_histories import ChatMessageHistory
 from langfuse.callback import CallbackHandler as LangfuseCallbackHandler
 from literalai.helper import utc_now
-from loguru import logger  # noqa: F401
+from loguru import logger
 
 from podflix.env_settings import env_settings
 from podflix.graph.mock import compiled_graph
@@ -21,20 +21,32 @@ from podflix.utils.graph_runner import GraphRunner
 if env_settings.enable_sqlite_data_layer is True:
     apply_sqlite_data_layer_fixes()
 
-# @cl.set_starters
-# async def set_starters() -> list[cl.Starter]:
-#     mock_starters = [
-#         StarterQuestion(
-#             label="Start",
-#             message="Start the conversation",
-#             icon="🚀",
-#         ),
-#         StarterQuestion(
-#             label="Middle",
-#             message="Middle the conversation",
-#             icon="🚀",
-#         ),
-#     ]
+
+@cl.set_starters
+async def set_starters() -> list[cl.Starter]:
+    return [
+        cl.Starter(
+            label="Mock",
+            message="Mock the conversation",
+            icon="🚀",
+        ),
+        cl.Starter(
+            label="Mock2",
+            message="Mock the conversation 2",
+            icon="🚀",
+        ),
+    ]
+
+
+mock_commands = [
+    {"id": "Picture", "icon": "image", "description": "Use DALL-E"},
+    {"id": "Search", "icon": "globe", "description": "Find on the web"},
+    {
+        "id": "Canvas",
+        "icon": "pen-line",
+        "description": "Collaborate on writing and code",
+    },
+]
 
 
 @cl.password_auth_callback
@@ -55,6 +67,8 @@ async def on_action(action: cl.Action):
 async def on_chat_start():
     set_extra_user_session_params()
 
+    await cl.context.emitter.set_commands(mock_commands)
+
 
 @cl.on_chat_resume
 def setup_chat_resume(thread: ThreadDict):
@@ -72,6 +86,12 @@ async def on_message(msg: cl.Message):
     message_history: ChatMessageHistory = cl.user_session.get("message_history")
 
     message_history.add_user_message(msg.content)
+
+    if msg.command is not None:
+        logger.debug(f"Command used: {msg.command}")
+
+        # NOTE: Removes commands from the UI
+        # await cl.context.emitter.set_commands([])
 
     assistant_message = cl.Message(
         content=" ",
