@@ -203,5 +203,10 @@ run-audio-graph:
 run-chat-graph:
 	uv run chainlit run src/podflix/gui/base_chat.py --host 0.0.0.0 --port 5000 --headless
 
-run-copilot:
-	uv run uvicorn podflix.gui.copilot.app:app --host 0.0.0.0 --port 5002
+run-fasthtml:
+	uv run uvicorn podflix.gui.fasthtml_ui.home:app --host 0.0.0.0 --port 5002
+	# uv run uvicorn podflix.gui.fasthtml_ui.copilot:app --host 0.0.0.0 --port 5002
+
+run-backend:
+	 uv run uvicorn podflix.gui.backend:app --host 0.0.0.0 --port 5000
+	# uv run uvicorn podflix.gui.backend:app --host 0.0.0.0 --port 5000 --root-path=/chat

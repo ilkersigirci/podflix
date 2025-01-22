@@ -270,3 +270,4 @@ cython_debug/
 *.sqlite
 deployment
 .files
+.sesskey
