@@ -1,6 +1,6 @@
 """Application configuration for environment variables."""
 
-from functools import partial  # noqa: F401
+from functools import partial
 from typing import Annotated, Literal  # noqa: F401
 
 from loguru import logger
@@ -21,10 +21,6 @@ CustomHttpUrlStr = Annotated[
     PlainValidator(lambda x: AnyHttpUrlAdapter.validate_strings(x)),
     AfterValidator(lambda x: str(x).rstrip("/")),
 ]
-
-# NOTE: Alternative for Literal values
-# from pydantic.functional_validators import AfterValidator
-# dummy_key: Annotated[str, AfterValidator(partial(allowed_values, values=["a", "b"]))]
 
 
 def allowed_values(v, values):
@@ -76,6 +72,7 @@ class EnvSettings(BaseSettings):
         protected_namespaces=("settings_",),
     )
 
+    chainlit_app_type: Annotated[str, AfterValidator(partial(allowed_values, values=["base_chat", "mock", "audio"]))] = "mock"
     chainlit_user_name: str = "admin"
     chainlit_user_password: str = "admin"
     embedding_host: CustomHttpUrlStr

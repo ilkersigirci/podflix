@@ -10,6 +10,7 @@ from loguru import logger
 from starlette.middleware.cors import CORSMiddleware
 from typing_extensions import Annotated
 
+from podflix.env_settings import env_settings
 from podflix.gui.fasthtml_ui.home import app as fasthtml_app
 
 app = FastAPI()
@@ -52,5 +53,8 @@ app.mount(app=fasthtml_app, path="/home")
 mount_chainlit(
     app=app,
     path="/chat",
-    target=Path(__file__).parent.joinpath("base_chat.py").absolute().as_posix(),
+    target=Path(__file__)
+    .parent.joinpath(f"{env_settings.chainlit_app_type}.py")
+    .absolute()
+    .as_posix(),
 )

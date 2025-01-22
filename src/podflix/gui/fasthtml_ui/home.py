@@ -16,41 +16,8 @@ from fasthtml.common import (
 app, rt = fast_app()
 
 
-@rt("/")
-def get():
-    hero_section = Div(
-        H1("PodFlix", cls="hero-title"),
-        P("Chat with your favorite podcasts using AI", cls="hero-subtitle"),
-        A("Try it now!", href="/chat", cls="button-primary"),
-        cls="hero-section",
-    )
-
-    features = Grid(
-        Card(
-            H3("Upload"),
-            P("Simply upload your podcast or audio file"),
-            cls="feature-card",
-        ),
-        Card(
-            H3("Transcribe"),
-            P("Advanced AI converts speech to text with high accuracy"),
-            cls="feature-card",
-        ),
-        Card(
-            H3("Chat"),
-            P("Have interactive conversations about the content"),
-            cls="feature-card",
-        ),
-        cls="features-grid",
-    )
-
-    content = Container(
-        # Div(A("Go to Chat", href="/chat", cls="chat-button"), cls="nav-bar"),
-        hero_section,
-        Div(H2("How it works", cls="section-title"), features, cls="features-section"),
-    )
-
-    styles = Style("""
+def get_style() -> Style:
+    return Style("""
         .nav-bar {
             display: flex;
             justify-content: flex-end;
@@ -143,5 +110,42 @@ def get():
             }
         }
     """)
+
+
+@rt("/")
+def get():
+    hero_section = Div(
+        H1("PodFlix", cls="hero-title"),
+        P("Chat with your favorite podcasts using AI", cls="hero-subtitle"),
+        A("Try it now!", href="/chat", cls="button-primary"),
+        cls="hero-section",
+    )
+
+    features = Grid(
+        Card(
+            H3("Upload"),
+            P("Simply upload your podcast or audio file"),
+            cls="feature-card",
+        ),
+        Card(
+            H3("Transcribe"),
+            P("Advanced AI converts speech to text with high accuracy"),
+            cls="feature-card",
+        ),
+        Card(
+            H3("Chat"),
+            P("Have interactive conversations about the content"),
+            cls="feature-card",
+        ),
+        cls="features-grid",
+    )
+
+    content = Container(
+        # Div(A("Go to Chat", href="/chat", cls="chat-button"), cls="nav-bar"),
+        hero_section,
+        Div(H2("How it works", cls="section-title"), features, cls="features-section"),
+    )
+
+    styles = get_style()
 
     return Title("PodFlix - Chat with your Podcasts"), styles, content
