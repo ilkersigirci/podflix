@@ -4,6 +4,7 @@ from typing import AsyncIterator
 import chainlit as cl
 from chainlit.types import ThreadDict
 from langchain_community.chat_message_histories import ChatMessageHistory
+from langchain_core.messages.utils import convert_to_openai_messages
 from literalai.helper import utc_now
 from loguru import logger  # noqa: F401
 from openai import AsyncOpenAI
@@ -62,14 +63,7 @@ async def settings_update(settings: cl.ChatSettings) -> None:
 
 @cl.on_chat_start
 async def on_chat_start() -> None:
-    message_history = [
-        {
-            "role": "system",
-            "content": "You are a helpful assistant. Respond to user messages using markdown.",
-        }
-    ]
-
-    set_extra_user_session_params(message_history=message_history)
+    set_extra_user_session_params()
 
     chat_settings = get_openai_chat_settings()
     cl.user_session.set("settings", OpenAIChatGenerationSettings())
@@ -77,14 +71,18 @@ async def on_chat_start() -> None:
     await chat_settings.send()
 
 
-# TODO: Get dict message history from db
 @cl.on_chat_resume
-def setup_chat_resume(thread: ThreadDict) -> None:
+async def setup_chat_resume(thread: ThreadDict) -> None:
     message_history = create_message_history_from_db_thread(thread=thread)
 
     set_extra_user_session_params(
         user_id=thread["userIdentifier"], message_history=message_history
     )
+
+    chat_settings = get_openai_chat_settings()
+    cl.user_session.set("settings", OpenAIChatGenerationSettings())
+
+    await chat_settings.send()
 
 
 async def stream_tokens(
@@ -131,7 +129,7 @@ async def on_message(msg: cl.Message) -> None:
     message_history: ChatMessageHistory = cl.user_session.get("message_history")
     settings: OpenAIChatGenerationSettings = cl.user_session.get("settings")
 
-    message_history.append({"role": "user", "content": msg.content})
+    message_history.add_user_message(msg.content)
 
     assistant_message = cl.Message(
         content="",
@@ -140,8 +138,19 @@ async def on_message(msg: cl.Message) -> None:
         created_at=utc_now(),
     )
 
+    system_message = [
+        {
+            "role": "system",
+            "content": "You are a helpful assistant called Ilkerflix. Respond to user messages using markdown.",
+        }
+    ]
+
+    messages_openai = system_message + convert_to_openai_messages(
+        message_history.messages
+    )
+
     stream = await async_openai_client.chat.completions.create(
-        messages=message_history,
+        messages=messages_openai,
         stream=True,
         response_format={"type": settings.response_format},
         **settings.model_dump(exclude={"response_format"}),
@@ -159,5 +168,5 @@ async def on_message(msg: cl.Message) -> None:
     else:
         await stream_tokens(stream=stream, assistant_message=assistant_message)
 
-    message_history.append({"role": "assistant", "content": assistant_message.content})
+    message_history.add_ai_message(assistant_message.content)
     await assistant_message.send()
