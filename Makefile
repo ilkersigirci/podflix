@@ -208,5 +208,5 @@ run-fasthtml:
 	# uv run uvicorn podflix.gui.fasthtml_ui.copilot:app --host 0.0.0.0 --port 5002
 
 run-backend:
-	 uv run uvicorn podflix.gui.backend:app --host 0.0.0.0 --port 5000
+	uv run uvicorn podflix.gui.backend:app --host 0.0.0.0 --port 5000
 	# uv run uvicorn podflix.gui.backend:app --host 0.0.0.0 --port 5000 --root-path=/chat
