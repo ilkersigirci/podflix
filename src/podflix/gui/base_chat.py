@@ -154,7 +154,7 @@ async def on_message(msg: cl.Message) -> None:
 
     if use_thinking is True:
         await handle_thinking_step(
-            stream=stream, assistant_message=assistant_message, start=start
+            stream=stream, assistant_message=assistant_message, start_time=start
         )
     else:
         await stream_tokens(stream=stream, assistant_message=assistant_message)
