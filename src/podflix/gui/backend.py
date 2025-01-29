@@ -1,14 +1,13 @@
 from pathlib import Path
 
 import chainlit as cl
-from chainlit.auth import get_current_user
 from chainlit.context import init_http_context
+from chainlit.server import UserParam
 from chainlit.utils import mount_chainlit
-from fastapi import Depends, FastAPI, Request
+from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from loguru import logger
 from starlette.middleware.cors import CORSMiddleware
-from typing_extensions import Annotated
 
 from podflix.env_settings import env_settings
 from podflix.gui.fasthtml_ui.home import app as fasthtml_app
@@ -32,7 +31,7 @@ def home():
 @app.get("/chainlit-message-test")
 async def chainlit_message_send(
     request: Request,
-    current_user: Annotated[cl.User, Depends(get_current_user)],
+    current_user: UserParam,
 ):
     init_http_context(user=current_user)
 

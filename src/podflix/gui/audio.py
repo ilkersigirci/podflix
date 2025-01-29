@@ -33,8 +33,12 @@ def auth_callback(username: str, password: str):
     return simple_auth_callback(username, password)
 
 
-@cl.step(type="tool")
+@cl.step(type="tool", name="Transcribe Audio")
 async def transcribing_tool(file: BinaryIO | Path):
+    # NOTE: Workaround to show the tool progres on the ui
+    step_message = cl.Message(content="")
+    await step_message.stream_token("Transcribing the audio file...")
+
     transcription = transcribe_audio_file(file=file, response_format="verbose_json")
     whole_text = transcription.text
 
@@ -43,6 +47,8 @@ async def transcribing_tool(file: BinaryIO | Path):
         {"id": seg.id, "start": seg.start, "end": seg.end, "text": seg.text.strip()}
         for seg in transcription.segments
     ]
+
+    await step_message.remove()
 
     return whole_text, segments
 
@@ -71,16 +77,16 @@ async def on_chat_start():
         )
         files = await ask_file_message.send()
 
-    # await ask_file_message.remove()
-    # ask_file_message.content = "DUMMY"
-    # await ask_file_message.update()
+    ask_file_message.content = ""
+    await ask_file_message.update()
 
     file = files[0]
 
-    # NOTE: Workaround to show the tool progres on the ui
-    await system_message.stream_token("Transcribing the audio file...")
-
     audio_text, segments = await transcribing_tool(file=Path(file.path))
+
+    # await cl.context.emitter.send_toast(
+    #     message="Audio transcribed successfully", type="info"
+    # )
 
     cl.user_session.set("audio_text", audio_text)
 
@@ -100,10 +106,9 @@ async def on_chat_start():
     )
 
     system_message.elements.append(audio_element)
+    system_message.content = "AudioWithTranscript"
 
-    system_message.content = "Audio transcribed successfully 🎉 AudioWithTranscript"
-
-    await system_message.update()
+    await system_message.send()
 
 
 @cl.on_chat_resume

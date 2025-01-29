@@ -112,6 +112,10 @@ services:
     depends_on:
       podflix-db:
         condition: service_healthy
+      # langfuse-server:
+      #   condition: service_healthy
+      # localstack:
+      #   condition: service_healthy
     develop:
       watch:
         # Sync the working directory with the `/app` directory in the container
@@ -216,6 +220,11 @@ services:
       # - LANGFUSE_DEFAULT_PROJECT_ROLE=ADMIN
       # - AUTH_DISABLE_SIGNUP=true
       # - AUTH_DISABLE_USERNAME_PASSWORD=true
+    # healthcheck:
+    #   test: "curl -f http://langfuse-server:3000/api/public/health"
+    #   interval: 10s
+    #   timeout: 5s
+    #   retries: 3
     labels:
       - "traefik.enable=true"
       ## HTTP Routers
@@ -248,7 +257,7 @@ services:
     volumes:
       - ./deployment/volumes/huggingface:/root/.cache/huggingface
     healthcheck: # NOTE: Workaround for healthcheck since both curl and wget are not available
-      test: ["CMD-SHELL", "python3 -c \"import http.client; conn = http.client.HTTPConnection('localhost:8000'); conn.request('GET', '/health'); response = conn.getresponse(); exit(0 if response.status == 200 else 1)\""]
+      test: ["CMD", "curl", "--fail", "http://0.0.0.0:8000/health"]
       interval: 10s
       timeout: 5s
       retries: 3

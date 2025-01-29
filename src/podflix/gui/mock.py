@@ -69,6 +69,19 @@ async def on_chat_start():
 
     await cl.context.emitter.set_commands(mock_commands)
 
+    sidebar_mock_elements = [
+        cl.Text(content="Here is a side text document", name="text1"),
+        # cl.Image(
+        #     path=f"{env_settings.library_base_path}/configs/chainlit/public/banner.png",
+        #     name="banner",
+        # ),
+        # cl.Pdf(path="./dummy.pdf", name="pdf1"),
+        cl.Text(content="Here is a page text document 2", name="text2"),
+    ]
+
+    await cl.ElementSidebar.set_elements(sidebar_mock_elements)
+    await cl.ElementSidebar.set_title("Test title")
+
 
 @cl.on_chat_resume
 def setup_chat_resume(thread: ThreadDict):
