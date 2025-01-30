@@ -33,7 +33,7 @@ def auth_callback(username: str, password: str):
     return simple_auth_callback(username, password)
 
 
-@cl.step(type="tool", name="Transcribe Audio")
+@cl.step(name="Transcribe Audio", type="tool")
 async def transcribing_tool(file: BinaryIO | Path):
     # NOTE: Workaround to show the tool progres on the ui
     step_message = cl.Message(content="")

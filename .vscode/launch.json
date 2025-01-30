@@ -1,53 +1,67 @@
 {
-  "version": "0.2.0",
-  "configurations": [
-    {
-      "name": "Chainlit Mock",
-      "type": "debugpy",
-      "request": "launch",
-      // "program": "${file}",
-      "console": "integratedTerminal",
-      "module": "chainlit",
-      "justMyCode": false,
-      "args": [
-        "run",
-        "--headless",
-        "--port",
-        "5000",
-        // "${file}",
-        "${workspaceFolder}/src/podflix/gui/mock.py"
-      ],
-    },
-    {
-      "name": "Chainlit Audio",
-      "type": "debugpy",
-      "request": "launch",
-      // "program": "${file}",
-      "console": "integratedTerminal",
-      "module": "chainlit",
-      "justMyCode": false,
-      "args": [
-        "run",
-        "--headless",
-        "--port",
-        "5000",
-        // "${file}",
-        "${workspaceFolder}/src/podflix/gui/audio.py"
-      ],
-    },
-    {
-      "name": "Debug Current File",
-      "type": "debugpy",
-      "request": "launch",
-      "program": "${file}",
-      "console": "integratedTerminal",
-      "justMyCode": false,
-      // "env": {
-      //   "PYTHONPATH": "${workspaceFolder}/src"
-      // },
-      // "purpose": [
-      //   "debug-in-terminal"
-      // ],
-    }
-  ]
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug Backend",
+            "type": "debugpy",
+            "request": "launch",
+            // "program": "${file}",
+            "console": "integratedTerminal",
+            "module": "uvicorn",
+            "justMyCode": false,
+            "args": [
+                "podflix.gui.backend:app",
+                "--port",
+                "5000"
+            ],
+        },
+        {
+            "name": "Chainlit Mock",
+            "type": "debugpy",
+            "request": "launch",
+            // "program": "${file}",
+            "console": "integratedTerminal",
+            "module": "chainlit",
+            "justMyCode": false,
+            "args": [
+                "run",
+                "--headless",
+                "--port",
+                "5000",
+                // "${file}",
+                "${workspaceFolder}/src/podflix/gui/mock.py"
+            ],
+        },
+        {
+            "name": "Chainlit Audio",
+            "type": "debugpy",
+            "request": "launch",
+            // "program": "${file}",
+            "console": "integratedTerminal",
+            "module": "chainlit",
+            "justMyCode": false,
+            "args": [
+                "run",
+                "--headless",
+                "--port",
+                "5000",
+                // "${file}",
+                "${workspaceFolder}/src/podflix/gui/audio.py"
+            ],
+        },
+        {
+            "name": "Debug Current File",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            // "env": {
+            //   "PYTHONPATH": "${workspaceFolder}/src"
+            // },
+            // "purpose": [
+            //   "debug-in-terminal"
+            // ],
+        }
+    ]
 }

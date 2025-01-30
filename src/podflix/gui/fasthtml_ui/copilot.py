@@ -11,6 +11,7 @@ def get():
         Script("""
             window.mountChainlitWidget({
                 chainlitServer: "http://localhost:5000/chat",
+                customCssUrl: '/public/copilot.css',
             });
         """),
     )

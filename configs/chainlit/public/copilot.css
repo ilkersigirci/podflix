@@ -1,0 +1,7 @@
+#cl-shadow-root .copilot-container-expanded {
+    height: min(900px,calc(100vh - 150px));
+}
+
+#cl-shadow-root .copilot-container-collapsed {
+    width: min(600px,80vw);
+}
