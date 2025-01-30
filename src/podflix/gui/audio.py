@@ -84,9 +84,9 @@ async def on_chat_start():
 
     audio_text, segments = await transcribing_tool(file=Path(file.path))
 
-    # await cl.context.emitter.send_toast(
-    #     message="Audio transcribed successfully", type="info"
-    # )
+    await cl.context.emitter.send_toast(
+        message="Audio transcribed successfully", type="info"
+    )
 
     cl.user_session.set("audio_text", audio_text)
 

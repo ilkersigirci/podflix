@@ -71,16 +71,14 @@ async def on_chat_start():
 
     sidebar_mock_elements = [
         cl.Text(content="Here is a side text document", name="text1"),
-        # cl.Image(
-        #     path=f"{env_settings.library_base_path}/configs/chainlit/public/banner.png",
-        #     name="banner",
-        # ),
-        # cl.Pdf(path="./dummy.pdf", name="pdf1"),
-        cl.Text(content="Here is a page text document 2", name="text2"),
+        cl.Image(
+            path=f"{env_settings.library_base_path}/configs/chainlit/public/banner.png",
+            name="banner",
+        ),
     ]
 
     await cl.ElementSidebar.set_elements(sidebar_mock_elements)
-    await cl.ElementSidebar.set_title("Test title")
+    await cl.ElementSidebar.set_title("Sidebar Mock Title")
 
 
 @cl.on_chat_resume
@@ -97,8 +95,6 @@ async def on_message(msg: cl.Message):
     lf_cb_handler: LangfuseCallbackHandler = cl.user_session.get("lf_cb_handler")
     session_id: str = cl.user_session.get("session_id")
     message_history: ChatMessageHistory = cl.user_session.get("message_history")
-
-    message_history.add_user_message(msg.content)
 
     if msg.command is not None:
         logger.debug(f"Command used: {msg.command}")
@@ -149,6 +145,7 @@ async def on_message(msg: cl.Message):
     assistant_message.actions.extend(actions)
 
     assistant_message.content += " DUMMY_ELEMENT_NAME"
-    await assistant_message.update()
+    await assistant_message.send()
 
+    message_history.add_user_message(msg.content)
     message_history.add_ai_message(assistant_message.content)
