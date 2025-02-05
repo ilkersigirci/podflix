@@ -77,9 +77,14 @@ if __name__ == "__main__":
     #     repo_id=repo_id, revision=revision, ignore_patterns=ignore_patterns
     # )
 
-    # Example GGUF download
+    # Example GGUF Qwen download
     repo_id = "Qwen/Qwen2-0.5B-Instruct-GGUF"
     filename = "qwen2-0_5b-instruct-fp16.gguf"
+    revision = "main"
+
+    # Example GGUF Deepseek download
+    repo_id = "bartowski/DeepSeek-R1-Distill-Qwen-1.5B-GGUF"
+    filename = "DeepSeek-R1-Distill-Qwen-1.5B-Q8_0.gguf"
     revision = "main"
 
     gguf_path = download_gguf_hf(

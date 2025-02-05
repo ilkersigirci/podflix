@@ -473,7 +473,7 @@ services:
       - "traefik.enable=true"
       ## HTTP Routers
       - "traefik.http.routers.localstack-rtr.entrypoints=websecure"
-      - "traefik.http.routers.localstack-rtr.rule=Host(`s3.$DOMAIN_NAME`)"
+      - "traefik.http.routers.localstack-rtr.rule=Host(`s3-podflix.$DOMAIN_NAME`)"
       ## HTTP Services
       - "traefik.http.routers.localstack-rtr.service=localstack-svc"
       - "traefik.http.services.localstack-svc.loadbalancer.server.port=4566"

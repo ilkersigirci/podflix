@@ -63,22 +63,17 @@ async def on_action(action: cl.Action):
     # await action.remove()
 
 
+@cl.step(name="Mock Tool", type="tool")
+async def mock_tool():
+    step_message = cl.Message(content="")
+    await step_message.stream_token("Streaming inside the mock tool.")
+
+
 @cl.on_chat_start
 async def on_chat_start():
     set_extra_user_session_params()
 
     await cl.context.emitter.set_commands(mock_commands)
-
-    sidebar_mock_elements = [
-        cl.Text(content="Here is a side text document", name="text1"),
-        cl.Image(
-            path=f"{env_settings.library_base_path}/configs/chainlit/public/banner.png",
-            name="banner",
-        ),
-    ]
-
-    await cl.ElementSidebar.set_elements(sidebar_mock_elements)
-    await cl.ElementSidebar.set_title("Sidebar Mock Title")
 
 
 @cl.on_chat_resume
@@ -101,6 +96,8 @@ async def on_message(msg: cl.Message):
 
         # NOTE: Removes commands from the UI
         # await cl.context.emitter.set_commands([])
+
+    # await mock_tool()
 
     assistant_message = cl.Message(
         content=" ",
@@ -145,7 +142,7 @@ async def on_message(msg: cl.Message):
     assistant_message.actions.extend(actions)
 
     assistant_message.content += " DUMMY_ELEMENT_NAME"
-    await assistant_message.send()
+    await assistant_message.update()
 
     message_history.add_user_message(msg.content)
     message_history.add_ai_message(assistant_message.content)

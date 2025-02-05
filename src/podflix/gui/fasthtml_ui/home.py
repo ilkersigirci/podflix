@@ -1,3 +1,5 @@
+import os
+
 from fasthtml.common import (
     H1,
     H2,
@@ -8,12 +10,16 @@ from fasthtml.common import (
     Div,
     Grid,
     P,
+    Script,
     Style,
     Title,
+    Titled,
     fast_app,
 )
 
 app, rt = fast_app()
+
+CHAINLIT_APP_ROOT = os.environ.get("CHAINLIT_APP_ROOT", "")
 
 
 def get_style() -> Style:
@@ -149,3 +155,17 @@ def get():
     styles = get_style()
 
     return Title("PodFlix - Chat with your Podcasts"), styles, content
+
+
+@rt("/copilot")
+def get():  # noqa: F811
+    return Titled(
+        "Chainlit Copilot Demo",
+        Script(src="http://localhost:5000/chat/copilot/index.js"),
+        Script("""
+            window.mountChainlitWidget({
+                chainlitServer: "http://localhost:5000/chat",
+                customCssUrl: /public/copilot.css',
+            });
+        """),
+    )

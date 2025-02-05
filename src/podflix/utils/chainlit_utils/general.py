@@ -77,6 +77,8 @@ def create_message_history_from_db_thread(
             message_history.add_user_message(steps_message["output"])
         elif steps_message["type"] == "assistant_message":
             message_history.add_ai_message(steps_message["output"])
+        else:
+            logger.warning(f"Unknown message type: {steps_message['type']}")
 
     return message_history
 
@@ -129,3 +131,17 @@ def set_extra_user_session_params(
 def get_current_chainlit_thread_id() -> str:
     """Get the current Chainlit thread ID."""
     return cl.context.session.thread_id
+
+
+async def set_mock_elements():
+    """Set mock elements for the sidebar."""
+    sidebar_mock_elements = [
+        cl.Text(content="Here is a side text document", name="text1"),
+        cl.Image(
+            path=f"{env_settings.library_base_path}/configs/chainlit/public/banner.png",
+            name="banner",
+        ),
+    ]
+
+    await cl.ElementSidebar.set_elements(sidebar_mock_elements)
+    await cl.ElementSidebar.set_title("Sidebar Mock Title")
