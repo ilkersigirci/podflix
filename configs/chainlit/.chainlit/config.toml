@@ -77,10 +77,11 @@ custom_meta_image_url = "https://chainlit-cloud.s3.eu-west-3.amazonaws.com/logo/
 # Be careful: If this is a relative path, it should not start with a slash.
 # custom_build = "./public/build"
 
+# Specify optional one or more custom links in the header.
 [[UI.header_links]]
     name = "Github"
     icon_url = "https://github.com/favicon.ico"
     url = "https://github.com/ilkersigirci/podflix"
 
 [meta]
-generated_by = "2.0.0"
+generated_by = "2.2.0"

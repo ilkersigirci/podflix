@@ -117,7 +117,8 @@
         "sidebar": {
             "title": "Geçmiş Sohbetler",
             "filters": {
-                "search": "Ara"
+                "search": "Ara",
+                "placeholder": "Konuşmalarda ara..."
             },
             "timeframes": {
                 "today": "Bugün",
@@ -162,7 +163,12 @@
     "navigation": {
         "header": {
             "chat": "Sohbet",
-            "readme": "Beni Oku"
+            "readme": "Beni Oku",
+            "theme": {
+                "light": "Açık Tema",
+                "dark": "Koyu Tema",
+                "system": "Sistemi Takip Et"
+            }
         },
         "newChat": {
             "button": "Yeni Sohbet",
@@ -187,5 +193,22 @@
         "success": {
             "saved": "Başarıyla kaydedildi"
         }
+    },
+    "alerts": {
+        "info": "Bilgi",
+        "note": "Not",
+        "tip": "İpucu",
+        "important": "Önemli",
+        "warning": "Uyarı",
+        "caution": "Dikkat",
+        "debug": "Hata Ayıklama",
+        "example": "Örnek",
+        "success": "Başarılı",
+        "help": "Yardım",
+        "idea": "Fikir",
+        "pending": "Beklemede",
+        "security": "Güvenlik",
+        "beta": "Beta",
+        "best-practice": "En İyi Uygulama"
     }
 }
