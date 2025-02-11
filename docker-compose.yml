@@ -252,6 +252,7 @@ services:
       - DEFAULT_RESPONSE_FORMAT=json
       # - DEFAULT_RESPONSE_FORMAT=srt # vtt
       - MAX_MODELS=1
+      - TTL=-1 # Never unload the model
       - WHISPER__MODEL=$WHISPER_MODEL_NAME
       - WHISPER__COMPUTE_TYPE=default
       # - WHISPER__COMPUTE_TYPE=bfloat16

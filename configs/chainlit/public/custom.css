@@ -2,6 +2,10 @@ a[href*='https://github.com/Chainlit/chainlit'] {
     visibility: hidden;
 }
 
+#readme-button {
+    display: none;
+}
+
 /* a img[alt="watermark"] {
     display: none;
 }
