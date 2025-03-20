@@ -39,17 +39,26 @@ async def set_starters() -> list[cl.Starter]:
 
 
 @cl.set_chat_profiles
-async def chat_profile():
+async def chat_profile(current_user: cl.User):
+    if current_user.metadata["role"] != "admin":
+        return [
+            cl.ChatProfile(
+                name="GPT-4o-mini",
+                markdown_description="Model is **GPT-4o-mini**",
+                icon="https://picsum.photos/200",
+            ),
+        ]
+
     return [
         cl.ChatProfile(
-            name="GPT-3.5",
-            markdown_description="The underlying LLM model is **GPT-3.5**.",
-            icon="https://picsum.photos/200",
+            name="GPT-4",
+            markdown_description="Model is **GPT-4**",
+            icon="https://picsum.photos/250",
         ),
         cl.ChatProfile(
-            name="GPT-4",
-            markdown_description="The underlying LLM model is **GPT-4**.",
-            icon="https://picsum.photos/250",
+            name="GPT-4.5",
+            markdown_description="Model is **GPT-4.5**",
+            icon="https://picsum.photos/200",
         ),
     ]
 
