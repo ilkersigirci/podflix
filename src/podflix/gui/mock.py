@@ -38,13 +38,40 @@ async def set_starters() -> list[cl.Starter]:
     ]
 
 
+@cl.set_chat_profiles
+async def chat_profile():
+    return [
+        cl.ChatProfile(
+            name="GPT-3.5",
+            markdown_description="The underlying LLM model is **GPT-3.5**.",
+            icon="https://picsum.photos/200",
+        ),
+        cl.ChatProfile(
+            name="GPT-4",
+            markdown_description="The underlying LLM model is **GPT-4**.",
+            icon="https://picsum.photos/250",
+        ),
+    ]
+
+
 mock_commands = [
-    {"id": "Picture", "icon": "image", "description": "Use DALL-E"},
-    {"id": "Search", "icon": "globe", "description": "Find on the web"},
+    {
+        "id": "Search",
+        "icon": "globe",
+        "description": "Find on the web",
+        "button": True,
+    },
+    {
+        "id": "Picture",
+        "icon": "image",
+        "description": "Use DALL-E",
+        "button": False,
+    },
     {
         "id": "Canvas",
         "icon": "pen-line",
         "description": "Collaborate on writing and code",
+        "button": False,
     },
 ]
 
@@ -74,6 +101,11 @@ async def on_chat_start():
     set_extra_user_session_params()
 
     await cl.context.emitter.set_commands(mock_commands)
+
+    # chat_profile = cl.user_session.get("chat_profile")
+    # await cl.Message(
+    #     content=f"Starting chat using the {chat_profile} chat profile"
+    # ).send()
 
 
 @cl.on_chat_resume
