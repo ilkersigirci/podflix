@@ -39,7 +39,9 @@ async def transcribing_tool(file: BinaryIO | Path):
     step_message = cl.Message(content="")
     await step_message.stream_token("Transcribing the audio file...")
 
-    transcription = transcribe_audio_file(file=file, response_format="verbose_json")
+    transcription = await transcribe_audio_file(
+        file=file, response_format="verbose_json"
+    )
     whole_text = transcription.text
 
     # Format segments for the UI

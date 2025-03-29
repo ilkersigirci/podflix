@@ -6,7 +6,7 @@ from typing import Any, BinaryIO
 from langchain_core.language_models.fake_chat_models import FakeListChatModel
 from langchain_core.output_parsers import StrOutputParser
 from langchain_openai import ChatOpenAI
-from openai import OpenAI
+from openai import AsyncOpenAI
 from openai.types import AudioResponseFormat
 from openai.types.audio.transcription import Transcription
 from openai.types.audio.transcription_verbose import TranscriptionVerbose
@@ -80,7 +80,7 @@ def get_chat_model(
     )
 
 
-def transcribe_audio_file(
+async def transcribe_audio_file(
     file: BinaryIO | Path,
     model_name: str | None = None,
     response_format: AudioResponseFormat = "verbose_json",
@@ -115,7 +115,7 @@ def transcribe_audio_file(
     else:
         openai_api_key = "DUMMY_KEY"
 
-    client = OpenAI(
+    client = AsyncOpenAI(
         base_url=f"{env_settings.whisper_api_base}/v1", api_key=openai_api_key
     )
 
@@ -123,7 +123,7 @@ def transcribe_audio_file(
         file = file.open("rb")
 
     try:
-        return client.audio.transcriptions.create(
+        return await client.audio.transcriptions.create(
             model=model_name, file=file, response_format=response_format
         )
     finally:
