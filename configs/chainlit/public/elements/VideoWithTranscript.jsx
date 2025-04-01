@@ -88,6 +88,11 @@ export default function VideoWithTranscript() {
                             )}
                         </div>
                     </div>
+                </div>
+            </CardHeader>
+            <CardContent className="flex-1 p-0">
+                <div className="flex items-center p-4 pb-2">
+                    <h3 className="text-lg font-medium">Transcript</h3>
                     <TooltipProvider>
                         <Tooltip>
                             <TooltipTrigger asChild>
@@ -106,8 +111,6 @@ export default function VideoWithTranscript() {
                         </Tooltip>
                     </TooltipProvider>
                 </div>
-            </CardHeader>
-            <CardContent className="flex-1 p-0">
                 <ScrollArea className="h-full w-full rounded-md border p-4">
                     <div className="space-y-2">
                         {props.segments.map((segment) => (
