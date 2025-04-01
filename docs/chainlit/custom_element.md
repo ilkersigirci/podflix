@@ -2,7 +2,7 @@
 title: "Custom"
 ---
 
-The `CustomElement` class allows you to render a custom `.jsx` snippet. The `.jsx` file should be placed in `public/element/ELEMENT_NAME.jsx`.
+The `CustomElement` class allows you to render a custom `.jsx` snippet. The `.jsx` file should be placed in `public/elements/ELEMENT_NAME.jsx`.
 
 ## Attributes
 
@@ -57,6 +57,7 @@ Only use available packages for imports. Here is the full list:
 - `react`
 - `sonner`
 - `zod`
+- `recoil`
 - `react-hook-form`
 - `lucide-react`
 - `@/components/ui/accordion`
@@ -91,7 +92,7 @@ Only use available packages for imports. Here is the full list:
 
 ### Available APIs
 
-Chainlit exposes the following APIs to make the custom element interactive.
+Chainlit exposes the following APIs globally to make the custom element interactive.
 
 ```ts
 interface APIs {
@@ -99,12 +100,14 @@ interface APIs {
     updateElement: (nextProps: Record<string, any>) => Promise<{success: boolean}>;
     // Delete the element entirely.
     deleteElement: () => Promise<{success: boolean}>;
-    // Call an action defined in the Chainlit
+    // Call an action defined in the Chainlit app
     callAction: (action: {name: string, payload: Record<string, unknown>}) =>Promise<{success: boolean}>;
+    // Send a user message
+    sendUserMessage: (message: string) => void;
 }
 ```
 
-### Example of a Counter Element:
+### Example of a Counter Element
 
 ```jsx
 import { Button } from "@/components/ui/button"
@@ -217,3 +220,62 @@ Finally, we start the application with `chainlit run app.py` and send a first me
 <Frame caption="The LinearTicket custom element rendered.">
   <img src="/images/custom-element.png" />
 </Frame>
+
+## Advanced
+
+### Update Props from Python
+
+To update a custom element props from the python code, you can store the element instance in the user session and call `.update()` on it.
+
+```python
+import chainlit as cl
+
+@cl.on_chat_start
+async def start():
+    element = cl.CustomElement(name="Foo", props={"foo": "bar"})
+    cl.user_session.set("element", element)
+
+@cl.on_message
+async def on_message():
+    element = cl.user_session.get("element")
+    element.props["foo"] = "baz"
+    await element.update()
+```
+
+### Call a Function from Python
+
+If you need to call a function directly from the python code, you can use `cl.CopilotFunction`.
+
+```python call_func.py
+import chainlit as cl
+
+@cl.on_chat_start
+async def start():
+    element = cl.CustomElement(name="CallFn")
+    await cl.Message(content="Hello", elements=[element]).send()
+
+@cl.on_message
+async def on_msg(msg: cl.Message):
+    fn = cl.CopilotFunction(name="test", args={"content": msg.content})
+    res = await fn.acall()
+```
+
+```jsx CallFn.jsx
+import { useEffect } from 'react';
+import { useRecoilValue } from 'recoil';
+import { callFnState } from '@chainlit/react-client';
+
+export default function CallFnExample() {
+    const callFn = useRecoilValue(callFnState);
+
+    useEffect(() => {
+        if (callFn?.name === "test") {
+          // Replace the console log with your actual function
+          console.log("Function called with", callFn.args.content)
+          callFn.callback()
+        }
+      }, [callFn]);
+
+      return null
+}
+```

@@ -128,12 +128,15 @@ async def on_chat_start():
         thread_id = get_current_chainlit_thread_id()
         audio_url = await get_read_url_of_file(thread_id=thread_id, file_id=file.id)
         name = file.name
+        element_name = "AudioWithTranscript"
     elif chat_profile == "Youtube.Audio":
         url = "https://www.youtube.com/watch?v=7ARBJQn6QkM"
 
         audio_text, segments = await transcribing_tool_yt(url=url)
         audio_url = url
         name = url.split("v=")[-1]
+
+        element_name = "VideoWithTranscript"
     else:
         raise ValueError(f"Unknown chat profile: {chat_profile}")
 
@@ -143,9 +146,9 @@ async def on_chat_start():
 
     cl.user_session.set("audio_text", audio_text)
 
-    # Create audio element with transcript and segments
-    audio_element = cl.CustomElement(
-        name="AudioWithTranscript",
+    # Create an element with transcript and segments
+    element = cl.CustomElement(
+        name=element_name,
         props={
             "name": name,
             "url": audio_url,
@@ -154,8 +157,8 @@ async def on_chat_start():
         display="side",
     )
 
-    system_message.elements.append(audio_element)
-    system_message.content = "AudioWithTranscript"
+    system_message.elements.append(element)
+    system_message.content = element_name
 
     await system_message.send()
 
