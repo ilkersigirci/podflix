@@ -12,7 +12,7 @@ session_timeout = 3600
 # Duration (in seconds) of the user session expiry
 user_session_timeout = 1296000  # 15 days
 
-# Enable third parties caching (e.g LangChain cache)
+# Enable third parties caching (e.g., LangChain cache)
 cache = false
 
 # Authorized origins
@@ -74,11 +74,18 @@ cot = "full"
 # The CSS file can be served from the public directory or via an external link.
 custom_css = "/public/custom.css"
 
+# Specify additional attributes for a custom CSS file
+# custom_css_attributes = "media=\"print\""
+
 # Specify a JavaScript file that can be used to customize the user interface.
 # The JavaScript file can be served from the public directory.
 # custom_js = "/public/test.js"
 
+# Specify additional attributes for custom JS file
+# custom_js_attributes = "async type = \"module\""
+
 # Custom login page image, relative to public directory or external URL
+# login_page_image = "/public/custom-background.jpg"
 # login_page_image = "banner-landpage.jpg"
 login_page_image = "https://images.unsplash.com/photo-1485579149621-3123dd979885?q=80&w=2531&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
 
@@ -101,4 +108,4 @@ login_page_image_dark_filter = "contrast-200 blur-sm"
     url = "https://github.com/ilkersigirci/podflix"
 
 [meta]
-generated_by = "2.4.400"
+generated_by = "2.5.5"
