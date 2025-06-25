@@ -103,7 +103,8 @@ login_page_image_dark_filter = "contrast-200 blur-sm"
 
 # Specify optional one or more custom links in the header.
 [[UI.header_links]]
-    name = "Github"
+    name = "Project Github"
+    display_name = "Github"
     icon_url = "https://github.com/favicon.ico"
     url = "https://github.com/ilkersigirci/podflix"
 
