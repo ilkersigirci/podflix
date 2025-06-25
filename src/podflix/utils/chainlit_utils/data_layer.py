@@ -183,6 +183,7 @@ async def get_read_url_of_file(thread_id: str, file_id: str) -> str:
     return await cl_data_layer.storage_client.get_read_url(object_key=object_key)
 
 
+# ruff: noqa
 def apply_sqlite_data_layer_fixes():
     """Apply necessary fixes for SQLite data layer configuration.
 

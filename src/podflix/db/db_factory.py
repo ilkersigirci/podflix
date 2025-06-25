@@ -4,6 +4,8 @@ import os
 from abc import ABC, abstractmethod
 from pathlib import Path
 
+from sqlalchemy import create_engine
+
 from podflix.env_settings import env_settings
 
 
@@ -40,8 +42,6 @@ class SqlAlchemyDBInterface(ABC):
         Raises:
             Exception: If database connection fails, with details about the error.
         """
-        from sqlalchemy import create_engine
-
         try:
             engine = create_engine(self.sync_connection())
             with engine.connect() as conn:
