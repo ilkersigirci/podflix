@@ -89,7 +89,7 @@ class TranscriptionFormatter(Formatter):
         ]
 
 
-def fetch_youtube_transcription(video_url_or_id: str) -> Transcription:
+async def fetch_youtube_transcription(video_url_or_id: str) -> Transcription:
     """Fetch YouTube transcript using youtube_transcript_api and convert to Transcription model.
 
     Args:
@@ -99,7 +99,7 @@ def fetch_youtube_transcription(video_url_or_id: str) -> Transcription:
         Transcription: A Transcription pydantic model with segments having start/end times
 
     Example:
-        >>> transcription = fetch_youtube_transcript_as_transcription("dQw4w9WgXcQ")
+        >>> transcription = await fetch_youtube_transcript_as_transcription("dQw4w9WgXcQ")
         >>> isinstance(transcription, Transcription)
         True
         >>> len(transcription.segments) > 0
@@ -108,11 +108,19 @@ def fetch_youtube_transcription(video_url_or_id: str) -> Transcription:
     video_id_match = re.search(r"(?:v=|/)([a-zA-Z0-9_-]{11})", video_url_or_id)
     video_id = video_id_match.group(1) if video_id_match else video_url_or_id
 
-    api = YouTubeTranscriptApi()
-    transcript = api.fetch(video_id)
+    # Run the synchronous API call in an executor to make it async
+    loop = asyncio.get_running_loop()
+    with ProcessPoolExecutor() as executor:
+        api = YouTubeTranscriptApi()
+        transcript = await loop.run_in_executor(
+            executor, functools.partial(api.fetch, video_id)
+        )
 
     formatter = TranscriptionFormatter()
     return formatter.format_transcript(transcript)
+
+
+### OLDER FUNCTIONS ###
 
 
 def download_youtube_audio(
