@@ -428,27 +428,39 @@ services:
       - "traefik.http.services.hf_rerank-svc.loadbalancer.server.port=80"
 
   ############## BLOB STORAGE CLIENT #####################
-  localstack:
-    image: gresau/localstack-persist:3
-    container_name: localstack
+  minio:
+    image: minio/minio:RELEASE.2025-04-22T22-12-26Z
+    container_name: minio
     restart: ${RESTART_POLICY:-unless-stopped}
-    environment:
-      DEBUG: 0
-      SERVICES: s3
-      CREATED_BUCKET_NAME: $BUCKET_NAME
-      APP_AWS_REGION: $APP_AWS_REGION
+    command: server /data --console-address ":9001"
     networks:
       - t3_proxy
       - podflix-network
+    security_opt:
+      - no-new-privileges:true
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./scripts/create_s3_bucket.sh:/etc/localstack/init/ready.d/script.sh
-      - ./deployment/volumes/localstack:/persisted-data
+      - ./deployment/volumes/minio:/data
+    environment:
+      MINIO_ROOT_USER: admin
+      MINIO_ROOT_PASSWORD: password
     labels:
-      - "traefik.enable=true"
+      traefik.enable: "true"
+      ### API Labels ###
       ## HTTP Routers
-      - "traefik.http.routers.localstack-rtr.entrypoints=websecure"
-      - "traefik.http.routers.localstack-rtr.rule=Host(`s3-podflix.$DOMAIN_NAME`)"
+      traefik.http.routers.minio-api-rtr.entrypoints: "websecure"
+      # - "traefik.http.routers.minio-api-rtr.rule=Host(`minio.$DOMAIN_NAME`) && PathPrefix(`/api`)"
+      traefik.http.routers.minio-api-rtr.rule: "Host(`minio.$DOMAIN_NAME`)"
+      ## Middlewares
+      traefik.http.routers.minio-api-rtr.middlewares: "chain-no-auth@file"
       ## HTTP Services
-      - "traefik.http.routers.localstack-rtr.service=localstack-svc"
-      - "traefik.http.services.localstack-svc.loadbalancer.server.port=4566"
+      traefik.http.routers.minio-api-rtr.service: "minio-api-svc"
+      traefik.http.services.minio-api-svc.loadbalancer.server.port: "9000"
+      ### Web UI Labels ###
+      ## HTTP Routers
+      traefik.http.routers.minio-ui-rtr.entrypoints: "websecure"
+      traefik.http.routers.minio-ui-rtr.rule: "Host(`minio-ui.$DOMAIN_NAME`)"
+      ## Middlewares
+      traefik.http.routers.minio-ui-rtr.middlewares: "chain-tinyauth@file"
+      ## HTTP Services
+      traefik.http.routers.minio-ui-rtr.service: "minio-ui-svc"
+      traefik.http.services.minio-ui-svc.loadbalancer.server.port: "9001"
