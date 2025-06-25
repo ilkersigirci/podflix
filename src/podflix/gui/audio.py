@@ -23,7 +23,7 @@ from podflix.utils.chainlit_utils.general import (
 from podflix.utils.general import get_lf_traces_url
 from podflix.utils.graph_runner import GraphRunner
 from podflix.utils.model import transcribe_audio_file
-from podflix.utils.youtube import convert_vtt_to_segments, download_youtube_subtitles
+from podflix.utils.youtube import fetch_youtube_transcription
 
 if env_settings.enable_sqlite_data_layer is True:
     apply_sqlite_data_layer_fixes()
@@ -78,8 +78,7 @@ async def transcribing_tool_yt(url: str):
     step_message = cl.Message(content="")
     await step_message.stream_token("Transcribing the youtube video...")
 
-    vtt_content = await download_youtube_subtitles(url=url)
-    transcription = convert_vtt_to_segments(vtt_content=vtt_content)
+    transcription = await fetch_youtube_transcription(video_url_or_id=url)
     whole_text = transcription.text
 
     # Format segments for the UI
