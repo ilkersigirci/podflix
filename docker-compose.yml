@@ -428,32 +428,6 @@ services:
       - "traefik.http.services.hf_rerank-svc.loadbalancer.server.port=80"
 
   ############## BLOB STORAGE CLIENT #####################
-  # NOTE: Persistency is a pro feature, hence official image is not used
-  # localstack-s3:
-  #   image: localstack/localstack:s3-latest
-  #   container_name: localstack-s3
-  #   restart: ${RESTART_POLICY:-unless-stopped}
-  #   networks:
-  #     - t3_proxy
-  #     - podflix-network
-  #   environment:
-  #     - DEBUG=0
-  #     - EXTRA_CORS_ALLOWED_ORIGINS=https://podflix.$DOMAIN_NAME,http://localhost:5000
-  #     - CREATED_BUCKET_NAME=$BUCKET_NAME
-  #     - APP_AWS_REGION=$APP_AWS_REGION
-  #   volumes:
-  #     - /var/run/docker.sock:/var/run/docker.sock
-  #     - ./scripts/create_s3_bucket.sh:/etc/localstack/init/ready.d/script.sh
-  #     - ./deployment/volumes/localstack:/var/lib/localstack
-  #   labels:
-  #     - "traefik.enable=true"
-  #     ## HTTP Routers
-  #     - "traefik.http.routers.localstack-s3-rtr.entrypoints=websecure"
-  #     - "traefik.http.routers.localstack-s3-rtr.rule=Host(`s3.$DOMAIN_NAME`)"
-  #     ## HTTP Services
-  #     - "traefik.http.routers.localstack-s3-rtr.service=localstack-s3-svc"
-  #     - "traefik.http.services.localstack-s3-svc.loadbalancer.server.port=4566"
-
   localstack:
     image: gresau/localstack-persist:3
     container_name: localstack

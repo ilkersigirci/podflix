@@ -2,13 +2,17 @@
 
 import asyncio
 import functools
+import re
 import tempfile
 from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
-from typing import Annotated
+from typing import Annotated, List
 
 import httpx
 from pydantic import BaseModel
+from youtube_transcript_api import YouTubeTranscriptApi
+from youtube_transcript_api._transcripts import FetchedTranscript
+from youtube_transcript_api.formatters import Formatter
 from yt_dlp import YoutubeDL
 
 
@@ -26,6 +30,89 @@ class Transcription(BaseModel):
 
     text: Annotated[str, "Transcribed text of the audio."] = ""
     segments: Annotated[list[AudioSegment], "List of audio segments."] = []
+
+
+class TranscriptionFormatter(Formatter):
+    """Custom formatter that converts FetchedTranscript to Transcription pydantic model."""
+
+    def format_transcript(
+        self, transcript: FetchedTranscript, **kwargs
+    ) -> Transcription:
+        """Convert a FetchedTranscript to Transcription pydantic model.
+
+        Args:
+            transcript: The FetchedTranscript object from youtube_transcript_api
+            **kwargs: Additional keyword arguments (unused)
+
+        Returns:
+            Transcription: A Transcription pydantic model with segments having start/end times
+        """
+        segments = []
+        full_text = ""
+
+        for i, snippet in enumerate(transcript.snippets):
+            # Convert start + duration to start + end format
+            start_time = snippet.start
+            end_time = snippet.start + snippet.duration
+            text = snippet.text.strip()
+
+            segments.append(
+                AudioSegment(
+                    id=i,
+                    start=start_time,
+                    end=end_time,
+                    text=text,
+                )
+            )
+
+            full_text += text + " "
+
+        return Transcription(
+            text=full_text.strip(),
+            segments=segments,
+        )
+
+    def format_transcripts(
+        self, transcripts: List[FetchedTranscript], **kwargs
+    ) -> List[Transcription]:
+        """Convert a list of FetchedTranscripts to a list of Transcription pydantic models.
+
+        Args:
+            transcripts: List of FetchedTranscript objects from youtube_transcript_api
+            **kwargs: Additional keyword arguments (unused)
+
+        Returns:
+            List[Transcription]: A list of Transcription pydantic models
+        """
+        return [
+            self.format_transcript(transcript, **kwargs) for transcript in transcripts
+        ]
+
+
+def fetch_youtube_transcription(video_url_or_id: str) -> Transcription:
+    """Fetch YouTube transcript using youtube_transcript_api and convert to Transcription model.
+
+    Args:
+        video_url_or_id: YouTube video url or ID (11 characters)
+
+    Returns:
+        Transcription: A Transcription pydantic model with segments having start/end times
+
+    Example:
+        >>> transcription = fetch_youtube_transcript_as_transcription("dQw4w9WgXcQ")
+        >>> isinstance(transcription, Transcription)
+        True
+        >>> len(transcription.segments) > 0
+        True
+    """
+    video_id_match = re.search(r"(?:v=|/)([a-zA-Z0-9_-]{11})", video_url_or_id)
+    video_id = video_id_match.group(1) if video_id_match else video_url_or_id
+
+    api = YouTubeTranscriptApi()
+    transcript = api.fetch(video_id)
+
+    formatter = TranscriptionFormatter()
+    return formatter.format_transcript(transcript)
 
 
 def download_youtube_audio(
