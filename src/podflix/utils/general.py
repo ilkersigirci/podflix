@@ -3,7 +3,7 @@
 import importlib
 import os
 
-from langfuse import Langfuse
+from langfuse import get_client
 from loguru import logger
 
 from podflix.env_settings import env_settings
@@ -85,8 +85,8 @@ def check_lf_credentials() -> None:
         Exception: If Langfuse authentication check fails for any other reason
     """
     try:
-        langfuse_obj = Langfuse()
-        lf_check_result = langfuse_obj.auth_check()
+        client = get_client()
+        lf_check_result = client.auth_check()
 
         if lf_check_result is False:
             raise Exception("Langfuse Auth Check Failed")
@@ -110,9 +110,15 @@ def get_lf_project_id() -> str:
     Raises:
         Exception: If no projects are found or if there's an error accessing Langfuse API
     """
-    langfuse_obj = Langfuse()
-    projects = langfuse_obj.client.projects.get()
-    return projects.data[0].id
+    client = get_client()
+    # projects = client.api.projects.get()
+    # return projects.data[0].id
+    project_id = client._get_project_id()
+
+    if not project_id:
+        raise Exception("No Langfuse projects found or unable to access Langfuse API")
+
+    return project_id
 
 
 def get_lf_session_url(session_id: str) -> str:
@@ -136,27 +142,30 @@ def get_lf_session_url(session_id: str) -> str:
     return f"{env_settings.langfuse_host}/project/{langfuse_project_id}/sessions/{session_id}"
 
 
-# TODO: Find out how to get langfuse traces_id for each llm call
-def get_lf_traces_url(langchain_run_id: str) -> str:
+def get_lf_trace_url(langchain_trace_id: str) -> str:
     """Construct the full URL for a Langfuse trace.
 
     Examples:
-        >>> get_lf_traces_url("123")
+        >>> get_lf_trace_url("123")
         'https://YOUR_LANFUSE_HOST/project/YOUR_PROJECT_ID/traces/123'
 
     Args:
-        langchain_run_id: The unique identifier of the Langchain run.
+        langchain_trace_id: The unique identifier of the Langchain trace.
 
     Returns:
         str: The complete URL to access the trace in Langfuse UI.
 
     Raises:
-        ValueError: If langchain_run_id is None
+        ValueError: If langchain_trace_id is None
         Exception: If there's an error retrieving the project ID
     """
-    if langchain_run_id is None:
-        raise ValueError("langchain_run_id cannot be None")
+    if langchain_trace_id is None:
+        raise ValueError("langchain_trace_id cannot be None")
 
-    langfuse_project_id = get_lf_project_id()
+    client = get_client()
+    url = client.get_trace_url(trace_id=langchain_trace_id)
 
-    return f"{env_settings.langfuse_host}/project/{langfuse_project_id}/traces/{langchain_run_id}"
+    if url is None:
+        raise Exception("Unable to construct Langfuse trace URL")
+
+    return url

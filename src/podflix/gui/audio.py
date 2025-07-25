@@ -3,8 +3,9 @@ from typing import BinaryIO
 
 import chainlit as cl
 from chainlit.types import ThreadDict
+from chainlit.user import PersistedUser, User
 from langchain_community.chat_message_histories import ChatMessageHistory
-from langfuse.callback import CallbackHandler as LangfuseCallbackHandler
+from langfuse.langchain import CallbackHandler as LangfuseCallbackHandler
 from literalai.helper import utc_now
 from loguru import logger  # noqa: F401
 
@@ -20,10 +21,12 @@ from podflix.utils.chainlit_utils.general import (
     set_extra_user_session_params,
     simple_auth_callback,
 )
-from podflix.utils.general import get_lf_traces_url
+from podflix.utils.general import get_lf_trace_url
 from podflix.utils.graph_runner import GraphRunner
 from podflix.utils.model import transcribe_audio_file
 from podflix.utils.youtube import fetch_youtube_transcription
+
+Chainlit_User_Type = User | PersistedUser
 
 if env_settings.enable_sqlite_data_layer is True:
     apply_sqlite_data_layer_fixes()
@@ -129,7 +132,19 @@ async def on_chat_start():
         name = file.name
         element_name = "AudioWithTranscript"
     elif chat_profile == "Youtube.Audio":
-        url = "https://www.youtube.com/watch?v=7ARBJQn6QkM"
+        # FIXME: Custom video element isn't persistent when using AskUserMessage
+        res = await cl.AskUserMessage(
+            content="Please, provide a youtube video url or video id", timeout=40
+        ).send()
+
+        if not res and not res.get("output"):
+            await cl.Message(
+                content="No URL provided. Please start over.",
+            ).send()
+            return
+
+        url = res["output"]
+        # url = "https://www.youtube.com/watch?v=7ARBJQn6QkM"
 
         audio_text, segments = await transcribing_tool_yt(url=url)
         audio_url = url
@@ -181,6 +196,7 @@ async def on_message(msg: cl.Message):
     session_id: str = cl.user_session.get("session_id")
     message_history: ChatMessageHistory = cl.user_session.get("message_history")
     audio_text: str = cl.user_session.get("audio_text")
+    chainlit_user: Chainlit_User_Type = cl.user_session.get("user")
 
     message_history.add_user_message(msg.content)
 
@@ -198,13 +214,14 @@ async def on_message(msg: cl.Message):
         graph_inputs=graph_inputs,
         graph_streamable_node_names=["generate"],
         lf_cb_handler=lf_cb_handler,
+        user_id=chainlit_user.identifier,
         session_id=session_id,
         assistant_message=assistant_message,
     )
 
     await graph_runner.run_graph()
 
-    lf_traces_url = get_lf_traces_url(langchain_run_id=graph_runner.run_id)
+    lf_traces_url = get_lf_trace_url(langchain_trace_id=graph_runner.run_id)
 
     elements = [
         cl.Text(

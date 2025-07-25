@@ -3,7 +3,7 @@
 import chainlit as cl
 from langchain.schema.runnable.config import RunnableConfig
 from langchain_core.messages import AIMessageChunk
-from langfuse.callback import CallbackHandler as LangfuseCallbackHandler
+from langfuse.langchain import CallbackHandler as LangfuseCallbackHandler
 from langgraph.graph.state import CompiledStateGraph
 from loguru import logger
 
@@ -17,6 +17,7 @@ class GraphRunner:
         graph_inputs: dict,
         graph_streamable_node_names: list[str],
         lf_cb_handler: LangfuseCallbackHandler,
+        user_id: str,
         session_id: str,
         assistant_message: cl.Message,
     ):
@@ -27,6 +28,7 @@ class GraphRunner:
             graph_inputs: A dictionary containing the inputs for the graph.
             graph_streamable_node_names: A list of node names that can be streamed.
             lf_cb_handler: A LangfuseCallbackHandler instance for tracking.
+            user_id: A string representing the unique user identifier.
             session_id: A string representing the unique session identifier.
             assistant_message: A chainlit Message instance for displaying responses.
         """
@@ -34,6 +36,7 @@ class GraphRunner:
         self.graph_inputs = graph_inputs
         self.graph_streamable_node_names = graph_streamable_node_names
         self.lf_cb_handler = lf_cb_handler
+        self.user_id = user_id
         self.session_id = session_id
         self.assistant_message = assistant_message
 
@@ -59,6 +62,11 @@ class GraphRunner:
             ],
             recursion_limit=10,
             configurable={"session_id": self.session_id},
+            metadata={
+                "langfuse_user_id": self.user_id,
+                "langfuse_session_id": self.session_id,
+                # "langfuse_tags": ["test_tag"],
+            },
         )
 
         async for event in self.graph.astream_events(

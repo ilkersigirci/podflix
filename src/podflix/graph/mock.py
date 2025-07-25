@@ -44,6 +44,15 @@ async def mock_answer(state: AgentState):
         A dictionary containing:
             - messages: A list with a single AIMessage containing the random response.
     """
+    # NOTE: Hacky way to get the langfuse trace_id
+    # callback_manager = config.get("callbacks")
+    # for cb in callback_manager.handlers:
+    #     if cb.__class__.__name__.endswith("CallbackHandler"):
+    #         first_run = next(iter(cb.runs.values()))
+    #         first_run_trace_id = first_run.trace_id
+
+    #         print(f"******** Trace ID ***********: {first_run_trace_id}")
+
     random_response = random.choice(MOCK_RESPONSES)
 
     model = get_mock_model(message=random_response)

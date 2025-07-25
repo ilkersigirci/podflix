@@ -4,15 +4,13 @@ from uuid import uuid4
 
 import chainlit as cl
 from chainlit.types import ThreadDict
-from chainlit.user import PersistedUser, User
+from chainlit.user import User
 from langchain_community.chat_message_histories import ChatMessageHistory
-from langfuse.callback import CallbackHandler as LangfuseCallbackHandler
+from langfuse.langchain import CallbackHandler as LangfuseCallbackHandler
 from loguru import logger
 
 from podflix.env_settings import env_settings
 from podflix.utils.general import check_lf_credentials, get_lf_session_url
-
-Chainlit_User_Type = User | PersistedUser
 
 
 def simple_auth_callback(username: str, password: str) -> User:
@@ -106,18 +104,11 @@ def set_extra_user_session_params(
     if session_id is None:
         session_id = str(uuid4())
 
-    if user_id is None:
-        chainlit_user: Chainlit_User_Type = cl.user_session.get("user")
-        user_id = chainlit_user.identifier
-
     if message_history is None:
         message_history = ChatMessageHistory()
 
     check_lf_credentials()
-    lf_cb_handler = LangfuseCallbackHandler(
-        user_id=user_id,
-        session_id=session_id,
-    )
+    lf_cb_handler = LangfuseCallbackHandler()
 
     cl.user_session.set("session_id", session_id)
     cl.user_session.set("lf_cb_handler", lf_cb_handler)

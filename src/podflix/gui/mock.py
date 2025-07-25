@@ -2,8 +2,9 @@ import webbrowser
 
 import chainlit as cl
 from chainlit.types import ThreadDict
+from chainlit.user import PersistedUser, User
 from langchain_community.chat_message_histories import ChatMessageHistory
-from langfuse.callback import CallbackHandler as LangfuseCallbackHandler
+from langfuse.langchain import CallbackHandler as LangfuseCallbackHandler
 from literalai.helper import utc_now
 from loguru import logger
 
@@ -15,8 +16,10 @@ from podflix.utils.chainlit_utils.general import (
     set_extra_user_session_params,
     simple_auth_callback,
 )
-from podflix.utils.general import get_lf_traces_url
+from podflix.utils.general import get_lf_trace_url
 from podflix.utils.graph_runner import GraphRunner
+
+Chainlit_User_Type = User | PersistedUser
 
 if env_settings.enable_sqlite_data_layer is True:
     apply_sqlite_data_layer_fixes()
@@ -131,6 +134,7 @@ async def on_message(msg: cl.Message):
     lf_cb_handler: LangfuseCallbackHandler = cl.user_session.get("lf_cb_handler")
     session_id: str = cl.user_session.get("session_id")
     message_history: ChatMessageHistory = cl.user_session.get("message_history")
+    chainlit_user: Chainlit_User_Type = cl.user_session.get("user")
 
     if msg.command is not None:
         logger.debug(f"Command used: {msg.command}")
@@ -154,6 +158,7 @@ async def on_message(msg: cl.Message):
         graph_inputs=graph_inputs,
         graph_streamable_node_names=["mock_answer"],
         lf_cb_handler=lf_cb_handler,
+        user_id=chainlit_user.identifier,
         session_id=session_id,
         assistant_message=assistant_message,
     )
@@ -169,7 +174,9 @@ async def on_message(msg: cl.Message):
     ]
     assistant_message.elements.extend(elements)
 
-    lf_traces_url = get_lf_traces_url(langchain_run_id=graph_runner.run_id)
+    lf_traces_url = get_lf_trace_url(langchain_trace_id=graph_runner.run_id)
+
+    logger.debug(f"Langfuse traces URL: {lf_traces_url}")
 
     actions = [
         cl.Action(
