@@ -5,10 +5,9 @@
     "EditorConfig.EditorConfig",
     "redhat.vscode-yaml",
     "ms-python.python",
-    "ms-python.vscode-pylance",
     "njpwerner.autodocstring",
     "charliermarsh.ruff",
-    // "ms-python.mypy-type-checker",
+    "astral-sh.ty",
   ],
   "unwantedRecommendations": [
     "ms-python.isort"
