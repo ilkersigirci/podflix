@@ -1,0 +1,774 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://github.com/ilkersigirci/podflix/chainlit/custom_element/">
+      
+      
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.14">
+    
+    
+      
+        <title>Custom - podflix</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.342714a4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#attributes" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="podflix" class="md-header__button md-logo" aria-label="podflix" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            podflix
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Custom
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://ilkersigirci.github.io/podflix/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="podflix" class="md-nav__button md-logo" aria-label="podflix" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    podflix
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://ilkersigirci.github.io/podflix/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorials
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../how-to-guides/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to guides
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Reference
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../explanation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Explanation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#attributes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Attributes
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-to-write-the-jsx-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      How to Write the JSX file
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="How to Write the JSX file">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#component-definition" class="md-nav__link">
+    <span class="md-ellipsis">
+      Component definition
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-tailwind-for-styling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use Tailwind for Styling
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#only-use-allowed-imports" class="md-nav__link">
+    <span class="md-ellipsis">
+      Only Use Allowed Imports
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#available-apis" class="md-nav__link">
+    <span class="md-ellipsis">
+      Available APIs
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-of-a-counter-element" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example of a Counter Element
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#full-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Full Example
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Advanced">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#update-props-from-python" class="md-nav__link">
+    <span class="md-ellipsis">
+      Update Props from Python
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#call-a-function-from-python" class="md-nav__link">
+    <span class="md-ellipsis">
+      Call a Function from Python
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+  <h1>Custom</h1>
+
+<p>The <code>CustomElement</code> class allows you to render a custom <code>.jsx</code> snippet. The <code>.jsx</code> file should be placed in <code>public/elements/ELEMENT_NAME.jsx</code>.</p>
+<h2 id="attributes">Attributes</h2>
+<p><ParamField path="name" type="str">
+  The name of the custom Element. It should match the name of your JSX file (without the <code>.jsx</code> extension).
+</ParamField></p>
+<p><ParamField path="props" type="Dict">
+  The props to pass to the JSX.
+</ParamField></p>
+<p><ParamField path="display" type="ElementDisplay" default="inline" optional>
+  Determines how the text element should be displayed in the UI. Choices are
+  "side", "inline", or "page".
+</ParamField></p>
+<h2 id="how-to-write-the-jsx-file">How to Write the JSX file</h2>
+<p><Note>If you are not familiar with UI development, you can pass these instructions to an LLM to ask it to generate the <code>.jsx</code> for you!</Note></p>
+<p>To implement the <code>jsx</code> file for your Chainlit custom element, follow these instructions.</p>
+<h3 id="component-definition">Component definition</h3>
+<p>Only write JSX code, no TSX. Each <code>.jsx</code> file should export default one component like:</p>
+<pre><code class="language-jsx">export default function MyComponent() {
+    return &lt;div&gt;Hello World&lt;/div&gt;
+}
+</code></pre>
+<p>The component <code>props</code> are globally injected (not as a function argument). <strong>NEVER</strong> pass them as function argument.</p>
+<h3 id="use-tailwind-for-styling">Use Tailwind for Styling</h3>
+<p>Under the hood, the code will be rendered in a shadcn + tailwind environment.
+The theme is relying on CSS variables.</p>
+<p>Here is an example rendering a <code>div</code> with a primary color background and round border:</p>
+<pre><code class="language-jsx">export default function TailwindExample() {
+    return &lt;div className=&quot;bg-primary rounded-md h-4 w-full&quot; /&gt;
+}
+</code></pre>
+<h3 id="only-use-allowed-imports">Only Use Allowed Imports</h3>
+<p>Only use available packages for imports. Here is the full list:</p>
+<ul>
+<li><code>react</code></li>
+<li><code>sonner</code></li>
+<li><code>zod</code></li>
+<li><code>recoil</code></li>
+<li><code>react-hook-form</code></li>
+<li><code>lucide-react</code></li>
+<li><code>@/components/ui/accordion</code></li>
+<li><code>@/components/ui/aspect-ratio</code></li>
+<li><code>@/components/ui/avatar</code></li>
+<li><code>@/components/ui/badge</code></li>
+<li><code>@/components/ui/button</code></li>
+<li><code>@/components/ui/card</code></li>
+<li><code>@/components/ui/carousel</code></li>
+<li><code>@/components/ui/checkbox</code></li>
+<li><code>@/components/ui/command</code></li>
+<li><code>@/components/ui/dialog</code></li>
+<li><code>@/components/ui/dropdown-menu</code></li>
+<li><code>@/components/ui/form</code></li>
+<li><code>@/components/ui/hover-card</code></li>
+<li><code>@/components/ui/input</code></li>
+<li><code>@/components/ui/label</code></li>
+<li><code>@/components/ui/pagination</code></li>
+<li><code>@/components/ui/popover</code></li>
+<li><code>@/components/ui/progress</code></li>
+<li><code>@/components/ui/scroll-area</code></li>
+<li><code>@/components/ui/separator</code></li>
+<li><code>@/components/ui/select</code></li>
+<li><code>@/components/ui/sheet</code></li>
+<li><code>@/components/ui/skeleton</code></li>
+<li><code>@/components/ui/switch</code></li>
+<li><code>@/components/ui/table</code></li>
+<li><code>@/components/ui/textarea</code></li>
+<li><code>@/components/ui/tooltip</code></li>
+</ul>
+<p><Note>The <code>@/components/ui</code> imports are from Shadcn.</Note></p>
+<h3 id="available-apis">Available APIs</h3>
+<p>Chainlit exposes the following APIs globally to make the custom element interactive.</p>
+<pre><code class="language-ts">interface APIs {
+    // Update the element props. This will re-render the element.
+    updateElement: (nextProps: Record&lt;string, any&gt;) =&gt; Promise&lt;{success: boolean}&gt;;
+    // Delete the element entirely.
+    deleteElement: () =&gt; Promise&lt;{success: boolean}&gt;;
+    // Call an action defined in the Chainlit app
+    callAction: (action: {name: string, payload: Record&lt;string, unknown&gt;}) =&gt;Promise&lt;{success: boolean}&gt;;
+    // Send a user message
+    sendUserMessage: (message: string) =&gt; void;
+}
+</code></pre>
+<h3 id="example-of-a-counter-element">Example of a Counter Element</h3>
+<pre><code class="language-jsx">import { Button } from &quot;@/components/ui/button&quot;
+import { X, Plus } from 'lucide-react';
+
+export default function Counter() {
+    return (
+        &lt;div id=&quot;custom-counter&quot; className=&quot;mt-4 flex flex-col gap-2&quot;&gt;
+                &lt;div&gt;Count: {props.count}&lt;/div&gt;
+                &lt;Button id=&quot;increment&quot; onClick={() =&gt; updateElement(Object.assign(props, {count: props.count + 1}))}&gt;&lt;Plus /&gt; Increment&lt;/Button&gt;
+                &lt;Button id=&quot;remove&quot; onClick={deleteElement}&gt;&lt;X /&gt; Remove&lt;/Button&gt;
+        &lt;/div&gt;
+    );
+}
+</code></pre>
+<h2 id="full-example">Full Example</h2>
+<p>Let's build a custom element to render the status of a Linear ticket.</p>
+<p>First, we write a small Chainlit application faking fetching data from linear:</p>
+<p>```python app.py
+import chainlit as cl</p>
+<p>async def get_ticket():
+    """Pretending to fetch data from linear"""
+    return {
+        "title": "Fix Authentication Bug",
+        "status": "in-progress",
+        "assignee": "Sarah Chen",
+        "deadline": "2025-01-15",
+        "tags": ["security", "high-priority", "backend"]
+    }</p>
+<p>@cl.on_message
+async def on_message(msg: cl.Message):
+    # Let's pretend the user is asking about a linear ticket.
+    # Usually an LLM with tool calling would be used to decide to render the component or not.</p>
+<pre><code>props = await get_ticket()
+
+ticket_element = cl.CustomElement(name="LinearTicket", props=props)
+# Store the element if we want to update it server side at a later stage.
+cl.user_session.set("ticket_el", ticket_element)
+
+await cl.Message(content="Here is the ticket information!", elements=[ticket_element]).send()
+</code></pre>
+<pre><code>
+Second we implement the custom element we reference in the Python code:
+
+```jsx public/elements/LinearTicket.jsx
+import { Card, CardHeader, CardTitle, CardContent } from &quot;@/components/ui/card&quot;
+import { Badge } from &quot;@/components/ui/badge&quot;
+import { Progress } from &quot;@/components/ui/progress&quot;
+import { Clock, User, Tag } from &quot;lucide-react&quot;
+
+export default function TicketStatusCard() {
+  const getProgressValue = (status) =&gt; {
+    const progress = {
+      'open': 25,
+      'in-progress': 50,
+      'resolved': 75,
+      'closed': 100
+    }
+    return progress[status] || 0
+  }
+
+  return (
+    &lt;Card className=&quot;w-full max-w-md&quot;&gt;
+      &lt;CardHeader className=&quot;pb-2&quot;&gt;
+        &lt;div className=&quot;flex justify-between items-center&quot;&gt;
+          &lt;CardTitle className=&quot;text-lg font-medium&quot;&gt;
+            {props.title || 'Untitled Ticket'}
+          &lt;/CardTitle&gt;
+          &lt;Badge
+            variant=&quot;outline&quot;
+          &gt;
+            {props.status || 'Unknown'}
+          &lt;/Badge&gt;
+        &lt;/div&gt;
+      &lt;/CardHeader&gt;
+      &lt;CardContent&gt;
+        &lt;div className=&quot;space-y-4&quot;&gt;
+          &lt;Progress value={getProgressValue(props.status)} className=&quot;h-2&quot; /&gt;
+
+          &lt;div className=&quot;grid grid-cols-2 gap-4 text-sm&quot;&gt;
+            &lt;div className=&quot;flex items-center gap-2&quot;&gt;
+              &lt;User className=&quot;h-4 w-4 opacity-70&quot; /&gt;
+              &lt;span&gt;{props.assignee || 'Unassigned'}&lt;/span&gt;
+            &lt;/div&gt;
+            &lt;div className=&quot;flex items-center gap-2&quot;&gt;
+              &lt;Clock className=&quot;h-4 w-4 opacity-70&quot; /&gt;
+              &lt;span&gt;{props.deadline || 'No deadline'}&lt;/span&gt;
+            &lt;/div&gt;
+            &lt;div className=&quot;flex items-center gap-2 col-span-2&quot;&gt;
+              &lt;Tag className=&quot;h-4 w-4 opacity-70&quot; /&gt;
+              &lt;span&gt;{props.tags?.join(', ') || 'No tags'}&lt;/span&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/CardContent&gt;
+    &lt;/Card&gt;
+  )
+}
+</code></pre>
+<p>Finally, we start the application with <code>chainlit run app.py</code> and send a first message in the UI.</p>
+<p><Frame caption="The LinearTicket custom element rendered.">
+  <img src="/images/custom-element.png" />
+</Frame></p>
+<h2 id="advanced">Advanced</h2>
+<h3 id="update-props-from-python">Update Props from Python</h3>
+<p>To update a custom element props from the python code, you can store the element instance in the user session and call <code>.update()</code> on it.</p>
+<pre><code class="language-python">import chainlit as cl
+
+@cl.on_chat_start
+async def start():
+    element = cl.CustomElement(name=&quot;Foo&quot;, props={&quot;foo&quot;: &quot;bar&quot;})
+    cl.user_session.set(&quot;element&quot;, element)
+
+@cl.on_message
+async def on_message():
+    element = cl.user_session.get(&quot;element&quot;)
+    element.props[&quot;foo&quot;] = &quot;baz&quot;
+    await element.update()
+</code></pre>
+<h3 id="call-a-function-from-python">Call a Function from Python</h3>
+<p>If you need to call a function directly from the python code, you can use <code>cl.CopilotFunction</code>.</p>
+<p>```python call_func.py
+import chainlit as cl</p>
+<p>@cl.on_chat_start
+async def start():
+    element = cl.CustomElement(name="CallFn")
+    await cl.Message(content="Hello", elements=[element]).send()</p>
+<p>@cl.on_message
+async def on_msg(msg: cl.Message):
+    fn = cl.CopilotFunction(name="test", args={"content": msg.content})
+    res = await fn.acall()</p>
+<pre><code>
+```jsx CallFn.jsx
+import { useEffect } from 'react';
+import { useRecoilValue } from 'recoil';
+import { callFnState } from '@chainlit/react-client';
+
+export default function CallFnExample() {
+    const callFn = useRecoilValue(callFnState);
+
+    useEffect(() =&gt; {
+        if (callFn?.name === &quot;test&quot;) {
+          // Replace the console log with your actual function
+          console.log(&quot;Function called with&quot;, callFn.args.content)
+          callFn.callback()
+        }
+      }, [callFn]);
+
+      return null
+}
+</code></pre>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.13a4f30d.min.js"></script>
+      
+    
+  </body>
+</html>
