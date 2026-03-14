@@ -1,6 +1,6 @@
 [project]
 name = "podflix"
-version = "0.1.0"
+version = "0.0.1"
 description = "Chat with your podcast"
 readme = "README.md"
 requires-python = ">=3.11,<3.13"
@@ -51,8 +51,30 @@ dependencies = [
     "yt-dlp>=2026.3.13",
 ]
 
+[dependency-groups]
+dev = [
+    "ipykernel>=6.29.5",
+    "mypy>=1.13.0",
+    "pre-commit>=4.0.1",
+    "ruff>=0.15.5",
+]
+doc = [
+    "mkdocs>=1.6.1",
+    "mkdocs-material>=9.5.42",
+    "mkdocstrings[python]>=0.26.2",
+]
+test = [
+    "pytest-cov>=5.0.0",
+    "pytest-rerunfailures>=14.0",
+    "pytest-xdist>=3.6.1",
+    "pytest>=8.3.3",
+    "pytest-asyncio>=0.25.1",
+    "moto[s3]>=5.0.25",
+]
+
+
 [tool.uv]
-default-groups = ["dev", "doc", "test"]
+default-groups = "all"
 
 [tool.pytest.ini_options]
 minversion = "7.0.0"
@@ -177,35 +199,6 @@ exclude_lines = [
 #     'src/podflix/',
 # ]
 
-# [build-system]
-# requires = ["uv>=0.5.0,<1.0.0"]
-# build-backend = "uv" # FIXME: Only builds source distribution, not wheel
-
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
-[dependency-groups]
-dev = [
-    "ipykernel>=6.29.5",
-    "mypy>=1.13.0",
-    "pre-commit>=4.0.1",
-    "ruff>=0.15.5",
-    # "scalene~=1.5.21.2",
-]
-doc = [
-    "mkdocs>=1.6.1",
-    "mkdocs-material>=9.5.42",
-    "mkdocstrings[python]>=0.26.2",
-    # "mdx-include",
-    # "mkdocs-markdownextradata-plugin",
-]
-test = [
-    "pytest-cov>=5.0.0",
-    "pytest-rerunfailures>=14.0",
-    "pytest-xdist>=3.6.1",
-    "pytest>=8.3.3",
-    # "pytest-timeout",
-    "pytest-asyncio>=0.25.1",
-    "moto[s3]>=5.0.25",
-]
+build-backend = "uv_build"
+requires = ["uv_build>=0.10,<0.14"]

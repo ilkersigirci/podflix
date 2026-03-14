@@ -21,15 +21,12 @@ repos:
       - id: check-added-large-files
         args: ["--maxkb=1500"]
 
-  # - repo: https://github.com/astral-sh/uv-pre-commit
-  #   # uv version.
-  #   rev: 0.7.13
-  #   hooks:
-  #     # Update the uv lockfile
-  #     - id: uv-lock
-  #     # Run the pip compile
-  #     - id: pip-compile
-  #       args: [requirements.in, -o, requirements.txt]
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    rev: 0.10.10
+    hooks:
+      # Update the uv lockfile
+      - id: uv-lock
+
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.15.5
