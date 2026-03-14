@@ -21,16 +21,10 @@
 
 ## Cloning the Repository
 
-To clone this repository including all submodules, use:
+To clone this repository
 
 ```bash
-git clone --recurse-submodules https://github.com/ilkersigirci/podflix.git
-```
-
-## Update Submodules
-
-```bash
-make update-submodules
+git clone https://github.com/ilkersigirci/podflix.git
 ```
 
 ## Healthchecks

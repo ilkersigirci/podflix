@@ -30,12 +30,15 @@ CREATE TABLE IF NOT EXISTS steps (
     "input" TEXT,
     "output" TEXT,
     "createdAt" TEXT,
+    "command" TEXT,
     "start" TEXT,
     "end" TEXT,
     "generation" JSONB,
     "showInput" TEXT,
     "language" TEXT,
     "indent" INT,
+    "defaultOpen" BOOLEAN,
+    "autoCollapse" BOOLEAN,
     FOREIGN KEY ("threadId") REFERENCES threads("id") ON DELETE CASCADE
 );
 
