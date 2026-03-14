@@ -80,7 +80,7 @@ class EnvSettings(BaseSettings):
     enable_openai_api: bool = False
     enable_sqlite_data_layer: bool = False
     hf_token: str | None = None
-    langfuse_host: CustomHttpUrlStr
+    langfuse_base_url: CustomHttpUrlStr
     langfuse_public_key: str
     langfuse_secret_key: str
     library_base_path: str = Field(default=..., description="Path to the library base directory")
