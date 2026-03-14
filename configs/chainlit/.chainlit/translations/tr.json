@@ -1,10 +1,10 @@
 {
     "common": {
         "actions": {
-            "cancel": "İptal",
+            "cancel": "İptal Et",
             "confirm": "Onayla",
             "continue": "Devam Et",
-            "goBack": "Geri Dön",
+            "goBack": "Geri Git",
             "reset": "Sıfırla",
             "submit": "Gönder"
         },
@@ -22,11 +22,12 @@
             "form": {
                 "email": {
                     "label": "E-posta adresi",
-                    "required": "e-posta alanı zorunludur"
+                    "required": "E-posta zorunlu bir alandır",
+                    "placeholder": "ben@ornek.com"
                 },
                 "password": {
                     "label": "Şifre",
-                    "required": "şifre alanı zorunludur"
+                    "required": "Şifre zorunlu bir alandır"
                 },
                 "actions": {
                     "signin": "Giriş Yap"
@@ -44,7 +45,7 @@
                 "oauthCreateAccount": "Farklı bir hesapla giriş yapmayı deneyin",
                 "emailCreateAccount": "Farklı bir hesapla giriş yapmayı deneyin",
                 "callback": "Farklı bir hesapla giriş yapmayı deneyin",
-                "oauthAccountNotLinked": "Kimliğinizi doğrulamak için orijinal olarak kullandığınız hesapla giriş yapın",
+                "oauthAccountNotLinked": "Kimliğinizi doğrulamak için ilk kaydolduğunuz hesapla giriş yapın",
                 "emailSignin": "E-posta gönderilemedi",
                 "emailVerify": "Lütfen e-postanızı doğrulayın, yeni bir e-posta gönderildi",
                 "credentialsSignin": "Giriş başarısız. Girdiğiniz bilgilerin doğru olduğunu kontrol edin",
@@ -60,22 +61,40 @@
             "placeholder": "Mesajınızı buraya yazın...",
             "actions": {
                 "send": "Mesaj gönder",
-                "stop": "Görevi Durdur",
+                "stop": "Görevi durdur",
                 "attachFiles": "Dosya ekle"
             }
         },
+        "favorites": {
+            "use": "Favori bir mesajı kullan",
+            "headline": "Favori Mesajlar",
+            "remove": "Favorilerden çıkar",
+            "empty": {
+                "title": "Henüz Kaydedilmiş İstem Yok",
+                "description": "Bir istem gönderip yıldızlayarak veya önceki sohbetlerdeki bir istemi yıldızlayarak başlayın"
+            }
+        },
+        "commands": {
+            "button": "Araçlar",
+            "changeTool": "Aracı Değiştir",
+            "availableTools": "Mevcut Araçlar"
+        },
         "speech": {
-            "start": "Kayıt başlat",
+            "start": "Kayda başla",
             "stop": "Kaydı durdur",
             "connecting": "Bağlanıyor"
         },
         "fileUpload": {
             "dragDrop": "Dosyaları buraya sürükleyip bırakın",
-            "browse": "Dosya Seç",
-            "sizeLimit": "Limit:",
+            "browse": "Dosyalara Göz At",
+            "sizeLimit": "Sınır:",
             "errors": {
                 "failed": "Yükleme başarısız",
                 "cancelled": "Yükleme iptal edildi:"
+            },
+            "actions": {
+                "cancelUpload": "Yüklemeyi iptal et",
+                "removeAttachment": "Eki kaldır"
             }
         },
         "messages": {
@@ -90,12 +109,13 @@
                 }
             },
             "feedback": {
-                "positive": "Yardımcı oldu",
-                "negative": "Yardımcı olmadı",
+                "positive": "Yararlı",
+                "negative": "Yararlı değil",
                 "edit": "Geri bildirimi düzenle",
                 "dialog": {
                     "title": "Yorum ekle",
-                    "submit": "Geri bildirim gönder"
+                    "submit": "Geri bildirim gönder",
+                    "yourFeedback": "Geri bildiriminiz..."
                 },
                 "status": {
                     "updating": "Güncelleniyor",
@@ -104,21 +124,22 @@
             }
         },
         "history": {
-            "title": "Son Girişler",
-            "empty": "Burası boş...",
+            "title": "Son Girdiler",
+            "empty": "Buralar çok boş...",
             "show": "Geçmişi göster"
         },
         "settings": {
-            "title": "Ayarlar paneli"
+            "title": "Ayarlar paneli",
+            "customize": "Sohbet ayarlarınızı buradan özelleştirin"
         },
-        "watermark": "İle oluşturuldu"
+        "watermark": "YZ modelleri hata yapabilir. Önemli bilgileri her zaman kontrol edin."
     },
     "threadHistory": {
         "sidebar": {
             "title": "Geçmiş Sohbetler",
             "filters": {
                 "search": "Ara",
-                "placeholder": "Konuşmalarda ara..."
+                "placeholder": "Sohbetlerde ara..."
             },
             "timeframes": {
                 "today": "Bugün",
@@ -126,22 +147,36 @@
                 "previous7days": "Son 7 gün",
                 "previous30days": "Son 30 gün"
             },
-            "empty": "Sohbet bulunamadı",
+            "empty": "Konu bulunamadı",
             "actions": {
-                "close": "Kenar çubuğunu kapat",
-                "open": "Kenar çubuğunu aç"
+                "close": "Yan çubuğu kapat",
+                "open": "Yan çubuğu aç"
             }
         },
         "thread": {
-            "untitled": "İsimsiz Konuşma",
+            "untitled": "İsimsiz Sohbet",
             "menu": {
-                "rename": "Yeniden adlandır",
+                "rename": "Yeniden Adlandır",
+                "share": "Paylaş",
                 "delete": "Sil"
             },
             "actions": {
+                "share": {
+                    "title": "Sohbet bağlantısını paylaş",
+                    "button": "Paylaş",
+                    "status": {
+                        "copied": "Bağlantı kopyalandı",
+                        "created": "Paylaşım bağlantısı oluşturuldu!",
+                        "unshared": "Bu konu için paylaşım devre dışı bırakıldı"
+                    },
+                    "error": {
+                        "create": "Paylaşım bağlantısı oluşturulamadı",
+                        "unshare": "Konu paylaşımı iptal edilemedi"
+                    }
+                },
                 "delete": {
-                    "title": "Silmeyi onayla",
-                    "description": "Bu işlem, sohbeti ve ilgili mesajları ve öğeleri silecektir. Bu işlem geri alınamaz",
+                    "title": "Silme işlemini onayla",
+                    "description": "Bu işlem, sohbeti, mesajlarını ve içindeki öğeleri silecektir. Bu işlem geri alınamaz.",
                     "success": "Sohbet silindi",
                     "inProgress": "Sohbet siliniyor"
                 },
@@ -163,11 +198,11 @@
     "navigation": {
         "header": {
             "chat": "Sohbet",
-            "readme": "Beni Oku",
+            "readme": "Benioku",
             "theme": {
                 "light": "Açık Tema",
                 "dark": "Koyu Tema",
-                "system": "Sistemi Takip Et"
+                "system": "Sisteme Uy"
             }
         },
         "newChat": {
@@ -189,7 +224,7 @@
     },
     "apiKeys": {
         "title": "Gerekli API Anahtarları",
-        "description": "Bu uygulamayı kullanmak için aşağıdaki API anahtarları gereklidir. Anahtarlar cihazınızın yerel depolama alanında saklanır.",
+        "description": "Bu uygulamayı kullanmak için aşağıdaki API anahtarları gereklidir. Anahtarlar cihazınızın yerel depolama alanına kaydedilir.",
         "success": {
             "saved": "Başarıyla kaydedildi"
         }
@@ -206,9 +241,20 @@
         "success": "Başarılı",
         "help": "Yardım",
         "idea": "Fikir",
-        "pending": "Beklemede",
+        "pending": "Bekliyor",
         "security": "Güvenlik",
         "beta": "Beta",
         "best-practice": "En İyi Uygulama"
+    },
+    "components": {
+        "MultiSelectInput": {
+            "placeholder": "Seçiniz..."
+        },
+        "DatePickerInput": {
+            "placeholder": {
+                "single": "Bir tarih seçin",
+                "range": "Bir tarih aralığı seçin"
+            }
+        }
     }
 }
