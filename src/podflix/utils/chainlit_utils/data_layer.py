@@ -5,6 +5,8 @@ including S3 storage integration and SQLAlchemy database connections.
 """
 
 import os
+import json
+import sqlite3
 
 import boto3
 import chainlit as cl
@@ -201,6 +203,10 @@ def apply_sqlite_data_layer_fixes():
     """
     if env_settings.enable_sqlite_data_layer is False:
         return
+
+    # From https://github.com/Chainlit/chainlit/issues/2528#issuecomment-3436664107
+    sqlite3.register_adapter(list, lambda lst: json.dumps(lst))
+    sqlite3.register_adapter(dict, lambda dct: json.dumps(dct))
 
     @cl.data_layer
     def data_layer():
