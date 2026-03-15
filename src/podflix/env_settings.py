@@ -1,7 +1,7 @@
 """Application configuration for environment variables."""
 
 from functools import partial
-from typing import Annotated, Literal
+from typing import Annotated
 
 from loguru import logger
 from pydantic import (
@@ -11,10 +11,20 @@ from pydantic import (
     PlainValidator,
     TypeAdapter,
     field_validator,
+    model_validator,
 )
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 AnyHttpUrlAdapter = TypeAdapter(AnyHttpUrl)
+PASSWORD_AUTH_REQUIRED_ENV_VARS = ("ADMIN_USERNAME", "ADMIN_PASSWORD")
+GENERIC_OAUTH_REQUIRED_ENV_VARS = (
+    "OAUTH_GENERIC_CLIENT_ID",
+    "OAUTH_GENERIC_CLIENT_SECRET",
+    "OAUTH_GENERIC_AUTH_URL",
+    "OAUTH_GENERIC_TOKEN_URL",
+    "OAUTH_GENERIC_USER_INFO_URL",
+    "OAUTH_GENERIC_SCOPES",
+)
 
 CustomHttpUrlStr = Annotated[
     str,
@@ -72,10 +82,10 @@ class EnvSettings(BaseSettings):
         protected_namespaces=("settings_",),
     )
 
-    chainlit_app_type: Annotated[str, AfterValidator(partial(allowed_values, values=["base_chat", "mock", "audio"]))] = "mock"
-    chainlit_user_name: str = "admin"
-    chainlit_user_password: str = "admin"
-    auth_type: Literal["password", "oauth"] = "password"
+    app_type: Annotated[str, AfterValidator(partial(allowed_values, values=["base_chat", "mock", "audio"]))] = "mock"
+    admin_username: str | None = None
+    admin_password: str | None = None
+    auth_type: Annotated[str, AfterValidator(partial(allowed_values, values=["password", "oauth"]))] = "password"
     auth_groups: str = "admin,dev,guest"
     oauth_generic_client_id: str | None = None
     oauth_generic_client_secret: str | None = None
@@ -147,18 +157,32 @@ class EnvSettings(BaseSettings):
 
         return ",".join(dict.fromkeys(groups))
 
+    @model_validator(mode="after")
+    def validate_password_auth_env(self):
+        """Validate required vars for password authentication."""
+        if self.auth_type != "password":
+            return self
+
+        missing_env_vars: list[str] = []
+        for env_var in PASSWORD_AUTH_REQUIRED_ENV_VARS:
+            field_name = env_var.lower()
+            field_value = getattr(self, field_name)
+            if not field_value or not str(field_value).strip():
+                missing_env_vars.append(env_var)
+
+        if missing_env_vars:
+            missing = ", ".join(missing_env_vars)
+            message = (
+                "AUTH_TYPE=password requires admin credential environment variables. "
+                f"Missing: {missing}."
+            )
+            raise ValueError(message)
+
+        return self
+
     @field_validator("oauth_generic_scopes")
     def validate_oauth_generic_env(cls, value, values):
         """Validate required Generic OAuth vars when AUTH_TYPE is oauth."""
-        GENERIC_OAUTH_REQUIRED_ENV_VARS = (
-            "OAUTH_GENERIC_CLIENT_ID",
-            "OAUTH_GENERIC_CLIENT_SECRET",
-            "OAUTH_GENERIC_AUTH_URL",
-            "OAUTH_GENERIC_TOKEN_URL",
-            "OAUTH_GENERIC_USER_INFO_URL",
-            "OAUTH_GENERIC_SCOPES",
-        )
-
         if values.data.get("auth_type") != "oauth":
             return value
 

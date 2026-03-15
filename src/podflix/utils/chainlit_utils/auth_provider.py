@@ -7,10 +7,37 @@ from typing import Any
 import chainlit as cl
 from chainlit.oauth_providers import GenericOAuthProvider
 
-from podflix.env_settings import EnvSettings
-from podflix.utils.chainlit_utils.general import simple_auth_callback
+from podflix.env_settings import env_settings
 
 ROLE_PRIORITY = ("admin", "dev", "guest")
+
+
+def simple_auth_callback(username: str, password: str) -> cl.User:
+    """Authenticate user with simple username and password check.
+
+    Examples:
+        >>> simple_auth_callback("admin", "admin")
+        User(identifier="admin", metadata={"role": "admin", "provider": "credentials"})
+
+    Args:
+        username: A string representing the username for authentication.
+        password: A string representing the password for authentication.
+
+    Returns:
+        A User object if authentication is successful.
+
+    Raises:
+        ValueError: If credentials are invalid.
+    """
+    if (username, password) == (
+        env_settings.admin_username,
+        env_settings.admin_password,
+    ):
+        return cl.User(
+            identifier=username, metadata={"role": "admin", "provider": "credentials"}
+        )
+
+    raise ValueError("Invalid credentials")
 
 
 def _build_oauth_user(
@@ -32,9 +59,7 @@ def _build_oauth_user(
 
 def register_auth_provider() -> None:
     """Register Chainlit authentication callback based on AUTH_TYPE."""
-    settings = EnvSettings()
-
-    if settings.auth_type == "password":
+    if env_settings.auth_type == "password":
 
         @cl.password_auth_callback
         def auth_callback(username: str, password: str):
@@ -43,8 +68,10 @@ def register_auth_provider() -> None:
         return
 
     generic_provider = GenericOAuthProvider()
-    configured_provider_id = settings.oauth_generic_name.strip() or generic_provider.id
-    allowed_groups = set(settings.auth_groups.split(","))
+    configured_provider_id = (
+        env_settings.oauth_generic_name.strip() or generic_provider.id
+    )
+    allowed_groups = set(env_settings.auth_groups.split(","))
 
     @cl.oauth_callback
     def oauth_auth_callback(
@@ -84,7 +111,7 @@ def register_auth_provider() -> None:
             None,
         )
         if role is None:
-            allowed = settings.auth_groups
+            allowed = env_settings.auth_groups
             raise ValueError(
                 f"OAuth user is not in allowed AUTH_GROUPS. Allowed values: {allowed}."
             )

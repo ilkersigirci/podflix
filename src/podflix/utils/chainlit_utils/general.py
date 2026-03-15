@@ -4,41 +4,12 @@ from uuid import uuid4
 
 import chainlit as cl
 from chainlit.types import ThreadDict
-from chainlit.user import User
 from langchain_community.chat_message_histories import ChatMessageHistory
 from langfuse.langchain import CallbackHandler as LangfuseCallbackHandler
 from loguru import logger
 
 from podflix.env_settings import env_settings
 from podflix.utils.general import check_lf_credentials, get_lf_session_url
-
-
-def simple_auth_callback(username: str, password: str) -> User:
-    """Authenticate user with simple username and password check.
-
-    Examples:
-        >>> simple_auth_callback("admin", "admin")
-        User(identifier="admin", metadata={"role": "admin", "provider": "credentials"})
-
-    Args:
-        username: A string representing the username for authentication.
-        password: A string representing the password for authentication.
-
-    Returns:
-        A User object if authentication is successful.
-
-    Raises:
-        ValueError: If credentials are invalid.
-    """
-    if (username, password) == (
-        env_settings.chainlit_user_name,
-        env_settings.chainlit_user_password,
-    ):
-        return cl.User(
-            identifier=username, metadata={"role": "admin", "provider": "credentials"}
-        )
-
-    raise ValueError("Invalid credentials")
 
 
 def create_message_history_from_db_thread(
