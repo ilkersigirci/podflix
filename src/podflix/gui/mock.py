@@ -10,11 +10,11 @@ from loguru import logger
 
 from podflix.env_settings import env_settings
 from podflix.graph.mock import compiled_graph
+from podflix.utils.chainlit_utils.auth_provider import register_auth_provider
 from podflix.utils.chainlit_utils.data_layer import apply_sqlite_data_layer_fixes
 from podflix.utils.chainlit_utils.general import (
     create_message_history_from_db_thread,
     set_extra_user_session_params,
-    simple_auth_callback,
 )
 from podflix.utils.general import get_lf_trace_url
 from podflix.utils.graph_runner import GraphRunner
@@ -23,6 +23,8 @@ Chainlit_User_Type = User | PersistedUser
 
 if env_settings.enable_sqlite_data_layer is True:
     apply_sqlite_data_layer_fixes()
+
+register_auth_provider()
 
 
 @cl.set_starters
@@ -86,11 +88,6 @@ mock_commands = [
         "button": False,
     },
 ]
-
-
-@cl.password_auth_callback
-def auth_callback(username: str, password: str):
-    return simple_auth_callback(username, password)
 
 
 @cl.action_callback("detailed_traces_button")

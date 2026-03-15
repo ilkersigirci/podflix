@@ -1,7 +1,7 @@
 """Application configuration for environment variables."""
 
 from functools import partial
-from typing import Annotated, Literal  # noqa: F401
+from typing import Annotated, Literal
 
 from loguru import logger
 from pydantic import (
@@ -75,6 +75,16 @@ class EnvSettings(BaseSettings):
     chainlit_app_type: Annotated[str, AfterValidator(partial(allowed_values, values=["base_chat", "mock", "audio"]))] = "mock"
     chainlit_user_name: str = "admin"
     chainlit_user_password: str = "admin"
+    auth_type: Literal["password", "oauth"] = "password"
+    auth_groups: str = "admin,dev,guest"
+    oauth_generic_client_id: str | None = None
+    oauth_generic_client_secret: str | None = None
+    oauth_generic_auth_url: str | None = None
+    oauth_generic_token_url: str | None = None
+    oauth_generic_user_info_url: str | None = None
+    oauth_generic_scopes: str | None = None
+    oauth_generic_name: str = "generic"
+    oauth_generic_user_identifier: str = "email"
     embedding_host: CustomHttpUrlStr
     embedding_model_name: str
     enable_openai_api: bool = False
@@ -109,6 +119,64 @@ class EnvSettings(BaseSettings):
             logger.debug("When OpenAI API is enabled, `model_api_base` environment is ignored and set to OpenAI API.")
 
             return "https://api.openai.com"
+
+        return value
+
+    @field_validator("auth_groups", mode="before")
+    def validate_auth_groups(cls, value):
+        """Validate AUTH_GROUPS."""
+        VALID_AUTH_GROUPS = ("admin", "dev", "guest")
+
+        if not isinstance(value, str):
+            raise ValueError(
+                "AUTH_GROUPS must be a comma-separated string of groups."
+            )
+
+        groups = [item.strip().lower() for item in value.split(",") if item.strip()]
+
+        if not groups:
+            raise ValueError("AUTH_GROUPS must include at least one group.")
+
+        invalid_groups = [group for group in groups if group not in VALID_AUTH_GROUPS]
+        if invalid_groups:
+            invalid = ", ".join(invalid_groups)
+            valid = ", ".join(VALID_AUTH_GROUPS)
+            raise ValueError(
+                f"Invalid AUTH_GROUPS values: {invalid}. Allowed values: {valid}."
+            )
+
+        return ",".join(dict.fromkeys(groups))
+
+    @field_validator("oauth_generic_scopes")
+    def validate_oauth_generic_env(cls, value, values):
+        """Validate required Generic OAuth vars when AUTH_TYPE is oauth."""
+        GENERIC_OAUTH_REQUIRED_ENV_VARS = (
+            "OAUTH_GENERIC_CLIENT_ID",
+            "OAUTH_GENERIC_CLIENT_SECRET",
+            "OAUTH_GENERIC_AUTH_URL",
+            "OAUTH_GENERIC_TOKEN_URL",
+            "OAUTH_GENERIC_USER_INFO_URL",
+            "OAUTH_GENERIC_SCOPES",
+        )
+
+        if values.data.get("auth_type") != "oauth":
+            return value
+
+        missing_env_vars: list[str] = []
+
+        for env_var in GENERIC_OAUTH_REQUIRED_ENV_VARS:
+            field_name = env_var.lower()
+            field_value = value if field_name == "oauth_generic_scopes" else values.data.get(field_name)
+            if not field_value or not str(field_value).strip():
+                missing_env_vars.append(env_var)
+
+        if missing_env_vars:
+            missing = ", ".join(missing_env_vars)
+            message = (
+                "AUTH_TYPE=oauth requires Generic OAuth environment variables. "
+                f"Missing: {missing}."
+            )
+            raise ValueError(message)
 
         return value
 

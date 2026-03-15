@@ -11,17 +11,19 @@ from openai import AsyncOpenAI
 from openai.types.chat import ChatCompletionChunk
 
 from podflix.env_settings import env_settings
+from podflix.utils.chainlit_utils.auth_provider import register_auth_provider
 from podflix.utils.chainlit_utils.data_layer import apply_sqlite_data_layer_fixes
 from podflix.utils.chainlit_utils.general import (
     create_message_history_from_db_thread,
     set_extra_user_session_params,
-    simple_auth_callback,
 )
 from podflix.utils.chainlit_utils.setting_widgets import get_openai_chat_settings
 from podflix.utils.pydantic_models import OpenAIChatGenerationSettings
 
 if env_settings.enable_sqlite_data_layer is True:
     apply_sqlite_data_layer_fixes()
+
+register_auth_provider()
 
 async_openai_client = AsyncOpenAI(
     base_url=f"{env_settings.model_api_base}/v1",
@@ -48,11 +50,6 @@ async def set_starters() -> list[cl.Starter]:
             icon="🚀",
         ),
     ]
-
-
-@cl.password_auth_callback
-def auth_callback(username: str, password: str) -> bool:
-    return simple_auth_callback(username, password)
 
 
 @cl.on_settings_update
