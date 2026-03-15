@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS users (
     "id" UUID PRIMARY KEY,
     "identifier" TEXT NOT NULL UNIQUE,
-    "metadata" JSON NOT NULL,
+    "metadata" JSONB NOT NULL,
     "createdAt" TEXT
 );
 
@@ -11,8 +11,8 @@ CREATE TABLE IF NOT EXISTS threads (
     "name" TEXT,
     "userId" UUID,
     "userIdentifier" TEXT,
-    "tags" JSON,
-    "metadata" JSON,
+    "tags" TEXT[],
+    "metadata" JSONB,
     FOREIGN KEY ("userId") REFERENCES users("id") ON DELETE CASCADE
 );
 
@@ -25,15 +25,15 @@ CREATE TABLE IF NOT EXISTS steps (
     "streaming" BOOLEAN NOT NULL,
     "waitForAnswer" BOOLEAN,
     "isError" BOOLEAN,
-    "metadata" JSON,
-    "tags" JSON,
+    "metadata" JSONB,
+    "tags" TEXT[],
     "input" TEXT,
     "output" TEXT,
     "createdAt" TEXT,
     "command" TEXT,
     "start" TEXT,
     "end" TEXT,
-    "generation" JSON,
+    "generation" JSONB,
     "showInput" TEXT,
     "language" TEXT,
     "indent" INT,
@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS elements (
     "language" TEXT,
     "forId" UUID,
     "mime" TEXT,
-    "props" JSON,
+    "props" JSONB,
     FOREIGN KEY ("threadId") REFERENCES threads("id") ON DELETE CASCADE
 );
 

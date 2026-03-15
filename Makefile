@@ -49,17 +49,8 @@ install-no-cache: ## Installs the development version of the package without cac
 	uv sync --frozen --no-cache
 	$(MAKE) install-precommit
 
-install-test: ## Install only test version of the package
-	uv sync --frozen --only-group test
-
 install-precommit: ## Install pre-commit hooks
 	uv run pre-commit install
-
-install-lint:
-	uv pip install ruff==0.8.0
-
-install-doc: ## Install mkdocs, mkdocs-material and mkdocstrings
-	uv pip install mkdocs mkdocs-material mkdocstrings[python]
 
 update-dependencies: ## Updates the lockfiles and installs dependencies. Dependencies are updated if necessary
 	uv sync
@@ -110,9 +101,6 @@ clean-test: ## Clean test related files left after test
 doc: ## Build documentation with mkdocs
 	uv run mkdocs build
 
-doc-github: ## Build documentation with mkdocs and deploy to github pages
-	uv run mkdocs gh-deploy --force
-
 doc-dev: ## Show documentation preview with mkdocs
 	uv run mkdocs serve -w ${PACKAGE}
 
@@ -146,11 +134,6 @@ format-unsafe: ## Run ruff for all package files. with unsafe mode. CHANGES CODE
 	uv lock --locked
 	uv run --module ruff format ${PACKAGE}
 	uv run --module ruff check ${PACKAGE} --fix --unsafe-fixes --show-fixes
-
-update-submodules: ## Update submodules to their latest versions and commit changes
-	git submodule update --remote chainlit-datalayer
-	git add chainlit-datalayer
-	git commit -m "chore: update chainlit-datalayer submodule" || echo "No changes to commit"
 
 typecheck:  ## Checks code with mypy
 	uv lock --locked

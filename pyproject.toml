@@ -1,9 +1,9 @@
 [project]
 name = "podflix"
-version = "0.1.0"
+version = "0.0.1"
 description = "Chat with your podcast"
 readme = "README.md"
-requires-python = ">=3.11,<3.13"
+requires-python = ">=3.13,<3.15"
 
 authors = [
     {name = "İlker SIĞIRCI", email = "sigirci.ilker@gmail.com"},
@@ -27,32 +27,54 @@ classifiers = [
     "Operating System :: POSIX",
     "Operating System :: Unix",
     "Operating System :: MacOS",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
 ]
 
 dependencies = [
-    "aiosqlite>=0.20.0",
-    "asyncpg>=0.30.0",
-    "boto3>=1.35.92",
-    "chainlit>=2.6.2",
-    "huggingface-hub>=0.27.0",
-    "langchain>=0.3.27",
-    "langchain-community>=0.3.13",
-    "langchain-openai>=0.3.3",
-    "langfuse>=3.2.1",
-    "langgraph>=0.5.4",
+    "aiosqlite>=0.22.1",
+    "asyncpg>=0.31.0",
+    "boto3>=1.42.68",
+    "chainlit>=2.10.0",
+    "huggingface-hub>=1.7.1",
+    "langchain>=1.2.12",
+    "langchain-community>=0.4.1",
+    "langchain-openai>=1.1.11",
+    "langfuse>=4.0.0",
+    "langgraph>=1.1.2",
     "loguru>=0.7.3",
     "prisma>=0.15.0",
-    "psycopg2-binary>=2.9.10",
-    "pydantic-settings>=2.7.0",
-    "python-fasthtml>=0.12.0",
-    "youtube-transcript-api>=1.1.0",
-    "yt-dlp>=2025.1.12",
+    "psycopg2-binary>=2.9.11",
+    "pydantic-settings>=2.13.1",
+    "python-fasthtml>=0.12.50",
+    "youtube-transcript-api>=1.2.4",
+    "yt-dlp>=2026.3.13",
 ]
 
+[dependency-groups]
+dev = [
+    "ipykernel>=6.29.5",
+    "mypy>=1.13.0",
+    "pre-commit>=4.0.1",
+    "ruff>=0.15.5",
+]
+doc = [
+    "mkdocs>=1.6.1",
+    "mkdocs-material>=9.5.42",
+    "mkdocstrings[python]>=0.26.2",
+]
+test = [
+    "pytest-cov>=5.0.0",
+    "pytest-rerunfailures>=14.0",
+    "pytest-xdist>=3.6.1",
+    "pytest>=8.3.3",
+    "pytest-asyncio>=0.25.1",
+    "moto[s3]>=5.0.25",
+]
+
+
 [tool.uv]
-default-groups = ["dev", "doc", "test"]
+default-groups = "all"
 
 [tool.pytest.ini_options]
 minversion = "7.0.0"
@@ -177,35 +199,6 @@ exclude_lines = [
 #     'src/podflix/',
 # ]
 
-# [build-system]
-# requires = ["uv>=0.5.0,<1.0.0"]
-# build-backend = "uv" # FIXME: Only builds source distribution, not wheel
-
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
-[dependency-groups]
-dev = [
-    "ipykernel>=6.29.5",
-    "mypy>=1.13.0",
-    "pre-commit>=4.0.1",
-    "ruff>=0.15.5",
-    # "scalene~=1.5.21.2",
-]
-doc = [
-    "mkdocs>=1.6.1",
-    "mkdocs-material>=9.5.42",
-    "mkdocstrings[python]>=0.26.2",
-    # "mdx-include",
-    # "mkdocs-markdownextradata-plugin",
-]
-test = [
-    "pytest-cov>=5.0.0",
-    "pytest-rerunfailures>=14.0",
-    "pytest-xdist>=3.6.1",
-    "pytest>=8.3.3",
-    # "pytest-timeout",
-    "pytest-asyncio>=0.25.1",
-    "moto[s3]>=5.0.25",
-]
+build-backend = "uv_build"
+requires = ["uv_build>=0.10,<0.14"]

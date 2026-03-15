@@ -5,6 +5,8 @@ including S3 storage integration and SQLAlchemy database connections.
 """
 
 import os
+import json
+import sqlite3
 
 import boto3
 import chainlit as cl
@@ -108,6 +110,8 @@ def get_custom_sqlalchemy_data_layer(
     Raises:
         ValueError: If S3 storage is enabled but credentials are invalid.
     """
+    # chainlit.data.sql_alchemy.SQLAlchemyDataLayer = SQLAlchemyDataLayer
+
     if enable_s3_storage_provider is True:
         storage_client = get_s3_storage_client()
 
@@ -120,6 +124,7 @@ def get_custom_sqlalchemy_data_layer(
         ssl_require=False,
         show_logger=show_logger,
         storage_provider=storage_client,
+        # create_tables=True,
     )
 
 
@@ -199,9 +204,9 @@ def apply_sqlite_data_layer_fixes():
     if env_settings.enable_sqlite_data_layer is False:
         return
 
-    from podflix.utils.chainlit_utils.patch_chainlit import custom_resume_thread
-
-    chainlit.socket.resume_thread = custom_resume_thread
+    # From https://github.com/Chainlit/chainlit/issues/2528#issuecomment-3436664107
+    sqlite3.register_adapter(list, lambda lst: json.dumps(lst))
+    sqlite3.register_adapter(dict, lambda dct: json.dumps(dct))
 
     @cl.data_layer
     def data_layer():

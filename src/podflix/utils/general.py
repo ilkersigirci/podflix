@@ -139,7 +139,7 @@ def get_lf_session_url(session_id: str) -> str:
     """
     langfuse_project_id = get_lf_project_id()
 
-    return f"{env_settings.langfuse_host}/project/{langfuse_project_id}/sessions/{session_id}"
+    return f"{env_settings.langfuse_base_url}/project/{langfuse_project_id}/sessions/{session_id}"
 
 
 def get_lf_trace_url(langchain_trace_id: str) -> str:

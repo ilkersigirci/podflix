@@ -53,7 +53,7 @@ mount_chainlit(
     app=app,
     path="/chat",
     target=Path(__file__)
-    .parent.joinpath(f"{env_settings.chainlit_app_type}.py")
+    .parent.joinpath(f"{env_settings.app_type}.py")
     .absolute()
     .as_posix(),
 )

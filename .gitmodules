@@ -1,3 +1,0 @@
-[submodule "chainlit-datalayer"]
-	path = chainlit-datalayer
-	url = https://github.com/Chainlit/chainlit-datalayer.git
