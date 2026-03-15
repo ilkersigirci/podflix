@@ -1,8 +1,8 @@
 """Helper class for running the graph."""
 
 import chainlit as cl
-from langchain.schema.runnable.config import RunnableConfig
 from langchain_core.messages import AIMessageChunk
+from langchain_core.runnables.config import RunnableConfig
 from langfuse.langchain import CallbackHandler as LangfuseCallbackHandler
 from langgraph.graph.state import CompiledStateGraph
 from loguru import logger
