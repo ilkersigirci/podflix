@@ -38,15 +38,11 @@ repos:
       - id: ruff-format
         args: [--config=pyproject.toml]
 
-  # NOTE: It doesn't use pyproject.toml configs. We might enable it the future.
-  # - repo: https://github.com/pre-commit/mirrors-mypy
-  #   rev: v0.991
+  # - repo: local
   #   hooks:
-  #     - id: mypy
-  #       files: podflix
-  #       additional_dependencies: [types-PyYAML, rich]
-  #       args: [
-  #           "--strict",
-  #           # "--config-file=pyproject.toml",
-  #           # "--ignore-missing-imports",
-  #         ]
+  #     - id: ty-check
+  #       name: ty-check
+  #       entry: uvx ty check src/podflix
+  #       language: system
+  #       pass_filenames: false
+  #       types_or: [python, pyi]

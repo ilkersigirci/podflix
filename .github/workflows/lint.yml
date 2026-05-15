@@ -14,9 +14,16 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
-      - name: Lint Dependency Installation
-        uses: astral-sh/ruff-action@v3
+      - name: Install the latest version of uv
+        uses: astral-sh/setup-uv@v5
+      - name: Install prek
+        run: |
+          uv tool install prek
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+      - name: Cache prek dependencies
+        uses: actions/cache@v4
         with:
-          src: ./src/podflix
-      - run: ruff format --check --diff
-      - run: ruff check
+          path: ~/.cache/prek/
+          key: prek|${{ runner.os }}|${{ hashFiles('.pre-commit-config.yaml') }}
+      - name: Run prek
+        run: prek run --show-diff-on-failure --color=always --all-files
