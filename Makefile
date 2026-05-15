@@ -8,13 +8,13 @@ DOC_DIR=./docs
 TEST_DIR=./tests
 TEST_MARKER=placeholder
 TEST_OUTPUT_DIR=tests_outputs
-PRECOMMIT_FILE_PATHS=./podflix/__init__.py
+PREK_FILE_PATHS=./src/podflix/__init__.py
 PROFILE_FILE_PATH=./podflix/__init__.py
 DOCKER_IMAGE=podflix
 DOCKER_TARGET=development
 
 
-.PHONY: help install test doc pre-commit format lint profile
+.PHONY: help install test doc prek format profile
 .DEFAULT_GOAL=help
 
 help:
@@ -41,16 +41,17 @@ install: ## Installs the development version of the package
 	$(MAKE) install-uv
 	$(MAKE) update-uv
 	uv sync --frozen
-	$(MAKE) install-precommit
+	$(MAKE) install-prek
 
 install-no-cache: ## Installs the development version of the package without cache
 	$(MAKE) install-uv
 	$(MAKE) update-uv
 	uv sync --frozen --no-cache
-	$(MAKE) install-precommit
+	$(MAKE) install-prek
 
-install-precommit: ## Install pre-commit hooks
-	uv run pre-commit install
+install-prek: ## Install prek and git hooks
+	uv tool install --upgrade prek
+	prek install
 
 update-dependencies: ## Updates the lockfiles and installs dependencies. Dependencies are updated if necessary
 	uv sync
@@ -104,49 +105,32 @@ doc: ## Build documentation with mkdocs
 doc-dev: ## Show documentation preview with mkdocs
 	uv run mkdocs serve -w ${PACKAGE}
 
-pre-commit-one: ## Run pre-commit with specific files
+prek-one: ## Run prek with specific files
 	uv lock --locked
-	uv run pre-commit run --files ${PRECOMMIT_FILE_PATHS}
+	prek run --files ${PREK_FILE_PATHS}
 
-pre-commit: ## Run pre-commit for all package files
+prek: ## Run prek for all package files
 	uv lock --locked
-	uv run pre-commit run --all-files
+	prek run --all-files
 
-pre-commit-clean: ## Clean pre-commit cache
-	uv run pre-commit clean
+prek-clean: ## Clean prek cache
+	prek cache clean
 
-lint: ## Lint code with ruff
+format: ## Format checks via prek hooks
 	uv lock --locked
-	uv run --module ruff format ${PACKAGE} --check --diff
-	uv run --module ruff check ${PACKAGE}
+	prek run ruff-format --all-files
 
-lint-report: ## Lint report for gitlab
+typecheck:  ## Checks code with Astral ty
 	uv lock --locked
-	uv run --module ruff format ${PACKAGE} --check --diff
-	uv run --module ruff check ${PACKAGE} --format gitlab > gl-code-quality-report.json
+	uvx ty check ${PACKAGE}
 
-format: ## Run ruff for all package files. CHANGES CODE
+typecheck-no-cache:  ## Checks code with Astral ty no cache
 	uv lock --locked
-	uv run --module ruff format ${PACKAGE}
-	uv run --module ruff check ${PACKAGE} --fix --show-fixes
+	uvx ty check ${PACKAGE}
 
-format-unsafe: ## Run ruff for all package files. with unsafe mode. CHANGES CODE
+typecheck-report: ## Checks code with Astral ty and generates JUnit report
 	uv lock --locked
-	uv run --module ruff format ${PACKAGE}
-	uv run --module ruff check ${PACKAGE} --fix --unsafe-fixes --show-fixes
-
-typecheck:  ## Checks code with mypy
-	uv lock --locked
-	uv run --module mypy --package ${PACKAGE}
-	# MYPYPATH=src uv run --module mypy --package ${PACKAGE}
-
-typecheck-no-cache:  ## Checks code with mypy no cache
-	uv lock --locked
-	uv run --module mypy --package ${PACKAGE} --no-incremental
-
-typecheck-report: ## Checks code with mypy and generates html report
-	uv lock --locked
-	uv run --module mypy --package ${PACKAGE} --html-report mypy_report
+	uvx ty check ${PACKAGE} --output-format junit > ty_report.xml
 
 # profile: ## Profile the file with scalene and shows the report in the terminal
 # 	uv lock --locked

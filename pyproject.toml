@@ -54,9 +54,6 @@ dependencies = [
 [dependency-groups]
 dev = [
     "ipykernel>=6.29.5",
-    "mypy>=1.13.0",
-    "pre-commit>=4.0.1",
-    "ruff>=0.15.5",
 ]
 doc = [
     "mkdocs>=1.6.1",
